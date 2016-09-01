@@ -15,9 +15,10 @@ Turn on the incubator (56˚C).
 Prepare lysis buffer - see [PCR worksheet](https://docs.google.com/spreadsheets/d/1LGt2WziwmGoJMluBcwmKfhZrGjZOlJLkVHf59-5cOV4/edit?usp=sharing)
 
 Example table:
-| # of samples | 10% error |  ml proteinase K | ml ATL buffer |
-| ------------ | --------- | ---------------- | ------------- |
-|     192      |   211.2   |      4.224       |     38.016    |
+
+number of samples|10% error|ml proteinase K|ml ATL buffer
+---|---|---|---
+192|211.2|4.224|38.016
 
 Double check the sample numbers, comparing to map/plan as you go.
 
