@@ -11,11 +11,10 @@ Example calculation:
 See PCR worksheet “quantification” in google drive for the math below: (https://docs.google.com/spreadsheets/d/1LGt2WziwmGoJMluBcwmKfhZrGjZOlJLkVHf59-5cOV4/edit?usp=sharing)
 
 Example table:
-lambda DNA (ug/ml)|volume of standard needed (uL)|number of plates| |
 
+lambda DNA (ug/ml)|volume of standard needed (uL)|number of plates
+100|600|3
 
-
-100	|600|	3		| | |		
 
 
 						|
