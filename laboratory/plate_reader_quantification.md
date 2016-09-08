@@ -13,22 +13,25 @@ See PCR worksheet “quantification” in google drive for the math below: (http
 Example table:
 
 lambda DNA (ug/ml)|volume of standard needed (uL)|number of plates
+---|---|---
 100|600|3
 
 
-
-						|
-						|
-	|initial conc (ug/ml)|	initial volume (ul)|	add TE (ul)|	final conc in lab (ug/ml)	|final volume in lab (ul)	|final conc in plate (ug/ml)
+STD| initial conc (ug/ml)|initial volume (ul)|	add TE (ul)|	final conc in lab (ug/ml)	|final volume in lab (ul)	|final conc in plate (ug/ml)
+---|---|---|---|---|---|---
 STD 1|	100	|24	|1176|	2	|1200|	1
 STD 2 |	2|	120|	1080|	0.2|	1200|	0.1
 STD 3	|2	|12|	1188|	0.02|	1200|	0.01
 STD 4	|0|	0|	1200|0	|	1200|	0
+
+
 						
-# of samples|	10% error|	# of standards	|10% error|	total wells with error|	total amount of TE buffer for analysis	
+number of samples|	10% error|	# of standards	|10% error|	total wells with error|	total amount of TE buffer for analysis
+---|---|---|---|---|---
 152	|167|	24|	26|	194	|40460	
 						
-amount of pico dilution|	amount of pure pico|	amount of 1x TE buffer for pico				
+amount of pico dilution|	amount of pure pico|	amount of 1x TE buffer for pico	
+---|---|---
 19360|	96.8|	19263				
 
 
