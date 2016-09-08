@@ -46,7 +46,7 @@ amount of pico dilution|	amount of pure pico|	amount of 1x TE buffer for pico
 
 - [ ] Make STD #4 according to table above
 
-- [ ] Add 99µL 1xTE to sample wells of plate
+- [ ] Add 99µL 1xTE to **sample** wells of plate
 
 - [ ] Add 100µL STDs to first free column of plate (1,2,3,4,1,2,3,4)
 
