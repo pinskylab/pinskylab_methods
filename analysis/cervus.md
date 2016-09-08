@@ -74,6 +74,6 @@
 
         - Gene pop file and allele frequency info will be automatically populated, should match what you’ve done for those steps
         - Save as input_filename_ID
-        - Minimum number of matching loci 30% of the total loci
+        - Minimum number of matching loci 80% of the total loci
         - Allow fuzzy matching with 10% of the total loci
 - filter by ID and count the number of offspring a fish has
