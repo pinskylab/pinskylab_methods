@@ -67,15 +67,15 @@ At the plate reader:
 - When it is done, check standard curves to make sure the plate ran ok, if you can eliminate a bad standard and re-run, do so.
 - click save as...and then export...and then pop in your new plate and hit read again.
 
-Back at the lab, processing the data:
+##Back at the lab, processing the data:
 
 - Upload files to Plate Reader folder in Google Drive (you cannot work with them through Google Drive, this is just for storage)
-- Open .txt files in Numbers (or even better, Excel)
-- Open Sample_Data file in Google Drive
+- Open .txt files in Excel
+- Add extraction ID column and fill in 
 - Copy AdjConc column from the Numbers file into the appropriate sample’s Quant_ng/ul column
 - Set up the Digests sheet to receive these samples, conditional format for samples that will not produce 1µg DNA and samples that will produce more than 5µg.
 
-To set up a new protocol on a new plate reader using SoftMaxPro software:
+##To set up a new protocol on a new plate reader using SoftMaxPro software:
 Click settings:
 Click FL (flourescence) for Read Mode
 Read type is endpoint
