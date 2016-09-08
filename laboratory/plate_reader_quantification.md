@@ -10,166 +10,27 @@ Example calculation:
 
 See PCR worksheet “quantification” in google drive for the math below: (https://docs.google.com/spreadsheets/d/1LGt2WziwmGoJMluBcwmKfhZrGjZOlJLkVHf59-5cOV4/edit?usp=sharing)
 
-lambda DNA
-
-100
-
-ug/mL
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-final volume
-
-
-
-
-# of plates
-
-5
-
-
-40
-
-uL of each STD
-
-
-1000
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-STD 1 -
-
-2
-
-ug/ml
-
-1000
-
-ul
-
-
-100
-
-ug/ml
-
-20
-
-uL
-
-STD 2
-
-0.2
-
-ug/ml
-
-1000
-
-ul
-
-
-2
-
-ug/ml
-
-100
-
-uL
-
-STD 3
-
-0.02
-
-ug/ml
-
-1000
-
-ul
-
-
-2
-
-ug/ml
-
-10
-
-uL
-
-STD 4
-
-0
-
-ug/ml
-
-1000
-
-ul
-
-
-2
-
-ug/ml
-
-0
-
-uL
-
-
-
-
-
-
-
-
-
-
-
-# of wells
-
-500
-
-amount of pico dilution
-
-50000
-
-amount of pure pico
-
-250
-
-amount of 1x TE buffer
-
-49750
+Example table:
+lambda DNA (ug/ml)|volume of standard needed (uL)|number of plates| |
+
+
+
+100	|600|	3		| | |		
+
+
+						|
+						|
+	|initial conc (ug/ml)|	initial volume (ul)|	add TE (ul)|	final conc in lab (ug/ml)	|final volume in lab (ul)	|final conc in plate (ug/ml)
+STD 1|	100	|24	|1176|	2	|1200|	1
+STD 2 |	2|	120|	1080|	0.2|	1200|	0.1
+STD 3	|2	|12|	1188|	0.02|	1200|	0.01
+STD 4	|0|	0|	1200|0	|	1200|	0
+						
+# of samples|	10% error|	# of standards	|10% error|	total wells with error|	total amount of TE buffer for analysis	
+152	|167|	24|	26|	194	|40460	
+						
+amount of pico dilution|	amount of pure pico|	amount of 1x TE buffer for pico				
+19360|	96.8|	19263				
 
 
 
