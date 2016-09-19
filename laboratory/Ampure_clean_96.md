@@ -3,7 +3,7 @@ This protocol assumes that you have read and understand the manufacturer’s ins
 This protocol is to clean DNA in a 96 well plate
 
 1. Fill out the spreadsheet to determine volumes of reagents needed:
-  *https://docs.google.com/spreadsheets/d/1LGt2WziwmGoJMluBcwmKfhZrGjZOlJLkVHf59-5cOV4/edit#gid=907914536
+  https://docs.google.com/spreadsheets/d/1LGt2WziwmGoJMluBcwmKfhZrGjZOlJLkVHf59-5cOV4/edit#gid=907914536
 
 2. Bring proper amount of AMPure to room temperature  (1.5 * volume of samples * # of samples)
 3. Make fresh 70% EtOH - 400 * # of samples at least
