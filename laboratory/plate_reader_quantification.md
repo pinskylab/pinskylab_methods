@@ -10,15 +10,15 @@ Example calculation:
 
 See PCR worksheet “quantification” in google drive for the math below: (https://docs.google.com/spreadsheets/d/1LGt2WziwmGoJMluBcwmKfhZrGjZOlJLkVHf59-5cOV4/edit?usp=sharing)
 
-- [ ] Make TX STD #1 according to table 
+- [ ] Make TX STD #1 according to table by using 1xTE and lambda DNA from the pico kit
 
 - [ ] Make Pico dilution (1/200) for all wells according to table 
 
-- [ ] Make STD #2 according to table 
+- [ ] Make STD #2 according to table by using 1xTE and STD #1
 
-- [ ] Make STD #3 according to table 
+- [ ] Make STD #3 according to table by using 1xTE and STD #1
 
-- [ ] Make STD #4 according to table 
+- [ ] Make STD #4 according to table by using 1xTE
 
 - [ ] Add 99µL 1xTE to **sample** wells of plate
 
