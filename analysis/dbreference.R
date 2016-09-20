@@ -12,3 +12,15 @@ c2 <- labor %>% tbl("digest") %>% select(digest_ID, extraction_ID) # creates a c
 c3 <- left_join(c2, c1, by = "extraction_ID") # links the extraction and digest table by extraction ID
 c4 <- labor %>% tbl("ligation") %>% select(ligation_ID, digest_ID) # creates a connection to all ligation and digest IDs in ligation table
 c5 <- data.frame(left_join(c4, c3, by = "digest_ID")) # connects the previous table to the ligation table through digest ID, dataframe imports the data to current R session
+
+# The following lines are for direct sql queries conducted within sequel pro or by using the dplyr code sql("")
+select * from digest where extraction_ID = "E0226";
+select * from ligation where digest_ID = "D0439";
+
+select * from ligation where ligation_ID = "L0425";
+select * from digest where digest_ID = "D0428";
+select * from extraction where extraction_ID = "E0226";
+
+select * from digest
+where date = "2016-09-18"
+and DNA_ng < 100;
