@@ -13,16 +13,26 @@ Double check all reagents and make sure there is enough to start
 
 
 Set up Ligation reaction 30µL reactions:
+
 pipette P1 adapters into wells
+
 make master mix
+
 pipette master mix into clean empty 8 wells (154 each) and then pipette with multichannel into plates
+
 spin plates (only hold to 15sec then let go)
+
 allow rxn to occur on countertop at room temp for 1.5hr
-place in thermocycler to heat kill (65˚ for 10 min then decrease of 2˚ every 90sec until room temp, hold at 4˚) - skip the initial 23˚ step
+
+place in thermocycler to heat kill (65˚ for 10 min then decrease of 2˚ every 90sec until room temp, hold at 4˚) - skip the initial 23˚ 
+step
+
 After ligation heat kill, combine all of the wells for each pool in one tube (o-ring if cleanup is not immediate) labeled with the pool # on top and on the side:
 
     - Pool #
     - ready to be cleaned
     - date
+
 These pools can be stored in an o-ring tube in the refrigerator.
+
 When ready to clean, split each pool into 4 tubes (labeled Pool#.1, Pool#.2, etc) of 360µL (lately they have been more like 300µL)  and start the first cleanup.  Combine the 4 end products of the clean up into one Pool tube and proceed to the second cleanup (volume should be 160µL).
