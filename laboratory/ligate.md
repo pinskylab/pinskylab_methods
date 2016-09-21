@@ -6,10 +6,10 @@ If low read numbers persist in corner wells of ligation plates, it may be necess
 Go to the ligate page in the PCR worksheet and double check the math (copy and paste the cells  into notebook): (https://docs.google.com/spreadsheets/d/1LGt2WziwmGoJMluBcwmKfhZrGjZOlJLkVHf59-5cOV4/edit?usp=sharing)
 
 Double check all reagents and make sure there is enough to start
-[ ] P2 working adapter
-[ ] P1 working adapter
-[ ] 10x buffer
-[ ] ligase
+- [ ]  P2 working adapter
+- [ ] P1 working adapter
+- [ ] 10x buffer
+- [ ] ligase
 
 
 Set up Ligation reaction 30µL reactions:
