@@ -16,4 +16,6 @@ Jon Puritz has a great tutorial that explains the inner workings of the dDocent 
 
 4. [Rename the output of process_radtags](./rename.md) - takes a few minutes
 
+5. [Run dDocent on a species for the first time] or [Add samples to an existing dataset in dDocent on amphiprion](./add_ddocent.md)
+
 
