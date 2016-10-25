@@ -13,10 +13,11 @@ Rename the files using the names file in the logs directory - the names file is 
 
 `sh rename.for.dDocent_se_gz ../logs/names_12`
 
-if final barcode is not getting assigned, nano the names_ file, get rid of the final end of line character (go to the end and backspace), and re-run.  It will look like it might not be working but “ls” will show that the final file was renamed.
+If final barcode is not getting assigned, nano the names file, get rid of the final end of line character (go to the end and backspace), and re-run.  It will look like it might not be working but “ls” will show that the final file was not renamed.
 
-Move the named samples into the samples directory or if working in dDocent, move them to the working directory
-[michelles@amphiprion 12]$ mv APCL1* ../samples/
+Move the named samples into the samples directory 
+
+`mv APCL* ../samples/`
 
 Here is an example of 4 pools being renamed, moved and the pool directories and bcsplit directories deleted:
 
