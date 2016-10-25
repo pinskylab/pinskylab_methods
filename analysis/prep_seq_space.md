@@ -5,7 +5,8 @@
     `mkdir /local/shared/pinsky_lab/sequencing/hiseq_2016_10_25_SEQ17`
 2. Enter the newly made directory
     
-    `cd hiseq_2015_07_08_SEQ09`
+    `cd hiseq_2016_10_25_SEQ17`
+    
 3. Retrieve files from the sequencer - 10/25/2016 - can't access the data because Princeton doesn't recognize Michelle's credentials, only Malin can get in.
     - UPDATED 10-25-2016 Princeton now emails a link to the data (you must sign in with credentials)
     i. Click the link
@@ -36,10 +37,8 @@
     
     
     `mkdir bcsplit Pool1 Pool2 Pool3 Pool4 logs scripts samples`
-    
-    
+   
     `cd bcsplit`
-    
     
     `mkdir lane1 lane2`
 6. Create an index file in R using the script [create_index.R](https://github.com/stuartmichelle/Genetics/blob/master/code/create_index.R).  Upload the resulting file to amphiprion into the logs directory.
