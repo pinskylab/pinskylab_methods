@@ -42,21 +42,7 @@
     
     
     `mkdir lane1 lane2`
-6. In your logs directory, create an index file, using nano, that is the Pool name tab separated from the index used on that pool.  The easiest way to do this is copy and paste from google sheets into a nano document
-    - In the sample_data file, on the Names tab, type the pool numbers into the Pool ID column in the format below.  The spreadsheet will look up the proper indexes for you.  Then copy and paste into a blank nano document, save as index-seq##
-    - EXAMPLE:
-    
-    
-    P012    ATCACG
-    
-    
-    P013    TGACCA
-    
-    
-    P014    CAGATC
-    
-    
-    P015    TAGCTT
+6. Create an index file in R using the script [create_index.R](https://github.com/stuartmichelle/Genetics/blob/master/code/create_index.R).  Upload the resulting table to amphiprion into the logs directory.
 7. Create a names file with the sample name tab separated from the barcode assigned to that sample.  The easiest way to make a names file is to copy and paste from google sheets. Copy the ligation ID’s from the pool and paste them into the names tab, copy and paste the result into a nano document in the logs directory.
 8. Copy barcodes file in your logs directory from the logs directory of the last sequencing run only if you used the same barcodes, don't include barcodes you didn't use.
 
