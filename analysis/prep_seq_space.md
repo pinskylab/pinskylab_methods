@@ -3,6 +3,10 @@
     - EXAMPLE: 
     
     `mkdir /local/shared/pinsky_lab/sequencing/hiseq_2016_10_25_SEQ17`
+    
+    - Change the group permission on the newly made folder so that other people can write to it:
+    `chgrp -R pinsky_lab hiseq_2016_10_25_SEQ17`
+    
 2. Enter the newly made directory
     
     `cd hiseq_2016_10_25_SEQ17`
