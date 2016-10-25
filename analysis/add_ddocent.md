@@ -52,7 +52,7 @@ When dDocent has finished, change directories to the main analysis folder which 
 
 `dDocent`
 
-    - You will be asked a series of questions.
+You will be asked a series of questions.
     
     - ## individuals are detected. Is this correct? Enter yes or no and press [ENTER]
     
@@ -83,4 +83,6 @@ When dDocent has finished, change directories to the main analysis folder which 
     - Email
 
         - your.email@rutgers.edu
+        
+[Return to analysis protocol](./hiseq_ddocent.md)
 
