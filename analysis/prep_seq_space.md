@@ -2,11 +2,11 @@
 1. Create a directory for the files (mkdir), use the naming scheme type_of_sequencer_year_month_day_SEQ##: hiseq_2014_08_07_SEQ04
     - EXAMPLE: 
     
-    `mkdir /local/shared/pinsky_lab/sequencing/hiseq_2015_07_08_SEQ09`
+    `mkdir /local/shared/pinsky_lab/sequencing/hiseq_2016_10_25_SEQ17`
 2. Enter the newly made directory
     
     `cd hiseq_2015_07_08_SEQ09`
-3. Retrieve files from the sequencer
+3. Retrieve files from the sequencer - 10/25/2016 - can't access the data because Princeton doesn't recognize Michelle's credentials, only Malin can get in.
     - UPDATED 10-25-2016 Princeton now emails a link to the data (you must sign in with credentials)
     i. Click the link
     ii. Click on the sequencing run of interest in the box on the left that says “Recently Entered Samples"
@@ -25,14 +25,14 @@
     - alternative command line
     
     `zcat XXXXX.fastq.gz | grep -c "^AAACGA"`
-4. Update where files are saved on amphiprion in the sequencing table of the sql database
+4. Update where files are saved on amphiprion in the sequencing table of the sql database, enter data by hand
 5. Make a working directory 
     - make separate pool directories to keep the process radtags output separate
     
-    `mkdir /local/home/michelles/02-apcl-ddocent/09seq`
+    `mkdir /local/home/michelles/02-apcl-ddocent/17seq`
     
     
-    `cd 09seq`
+    `cd 17seq`
     
     
     `mkdir bcsplit Pool1 Pool2 Pool3 Pool4 logs scripts samples`
