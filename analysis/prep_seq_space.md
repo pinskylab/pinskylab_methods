@@ -58,6 +58,6 @@
     
     P015    TAGCTT
 7. Create a names file with the sample name tab separated from the barcode assigned to that sample.  The easiest way to make a names file is to copy and paste from google sheets. Copy the ligation ID’s from the pool and paste them into the names tab, copy and paste the result into a nano document in the logs directory.
-8. Create a barcodes file in your logs directory: from the sample_data file, highlight the barcodes column only on the barcodes sheet and paste into nano, do not hit enter after the final barcode, save as “barcodes”.
+8. Copy barcodes file in your logs directory from the logs directory of the last sequencing run only if you used the same barcodes, don't include barcodes you didn't use.
 
 [Return to analysis protocol](./hiseq_ddocent.md)
