@@ -42,8 +42,8 @@
     
     
     `mkdir lane1 lane2`
-6. Create an index file in R using the script [create_index.R](https://github.com/stuartmichelle/Genetics/blob/master/code/create_index.R).  Upload the resulting table to amphiprion into the logs directory.
-7. Create a names file with the sample name tab separated from the barcode assigned to that sample.  The easiest way to make a names file is to copy and paste from google sheets. Copy the ligation ID’s from the pool and paste them into the names tab, copy and paste the result into a nano document in the logs directory.
+6. Create an index file in R using the script [create_index.R](https://github.com/stuartmichelle/Genetics/blob/master/code/create_index.R).  Upload the resulting file to amphiprion into the logs directory.
+7. Create a names file in R using the script [create_names.R](https://github.com/stuartmichelle/Genetics/blob/master/code/create_names.R).  Upload the resulting files to amphiprion into the logs directory.
 8. Copy barcodes file in your logs directory from the logs directory of the last sequencing run only if you used the same barcodes, don't include barcodes you didn't use.
 
 [Return to analysis protocol](./hiseq_ddocent.md)
