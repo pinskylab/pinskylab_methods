@@ -20,6 +20,7 @@ The nohup.out file does not contain any information that is not in the process_r
 
 Output log of process radtags provides the number of reads per barcode.  Process radtags also produces files that appear as “sample_AATCGA.fq.gz” where AATCGA is the barcode.
 
+[Return to analysis protocol](./hiseq_ddocent.md)
 
 ##Details of process_radtags options
 
