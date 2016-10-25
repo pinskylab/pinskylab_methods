@@ -24,3 +24,5 @@ The output of barcode splitter is a log file, the names of all of the pools spli
 
 Cat the 2 lanes into one file for process radtags
 `cat ./lane2/P012-read-1.fastq.gz ./lane1/P012-read-1.fastq.gz > P012.fastq.gz`
+
+[Return to analysis protocol](./hiseq_ddocent.md)
