@@ -14,3 +14,6 @@ Jon Puritz has a great tutorial that explains the inner workings of the dDocent 
     
 3. [Process radtags](./process_radtags.md) - use esc-R or ctrl-\ to "find and replace" in nano - takes about 2.5 hours for 4 pools and 192 samples
 
+4. [Rename the output of process_radtags](./rename.md) - takes a few minutes
+
+
