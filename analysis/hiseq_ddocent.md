@@ -8,7 +8,7 @@ Jon Puritz has a great tutorial that explains the inner workings of the dDocent 
 
 If this is a miseq run, you can skip barcode splitter and move on to process radtags.  If this data is from hiseq, run barcode splitter
 
-2. [Barcode splitter](./barcode_spliter.md) - takes about 8 hours for 2 lanes and 192 samples
+2. [Barcode splitter](./barcode_splitter.md) - takes about 8 hours for 2 lanes and 192 samples
 
 If this is a paired end sequencing run, the inputs of process radtags will be different from the ones listed below.  A paired end run hasn’t been done in long enough time that a discussion should be had before proceeding.  
 If the current run is of single end reads, proceed with confidence.
