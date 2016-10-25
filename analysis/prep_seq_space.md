@@ -13,10 +13,10 @@
     v. Click checkmarks next to the #_read_1_passed_filter.fastq.gz and #_read_2_passed_filter.fastq.gz
     vi. Click “Prepare selected files for download” and copy the link
     vii. In amphiprion, in the directory you made in the previous step, paste the link
-- Repeat for all lanes
-- Count raw reads (optional)
+    - Repeat for all lanes
+    - Count raw reads (optional)
     `zcat clownfish-ddradseq-seq08-for-231-cycles-h3mgvbcxx_1_read_1_passed_filter.fastq.gz | wc -l | awk '{print$1/4}'`
-- If you like you can count the number of reads that begin with your barcodes
+    - If you like you can count the number of reads that begin with your barcodes
     `zcat clownfish-ddradseq-seq08-for-231-cycles-h3mgvbcxx_1_read_1_passed_filter.fastq.gz | awk ‘^ACGTTT' | wc -l`
     - alternative command line
         `zcat XXXXX.fastq.gz | grep -c "^AAACGA"`
@@ -51,6 +51,5 @@
     
     
     P015    TAGCTT
-- Create a names file with the sample name tab separated from the barcode assigned to that sample.  The easiest way to make a names file is to copy and paste from google sheets. Copy the ligation ID’s from the pool and paste them into the names tab, copy and paste the result into a nano document in the logs directory.
-- Create a barcodes file in your logs directory: from the sample_data file, highlight the barcodes column only on the barcodes sheet and paste into nano, do not hit enter after the final barcode, save as “barcodes”.
-- If you are adding samples to an already existing reference.fasta, copy the reference.fasta over to your working directory (APCL_analysis > date of dDocent run) - this won’t really be ready yet
+7. Create a names file with the sample name tab separated from the barcode assigned to that sample.  The easiest way to make a names file is to copy and paste from google sheets. Copy the ligation ID’s from the pool and paste them into the names tab, copy and paste the result into a nano document in the logs directory.
+8. Create a barcodes file in your logs directory: from the sample_data file, highlight the barcodes column only on the barcodes sheet and paste into nano, do not hit enter after the final barcode, save as “barcodes”.
