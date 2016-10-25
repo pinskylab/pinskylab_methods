@@ -11,4 +11,6 @@ Jon Puritz has a great tutorial that explains the inner workings of the dDocent 
 2. [Barcode splitter](./barcode_splitter.md) - takes about 8 hours for 2 lanes and 192 samples
 
     - If this is a paired end sequencing run, the inputs of process radtags will be different from the ones listed below.  A paired end run hasn’t been done in long enough time that a discussion should be had before proceeding.  If the current run is of single end reads, proceed with confidence.
+    
+3. [Process radtags](./process_radtags.md) - use esc-R or ctrl-\ to "find and replace" in nano - takes about 2.5 hours for 4 pools and 192 samples
 
