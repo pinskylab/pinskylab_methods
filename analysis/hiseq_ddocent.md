@@ -6,7 +6,7 @@ Jon Puritz has a great tutorial that explains the inner workings of the dDocent 
 1. [Prepare the analysis space on the server](./prep_seq_space.md)
 
 
-If this is a miseq run, you can skip barcode splitter and move on to process radtags.  If this data is from hiseq, run barcode splitter
+    - If this is a miseq run, you can skip barcode splitter and move on to process radtags.  If this data is from hiseq, run barcode splitter
 
 2. [Barcode splitter](./barcode_splitter.md) - takes about 8 hours for 2 lanes and 192 samples
 
