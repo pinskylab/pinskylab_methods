@@ -28,3 +28,5 @@ michelles 2016-06-23 06:26:01 Pool1 $ cd ..
 michelles 2016-06-23 06:26:08 15seq $ rm -r Pool1
 
 michelles 2015-08-18 10:14:48 08-seq08 $ rm -r bcsplit/
+
+[Return to analysis protocol](./hiseq_ddocent.md)
