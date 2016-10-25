@@ -1,7 +1,4 @@
-Processing Sequence files using dDocent
-Rename the output of process_radtags
-
-In a folder containing only the new samples *.F.fq.gz
+Based on the previous steps taken, at this point there should be a working directory called "samples" that contains 
 
 - copy in reference.fasta from original dataset
 - Type dDocent on the command line of your working directory
