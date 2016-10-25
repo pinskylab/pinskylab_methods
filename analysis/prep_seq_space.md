@@ -1,8 +1,10 @@
 
 1. Create a directory for the files (mkdir), use the naming scheme type_of_sequencer_year_month_day_SEQ##: hiseq_2014_08_07_SEQ04
     - EXAMPLE: 
+    
     `mkdir /local/shared/pinsky_lab/sequencing/hiseq_2015_07_08_SEQ09`
 2. Enter the newly made directory
+    
     `cd hiseq_2015_07_08_SEQ09`
 3. Retrieve files from the sequencer
     - UPDATED 10-25-2016 Princeton now emails a link to the data (you must sign in with credentials)
@@ -15,14 +17,18 @@
     vii. In amphiprion, in the directory you made in the previous step, paste the link
     - Repeat for all lanes
     - Count raw reads (optional)
+    
     `zcat clownfish-ddradseq-seq08-for-231-cycles-h3mgvbcxx_1_read_1_passed_filter.fastq.gz | wc -l | awk '{print$1/4}'`
     - If you like you can count the number of reads that begin with your barcodes
+    
     `zcat clownfish-ddradseq-seq08-for-231-cycles-h3mgvbcxx_1_read_1_passed_filter.fastq.gz | awk ‘^ACGTTT' | wc -l`
     - alternative command line
-        `zcat XXXXX.fastq.gz | grep -c "^AAACGA"`
+    
+    `zcat XXXXX.fastq.gz | grep -c "^AAACGA"`
 4. Update where files are saved on amphiprion in the sequencing table of the sql database
 5. Make a working directory 
     - make separate pool directories to keep the process radtags output separate
+    
     `mkdir /local/home/michelles/02-apcl-ddocent/09seq`
     
     
