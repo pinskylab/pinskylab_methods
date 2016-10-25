@@ -37,7 +37,7 @@
     
     `mkdir lane1 lane2`
 6. In your logs directory, create an index file, using nano, that is the Pool name tab separated from the index used on that pool.  The easiest way to do this is copy and paste from google sheets into a nano document
-- In the sample_data file, on the Names tab, type the pool numbers into the Pool ID column in the format below.  The spreadsheet will look up the proper indexes for you.  Then copy and paste into a blank nano document, save as index-seq##
+    - In the sample_data file, on the Names tab, type the pool numbers into the Pool ID column in the format below.  The spreadsheet will look up the proper indexes for you.  Then copy and paste into a blank nano document, save as index-seq##
     - EXAMPLE:
     
     
@@ -53,3 +53,5 @@
     P015    TAGCTT
 7. Create a names file with the sample name tab separated from the barcode assigned to that sample.  The easiest way to make a names file is to copy and paste from google sheets. Copy the ligation ID’s from the pool and paste them into the names tab, copy and paste the result into a nano document in the logs directory.
 8. Create a barcodes file in your logs directory: from the sample_data file, highlight the barcodes column only on the barcodes sheet and paste into nano, do not hit enter after the final barcode, save as “barcodes”.
+
+[Return to analysis protocol](./hiseq_ddocent.md)
