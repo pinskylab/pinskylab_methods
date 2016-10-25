@@ -14,11 +14,15 @@ These options are followed by the location and name of lane # read 1, a space an
 
 Run barcode splitter on 1st lane with nohup  - notice the only difference between the filenames is at the very end.
 
-`nohup barcode_splitter.py --bcfile ../../logs/03seq-index --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2014_08_07_SEQ03/clownfish-ddradseq-seq03-for-222-cycles-ha1wgadxx_1_read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2014_08_07_SEQ03/clownfish-ddradseq-seq03-for-222-cycles-ha1wgadxx_1_read_2_index_read_passed_filter.fastq.gz &`
+`nohup ~/14_programs/paired_sequence_utils/barcode_splitter.py --bcfile ../../logs/index-seq17.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2016_10_25_SEQ17/SEQ17-ddRAD-APCL-DNA-for-158-cycles-H37YFBCXY_1_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2016_10_25_SEQ17/SEQ17-ddRAD-APCL-DNA-for-158-cycles-H37YFBCXY_1_Read_2_Index_Read_passed_filter.fastq.gz &`
+
+    - note[1] 37325 - job number for 10/25/2016
 
 Run barcode splitter on 2nd lane with nohup
 
-`nohup barcode_splitter.py --bcfile ../../logs/03seq-index --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2014_08_07_SEQ03/clownfish-ddradseq-seq03-for-222-cycles-ha1wgadxx_2_read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2014_08_07_SEQ03/clownfish-ddradseq-seq03-for-222-cycles-ha1wgadxx_2_read_2_index_read_passed_filter.fastq.gz`
+`nohup ~/14_programs/paired_sequence_utils/barcode_splitter.py --bcfile ../../logs/index-seq17.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2016_10_25_SEQ17/SEQ17-ddRAD-APCL-DNA-for-158-cycles-H37YFBCXY_2_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2016_10_25_SEQ17/SEQ17-ddRAD-APCL-DNA-for-158-cycles-H37YFBCXY_2_Read_2_Index_Read_passed_filter.fastq.gz &`
+
+    - [2] 37341 - job number for 10/25/2016
 
 The nohup.out should be saved as a .tsv in the logs directory and can be used to gather useful information about the number of reads that were assigned to each pool.
 
