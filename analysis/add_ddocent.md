@@ -1,4 +1,4 @@
-Based on the previous steps taken, at this point there should be a working directory called "samples" that contains all of the renamed output of process_radtags.
+Based on the previous steps taken, at this point there should be a working directory called "samples" that contains all of the renamed output of process_radtags in the format of APCL_L3041.fq.gz.
 
 1. Copy in reference.fasta from original dataset
 
