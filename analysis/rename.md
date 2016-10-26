@@ -1,11 +1,12 @@
-In order to make the popmap,  dDocent looks for the "_" in a name and everything before that is the pop name.
+In order to make the popmap,  dDocent looks for the "\_" in a name and everything before that is the pop name. The code used is:
 
-the code used is:
-cut -f1 -d “1" namelist > p
-paste namelist p > popmap
-rm p
+`cut -f1 -d “1" namelist > p`
 
-where it takes everything before “_” and places it in p.
+`paste namelist p > popmap`
+
+`rm p`
+
+where it takes everything before “\_” and places it in p.
 
 dDocent requires that the name follow the format of Population_sample info, so the naming scheme of L4532 has to be converted to APCL_L4532 as an example for the clownfish project.  When creating the names file, make sure to account for this.
 
