@@ -10,7 +10,7 @@ where it takes everything before “\_” and places it in p.
 
 dDocent requires that the name follow the format of Population_sample info, so the naming scheme of L4532 has to be converted to APCL_L4532 as an example for the clownfish project.  When creating the names file, make sure to account for this.
 
-Rename the files using the names file in the logs directory - the names file is the sample name tab separated from the barcode assigned to that sample.  
+Rename the files using the names file in the logs directory - the names file is the sample name tab separated from the barcode assigned to that sample. This command line must be run from within the **Pool directory** containing the sample files.
 
 `sh rename.for.dDocent_se_gz ../logs/names_12`
 
