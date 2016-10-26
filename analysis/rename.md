@@ -22,12 +22,16 @@ Move the named samples into the samples directory
 
 Here is an example of 4 pools being renamed, moved and the pool directories and bcsplit directories deleted:
 
-michelles 2016-06-23 06:23:03 Pool1 $ sh rename.for.dDocent_se_gz ../logs/names_61
-michelles 2016-06-23 06:24:45 Pool1 $ mv A* ../samples/
-michelles 2016-06-23 06:24:53 Pool1 $ mv process_radtags.log ../logs/process61.log
-michelles 2016-06-23 06:26:01 Pool1 $ cd ..
-michelles 2016-06-23 06:26:08 15seq $ rm -r Pool1
+`sh rename.for.dDocent_se_gz ../logs/names_61`
 
-michelles 2015-08-18 10:14:48 08-seq08 $ rm -r bcsplit/
+`mv A* ../samples/`
+
+`mv process_radtags.log ../logs/process61.log`
+
+`cd ..`
+
+`rm -r Pool1`
+
+`rm -r bcsplit/`
 
 [Return to analysis protocol](./hiseq_ddocent.md)
