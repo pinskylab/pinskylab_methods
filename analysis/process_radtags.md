@@ -22,11 +22,11 @@ Nano the script to adjust for pool name and whether or not you are going to use 
 
 \#!/bin/bash
 
-process_radtags -b ./logs/barcodes -c -q --renz_1 pstI --renz_2 mluCI \
+process_radtags -b ../logs/barcodes_48 -c -q --renz_1 pstI --renz_2 mluCI \
 
 -i gzfastq --adapter_1 ACACTCTTTCCCTACACGACGCTCTTCCGATCT \
 
--f ./Pool1/P069.fastq.gz -o ./Pool1/
+-f ./P069.fastq.gz -o ./
 
 mv process_radtags.log ../logs/69process.log
 
