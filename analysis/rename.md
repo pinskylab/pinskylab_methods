@@ -26,8 +26,6 @@ Here is an example of 4 pools being renamed, moved and the pool directories and 
 
 `mv A* ../samples/`
 
-`mv process_radtags.log ../logs/process61.log`
-
 `cd ..`
 
 `rm -r Pool1`
