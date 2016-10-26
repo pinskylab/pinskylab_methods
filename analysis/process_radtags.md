@@ -1,24 +1,44 @@
-Run [process radtags script](https://github.com/stuartmichelle/Genetics/blob/master/code/processr.sh) on each pool in its own directory.  This script calls up the process_radtags program from stacks but ensures that all of the options specific to our project are used consistently.  All of the options available in process_radtags are listed below. Jon doesn’t use -c or -q for his dDocent runs.
+Move the Pools into separate directories
 
-Nano the script to adjust for pool name and whether or not you are going to use the -r option (rescue barcodes), ctrl \ will search and replace
+`mv P069.fastq.gz ../Pool1/`
 
-`nano ../scripts/processr.sh`
+`mv P070.fastq.gz ../Pool2/`
+
+`mv P071.fastq.gz ../Pool3/`
+
+`mv P072.fastq.gz ../Pool4/`
+
+Copy the [process radtags script](https://github.com/stuartmichelle/Genetics/blob/master/code/processr.sh) and the [readprocess.py script] into the scripts directory.
+
+`cp ../16seq/scripts/68process.sh ./scripts/`
+`cp ../16seq/scripts/readprocesslog.py ./scripts/`
+
+Run the processr.sh script on each pool in its own directory. This script calls up the process_radtags program from stacks but ensures that all of the options specific to our project are used consistently.  All of the options available in process_radtags are listed below. Jon doesn’t use -c or -q for his dDocent runs.
+
+Nano the script to adjust for pool name and whether or not you are going to use the -r option (rescue barcodes); ctrl \ will search and replace
+
+`nano ../scripts/68process.sh`
 
 \#!/bin/bash
 
-process_radtags -b ../logs/barcodes -c -q -r --renz_1 pstI --renz_2 mluCI
+process_radtags -b ./logs/barcodes -c -q --renz_1 pstI --renz_2 mluCI \
 
 -i gzfastq --adapter_1 ACACTCTTTCCCTACACGACGCTCTTCCGATCT \
 
--f ../bcsplit/P012.fastq.gz -o ./
+-f ./Pool1/P069.fastq.gz -o ./Pool1/
 
-mv process_radtags.log ../logs/12processr.log
+mv process_radtags.log ../logs/69process.log
 
-`nohup ../scripts/12processr.sh`
+`chmod u+x ../scripts/69process.sh`
+
+`nohup ../scripts/69process.sh`
 
 The nohup.out file does not contain any information that is not in the process_radtags.log and can be deleted.
 
-Output log of process radtags provides the number of reads per barcode.  Process radtags also produces files that appear as “sample_AATCGA.fq.gz” where AATCGA is the barcode.
+Output log of process radtags provides the number of reads per barcode.
+
+
+Process radtags also produces files that appear as “sample_AATCGA.fq.gz” where AATCGA is the barcode.
 
 [Return to analysis protocol](./hiseq_ddocent.md)
 
