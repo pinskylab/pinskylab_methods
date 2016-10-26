@@ -36,7 +36,7 @@ mv process_radtags.log ../logs/69process.log
 
 The nohup.out file does not contain any information that is not in the process_radtags.log and can be deleted.
 
-Output log of process radtags provides the number of reads per barcode.  Convert all of the process.out files into tsvs using the readprocesslog.py script.  Download the tsvs and use the R script to analyze the number of reads and add it to the running total.
+Output log of process radtags provides the number of reads per barcode.  Convert all of the process.out files into tsvs using the readprocesslog.py script.  Download the tsvs and use the R script [process_read_data.R](https://github.com/stuartmichelle/Genetics/blob/master/code/process_read_data.R) to analyze the number of reads and add it to the running total.
 
 
 Process radtags also produces files that appear as “sample_AATCGA.fq.gz” where AATCGA is the barcode.
