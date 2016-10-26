@@ -11,6 +11,7 @@ Move the Pools into separate directories
 Copy the [process radtags script](https://github.com/stuartmichelle/Genetics/blob/master/code/processr.sh) and the [readprocess.py script] into the scripts directory.
 
 `cp ../16seq/scripts/68process.sh ./scripts/`
+
 `cp ../16seq/scripts/readprocesslog.py ./scripts/`
 
 Run the processr.sh script on each pool in its own directory. This script calls up the process_radtags program from stacks but ensures that all of the options specific to our project are used consistently.  All of the options available in process_radtags are listed below. Jon doesn’t use -c or -q for his dDocent runs.
