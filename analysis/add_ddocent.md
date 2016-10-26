@@ -46,7 +46,33 @@ When dDocent has finished, change directories to the main analysis folder which 
 
 4. Symlink the *.F.fq.gz, *.R1.fq.gz, *-RG.bam, and *-RG.bam.bai files to the main analysis folder from the final destination APCL_analysis/17_03seq - **Symlinking must be done from within the destination directory**
 
+`mkdir 17-03seq`
+
 `ln -s ../../17seq/samples/APCL* ./`
+
+`ln -s ../../16seq/samples/APCL* ./`
+
+`ln -s ../../15seq/samples/APCL* ./`
+
+`ln -s ../../13seq/samples/APCL* ./`
+ 
+`ln -s ../../12seq/samples/APCL* ./`
+
+`ln -s ../../09seq/samples/APCL* ./`
+
+`ln -s ../../08seq/samples/APCL* ./`
+
+`ln -s ../../07seq/samples/APCL* ./`
+
+`ln -s ../../05seq/samples/APCL* ./`
+
+`ln -s ../../04seq/samples/APCL* ./`
+
+`ln -s ../../03seq/samples/APCL* ./`
+
+4. Copy in the reference.fasta file
+
+`cp ../../17seq/samples/reference.fasta ./`
 
 5. In the main analysis folder where there are symlinks to all of the files for all of the individuals in your analysis type:
 
