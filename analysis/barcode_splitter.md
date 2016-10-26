@@ -26,9 +26,19 @@ Run barcode splitter on 2nd lane with nohup
 
 The nohup.out should be saved as a .tsv in the logs directory and can be used to gather useful information about the number of reads that were assigned to each pool.
 
-The output of barcode splitter is a log file, the names of all of the pools split into read-1 and read-2 fastq.gz files and unnamed reads that the program was unable to assign to an index.  Read-2 and unnamed read files can be deleted.
+`mv nohup.out ../../logs/bcsplit1.tsv`
+
+`cd ../lane2`
+
+`mv nohup.out ../../logs/bcsplit2.tsv`
+
+The output of barcode splitter consists a log file, the names of all of the pools split into read-1 and read-2 fastq.gz files and unnamed reads that the program was unable to assign to an index.  Read-2 and unnamed read files can be deleted.
 
 Cat the 2 lanes into one file for process radtags
-`cat ./lane2/P012-read-1.fastq.gz ./lane1/P012-read-1.fastq.gz > P012.fastq.gz`
+
+`cat ./lane2/Pool069-read-1.fastq.gz ./lane1/Pool069-read-1.fastq.gz > P069.fastq.gz`
+`cat ./lane2/Pool070-read-1.fastq.gz ./lane1/Pool070-read-1.fastq.gz > P070.fastq.gz`
+`cat ./lane2/Pool071-read-1.fastq.gz ./lane1/Pool071-read-1.fastq.gz > P071.fastq.gz`
+`cat ./lane2/Pool072-read-1.fastq.gz ./lane1/Pool072-read-1.fastq.gz > P072.fastq.gz`
 
 [Return to analysis protocol](./hiseq_ddocent.md)
