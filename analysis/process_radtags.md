@@ -8,7 +8,7 @@ Move the Pools into separate directories
 
 `mv P072.fastq.gz ../Pool4/`
 
-Copy the [process radtags script](https://github.com/stuartmichelle/Genetics/blob/master/code/processr.sh) and the [readprocess.py script] into the scripts directory.
+Copy the [process radtags script](https://github.com/stuartmichelle/Genetics/blob/master/code/processr.sh) and the [readprocess.py script](https://github.com/stuartmichelle/Genetics/blob/master/code/readprocesslog.py) into the scripts directory.
 
 `cp ../16seq/scripts/68process.sh ./scripts/`
 
@@ -36,7 +36,7 @@ mv process_radtags.log ../logs/69process.log
 
 The nohup.out file does not contain any information that is not in the process_radtags.log and can be deleted.
 
-Output log of process radtags provides the number of reads per barcode.
+Output log of process radtags provides the number of reads per barcode.  Convert all of the process.out files into tsvs using the readprocesslog.py script.  Download the tsvs and use the R script to analyze the number of reads and add it to the running total.
 
 
 Process radtags also produces files that appear as “sample_AATCGA.fq.gz” where AATCGA is the barcode.
