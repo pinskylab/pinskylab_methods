@@ -5,10 +5,9 @@
     - Oligo - will download as excel - rename to include date (Oligo-2014-12-04.xlsx) 
     - Plate_Maps - will download as excel - rename to include date (Plate_Maps-2014-12-04.xlsx) - In the process of moving to individual files on github
     - the entire folder Pinsky Lab Orders -  will zip folder
-    - ~~the entire folder Protocols - will zip folder~~ - now Protocols are maintained in Evernote - Protocols are moving to GitHub
 - In Fetch, click on the Path button and select local
 - Double click shared, double click pinsky_lab, double click GDbackups
 - Click the New folder button and name it with today’s date (YYYY_MM_DD)
 - Double click on the new folder to open it
-- Drag the downloaded files above into the folder - make sure you get all ~~five~~ four files
+- Drag the downloaded files above into the folder - make sure you get all four files
 - Quit Fetch
