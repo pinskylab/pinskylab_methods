@@ -42,9 +42,9 @@ Based on the previous steps taken, at this point there should be a working direc
 
             - your.email@rutgers.edu
 
-When dDocent has finished, change directories to the main analysis folder which contains all of the symlinks for all of the seq files in the project and call SNPS:
+3. When dDocent has finished, change directories to the main analysis folder which contains all of the symlinks for all of the seq files in the project and call SNPS:
 
-3. Symlink the *.F.fq.gz, *.R1.fq.gz, *-RG.bam, and *-RG.bam.bai files to the main analysis folder from the final destination APCL_analysis/17_03seq - **Symlinking must be done from within the destination directory**
+    Symlink the *.F.fq.gz, *.R1.fq.gz, *-RG.bam, and *-RG.bam.bai files to the main analysis folder from the final destination APCL_analysis/17_03seq - **Symlinking must be done from within the destination directory**
 
     `mkdir 17-03seq`
 
