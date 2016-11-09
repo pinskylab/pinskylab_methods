@@ -70,9 +70,6 @@ When dDocent has finished, change directories to the main analysis folder which 
 
 `ln -s ../../03seq/samples/APCL* ./`
 
-4. Copy in the reference.fasta file
-
-`cp ../../17seq/samples/reference.fasta ./`
 
 5. Run the script [call_SNPs.sh](https://github.com/stuartmichelle/Genetics/blob/master/code/call_SNPs.sh) which calls freebayes from the command line instead of using dDocent.  Currently, dDocent is creeping up in memory usage as it goes through the files until the system crashes after 8 days.  This alternate script only uses 4G of memory and finishes in about 2 days.
 
