@@ -74,41 +74,8 @@ When dDocent has finished, change directories to the main analysis folder which 
 
 `cp ../../17seq/samples/reference.fasta ./`
 
-5. In the main analysis folder where there are symlinks to all of the files for all of the individuals in your analysis type:
+5. Run the script [call_SNPs.sh] which calls freebayes from the command line instead of using dDocent.  Currently, dDocent is creeping up in memory usage as it goes through the files until the system crashes after 8 days.  This alternate script only uses 4G of memory and finishes in about 2 days.
 
-`dDocent`
-
-You will be asked a series of questions.
-    
-    - ## individuals are detected. Is this correct? Enter yes or no and press [ENTER]
-    
-    - Please enter the maximum number of processors to use for this analysis.
-
-        - We have 40 total processors on amphiprion.   Be kind to others who may want to use amphiprion and only use 20 unless you know for sure you are the only one currently using the machine, but never use more than 35.
-    
-    - Please enter the maximum memory to use for this analysis.
-
-        - Enter 0.
-    
-    - Do you want to quality trim your reads?
-
-        - No
-    
-    - Do you want to perform an assembly?
-
-        - No
-    
-    - Do you want to map reads?
-
-        - No
-    
-    - Calling_SNPs?
-
-        - Yes
-    
-    - Email
-
-        - your.email@rutgers.edu
         
 [Return to analysis protocol](./hiseq_ddocent.md)
 
