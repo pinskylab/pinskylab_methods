@@ -1,22 +1,63 @@
-- In Windows,
-- Log in to windows using the larva password
-- Start Cervus
-- Click on Tools>Convert Genotype File>Genepop to Cervus
+In Windows,
+
+1. Log in to windows
+
+2. Import the genepop file onto the machine and place it in a folder named appropriately for the project
+
+3. Start Cervus
+
+3. Click on Tools > Convert Genotype File>Genepop to Cervus (takes seconds)
 
     - 2 digit format
+    
     - do not use first ID as population name
+    
+    - "Converted 1816 individuals in one population at 1038 loci"
 
-        - "Converted 192 individuals in one population at 1132 loci"
-- Click on Analysis>Allele Frequency Analysis
+4. Click on Analysis > Allele Frequency Analysis (takes seconds)
 
     - Choose the cervus file just created by conversion
+    
     - top two options stay checked (header row, read locus names)
+    
     - ID in column 2
+    
     - First allele in column 3
+    
     - Number of loci listed in the conversion step
+    
     - Save as input_file_name_AF
+    
+    - Do not do Hardy Weinberg
+    
+    - Do not estimate null allele frequency
+    
     - OK
-- Now run a simulation of parentage analysis
+
+5.  Run Identity Analysis to find recaptured fish - Click on Analysis > Identity Analysis - takes 30 seconds
+
+    - Genotype file and allele frequency info will be automatically populated, should match what you’ve done for those steps.
+    
+    - Header should be checked
+    
+    - ID in column 2
+    
+    - First allele in column 3
+    
+    - Do not test sexes separately
+    
+    - Save summary output file using the same naming scheme
+    
+    - Minimum number of matching loci 80% of the total loci - 830
+    
+    - Allow fuzzy matching with 10% of the total loci - 103
+    
+    - Do not show all comparisons
+    
+6. Use the identity analysis to curate the genepop file and remove recaptured fish before running parentage.
+    
+    
+Now run a simulation of parentage analysis
 
     - Click on analysis>simulation of parentage analysis>sexes of pair unknown
     - 20k offspring
@@ -68,12 +109,5 @@
         - added columns for lat and long for the offspring and parent candidates
         - used the formula =index(Samples!B:B, MATCH(B55,Samples!A:A,0)) to find lat and longs for the sample ids
         - add anemone numbers
-- run identity and eliminate individuals that have 2 APCL ID’s in the parent/offspring files (???) - this is from the note 2015-05-14 Thursday
 
-    - Click on Analysis -> Identity Analysis
-
-        - Gene pop file and allele frequency info will be automatically populated, should match what you’ve done for those steps
-        - Save as input_filename_ID
-        - Minimum number of matching loci 80% of the total loci
-        - Allow fuzzy matching with 10% of the total loci
 - filter by ID and count the number of offspring a fish has
