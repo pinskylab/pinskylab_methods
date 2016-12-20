@@ -75,7 +75,7 @@ Now run a simulation of parentage analysis
     - Liklihood tab:
 
         - use mistyping rate as error rate in calculations
-- Create parent and offspring files: To make an adult/juvenile file
+- Create parent and offspring files: [To make an adult/juvenile file](https://github.com/mpinsky/pinskylab_methods/blob/master/analysis/parentjuv.md)
 - Run parentage analysis in Cervus - make sure the csv’s have unix line endings in komodo (if only 1 offspring runs, this is the problem).
 
     - Select Parent Pair - Sexes Unknown
