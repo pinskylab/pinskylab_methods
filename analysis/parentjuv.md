@@ -1,0 +1,2 @@
+updated 4/29/2016 MRS
+Adults are any fish that are >7.0 cm OR have a tail color of YP, YE, YPO, OP, or OR.  Fish that meet these criteria have been marked in the sample data (although the samples page should be filtered and checked to make sure) and so an adult file can be created by copying the id’s of every fish marked with an A and the juvenile file can be filtering for blank in the age column.
