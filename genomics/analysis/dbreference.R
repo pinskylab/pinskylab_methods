@@ -6,7 +6,11 @@
 suppressMessages(library(dplyr))
 labor <- src_mysql(dbname = "Laboratory", host = "amphiprion.deenr.rutgers.edu", user = "your_user_name", password = "your_password", port = 3306, create = F)
 
-# Add sample IDs to ligation numbers
+# the above method for connecting to the database is not a secure way to share code.  Instead you should make a configuration file and refer to that configuration file in your code:
+leyte <- src_mysql(dbname = "Leyte", default.file = path.expand("~/myconfig.cnf"), port = 3306, create = F, host = NULL, user = NULL, password = NULL)
+
+
+# Add sample IDs to ligation numbers or use the function sampfromlig.R stored here: https://github.com/stuartmichelle/Genetics/tree/master/code
 c1 <- labor %>% tbl("extraction") %>% select(extraction_ID, sample_ID) # creates a connection to all extract and sample IDs in extraction table
 c2 <- labor %>% tbl("digest") %>% select(digest_ID, extraction_ID) # creates a connection to all extract and digest IDs in digest table
 c3 <- left_join(c2, c1, by = "extraction_ID") # links the extraction and digest table by extraction ID
