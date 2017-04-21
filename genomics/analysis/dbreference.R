@@ -9,6 +9,13 @@ labor <- src_mysql(dbname = "Laboratory", host = "amphiprion.deenr.rutgers.edu",
 # the above method for connecting to the database is not a secure way to share code.  Instead you should make a configuration file and refer to that configuration file in your code:
 leyte <- src_mysql(dbname = "Leyte", default.file = path.expand("~/myconfig.cnf"), port = 3306, create = F, host = NULL, user = NULL, password = NULL)
 
+# the config file should follow the format below and is recommended to be stored at the highest level on your machine (~):
+
+# Config file to connect to the remote DB
+ [client]
+ user=your_sql_user_name
+ password=your_sql_password
+ host=amphiprion.deenr.rutgers.edu
 
 # Add sample IDs to ligation numbers or use the function sampfromlig.R stored here: https://github.com/stuartmichelle/Genetics/tree/master/code
 c1 <- labor %>% tbl("extraction") %>% select(extraction_ID, sample_ID) # creates a connection to all extract and sample IDs in extraction table
