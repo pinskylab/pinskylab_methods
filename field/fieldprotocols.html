@@ -122,24 +122,14 @@ $(document).ready(function () {
 
 </div>
 
-<div id="TOC">
-<ul>
-<li><a href="#mayoral-visits-and-university-president-courtesy-call">Mayoral Visits and University President Courtesy call</a></li>
-<li><a href="#standard-dive-gear">Standard dive gear</a></li>
-<li><a href="#hobo-retrieval-and-replacement">HOBO retrieval and replacement</a></li>
-<li><a href="#drifter">Drifter</a></li>
-<li><a href="#clownfish-surveys">Clownfish surveys</a></li>
-<li><a href="#evening-data-processing">Evening data processing</a></li>
-</ul>
-</div>
 
-<div id="mayoral-visits-and-university-president-courtesy-call" class="section level3">
-<h3>Mayoral Visits and University President Courtesy call</h3>
+<div id="mayoral-visits-and-university-president-courtesy-call" class="section level4">
+<h4>Mayoral Visits and University President Courtesy call</h4>
 <p>The first full day in Leyte, visit the Mayors offices of Albuera and Baybay. If the PIC forms still need to be signed, bring those along. Also take a photo of researcher with the office staff to document the visit.</p>
 <p>Email the university president before departing the US to arrange a courtesy call for the same day.</p>
 </div>
-<div id="standard-dive-gear" class="section level2">
-<h2>Standard dive gear</h2>
+<div id="standard-dive-gear" class="section level4">
+<h4>Standard dive gear</h4>
 <p>For each diver pack:</p>
 <ul>
 <li>Wetsuit/diveskin</li>
@@ -151,8 +141,8 @@ $(document).ready(function () {
 <li>1 tank per planned dive</li>
 </ul>
 </div>
-<div id="hobo-retrieval-and-replacement" class="section level2">
-<h2>HOBO retrieval and replacement</h2>
+<div id="hobo-retrieval-and-replacement" class="section level4">
+<h4>HOBO retrieval and replacement</h4>
 <p>As a first dive of the season, replace the HOBO temperature data loggers at Visca. This is a nice way to check out gear close to the marine lab and do a test dive to make sure everything is working as expected.</p>
 <p>Before the dive,</p>
 <ul>
@@ -176,14 +166,14 @@ $(document).ready(function () {
 <p>Turn of the old HOBOS by clicking “read out device”. Save the files.</p>
 <p>Clean the old hobos by running under water and scrubbing with a test tube brush. If they resist, let them dry out for a month or a year and try again.</p>
 </div>
-<div id="drifter" class="section level2">
-<h2>Drifter</h2>
+<div id="drifters" class="section level4">
+<h4>Drifters</h4>
 <p>Plot the deployment locations on the GPS. In 2017 they were north, south, west, west center, center and east.</p>
 <p>Unscrew cap to start microstar transmission, screw on drogue cap and open drogue until it clicks.</p>
 <p>Navigate boat to deployment locataions and drop in the drifters.</p>
 </div>
-<div id="clownfish-surveys" class="section level2">
-<h2>Clownfish surveys</h2>
+<div id="clownfish-surveys" class="section level4">
+<h4>Clownfish surveys</h4>
 <p>Team backs off until anemone surveyor has a chance to observe.</p>
 <p>Anemone surveyor:</p>
 <ol style="list-style-type: decimal">
@@ -218,8 +208,8 @@ $(document).ready(function () {
 <li>Move on to next holding vessel.</li>
 </ol>
 </div>
-<div id="evening-data-processing" class="section level2">
-<h2>Evening data processing</h2>
+<div id="evening-data-processing" class="section level4">
+<h4>Evening data processing</h4>
 <ol style="list-style-type: decimal">
 <li><p>Using forceps or a ziptie to hold the fin clip and tag in place, dump the seawater out of the vial. Using a squeeze bottle, fill the vial with ethanol (100%) and place in a cardboard sample box.</p></li>
 <li><p>Dunk the ziploc baggies containing GPS units under fresh water, then towel off to dry. If there is a lot of sea water inside the ziploc, remove the inner aquapac and also dunk that in fresh water, or else towel dry the aquapac and remove the GPS. Turn the ziplock inside out to dry the interior.</p></li>
@@ -229,6 +219,11 @@ $(document).ready(function () {
 <li><p>Save the day’s track on the GPS, then plug it into the computer and transfer the track to the folder corresponding to the GPS unit. Repeat for each GPS unit. Remove the batteries and plug them into the charger; begin charging. Place the rear-doors of the GPS units inside the aquapac bags to prop them open to dry them out.</p></li>
 <li><p>Plug the pit scanner into its charging cord, start windows on the virtual box, plug in the USB for the pit scanner, select Prolific from the USB options on the virtual box, open the bioterm software, open a connection, turn on text capture, hit shift-G to begin downloading scanned tags. Tags will save to the Bioterm.txt file on the desktop. Drag the Bioterm.txt into the network connection to transfer from windows to the mac. Plug the scanner charger in to begin charging.</p></li>
 <li><p>Make sure the data connection for the camera is completely dry. Plug the camera into the wall and choose external power from the menu. Turn on the wifi and transfer all new photos to the iphone app. Turn off the camera, turn it back on and select charge from the menu.</p></li>
+<li><p>Enter datasheets into the excel spreadsheet. Saving as csv might make using with git easier but that still hasn’t been decided.</p></li>
+<li><p>In RStudio, run 01checkxl.Rmd - checks for type-os in the excel spreadsheet.</p></li>
+<li><p>Run 02trimgpx.Rmd - creates new track.gpx files that begin and end with survey times. Import the trimmed tracks into QGIS as vector layers. Save the tracks as shapefiles to be concatenated into one file at the end of the season.</p></li>
+<li><p>Run 03anemstoqgis.Rmd - creates a csv/QGIS map layer containing the locations of anemones. Import into QGIS as a delimited layer.</p></li>
+<li><p>Run 04divesummary.Rmd - creates a table of fish totals for each dive and site.</p></li>
 </ol>
 </div>
 

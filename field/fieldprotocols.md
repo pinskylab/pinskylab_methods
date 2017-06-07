@@ -4,13 +4,13 @@ Michelle Stuart
 
 
 
-### Mayoral Visits and University President Courtesy call
+#### Mayoral Visits and University President Courtesy call
 
 The first full day in Leyte, visit the Mayors offices of Albuera and Baybay.  If the PIC forms still need to be signed, bring those along.  Also take a photo of researcher with the office staff to document the visit.  
 
 Email the university president before departing the US to arrange a courtesy call for the same day.
 
-## Standard dive gear
+#### Standard dive gear
 For each diver pack:
 
 * Wetsuit/diveskin
@@ -21,7 +21,7 @@ For each diver pack:
 + Weights (these can be left on the boat)
 + 1 tank per planned dive
 
-## HOBO retrieval and replacement
+#### HOBO retrieval and replacement
 
 As a first dive of the season, replace the HOBO temperature data loggers at Visca.  This is a nice way to check out gear close to the marine lab and do a test dive to make sure everything is working as expected.
 
@@ -50,14 +50,14 @@ Turn of the old HOBOS by clicking “read out device”.  Save the files.
 
 Clean the old hobos by running under water and scrubbing with a test tube brush.  If they resist, let them dry out for a month or a year and try again. 
 
-## Drifter 
+#### Drifters
 Plot the deployment locations on the GPS.  In 2017 they were north, south, west, west center, center and east.
 
 Unscrew cap to start microstar transmission, screw on drogue cap and open drogue until it clicks.
 
 Navigate boat to deployment locataions and drop in the drifters.
 
-## Clownfish surveys
+#### Clownfish surveys
 Team backs off until anemone surveyor has a chance to observe.
 
 Anemone surveyor:
@@ -89,7 +89,7 @@ once the fish catcher has moved to the next anemone, begins processing fish in t
 5. Repeat until all fish in the vessel have been processed.
 6. Move on to next holding vessel.
 
-## Evening data processing
+#### Evening data processing
 
 1. Using forceps or a ziptie to hold the fin clip and tag in place, dump the seawater out of the vial.  Using a squeeze bottle, fill the vial with ethanol (100%) and place in a cardboard sample box.
 
@@ -107,5 +107,12 @@ once the fish catcher has moved to the next anemone, begins processing fish in t
 
 7. Make sure the data connection for the camera is completely dry.  Plug the camera into the wall and choose external power from the menu. Turn on the wifi and transfer all new photos to the iphone app. Turn off the camera, turn it back on and select charge from the menu.
 
+8. Enter datasheets into the excel spreadsheet.  Saving as csv might make using with git easier but that still hasn't been decided.
 
+9. In RStudio, run 01checkxl.Rmd - checks for type-os in the excel spreadsheet.
 
+10. Run 02trimgpx.Rmd - creates new track.gpx files that begin and end with survey times.  Import the trimmed tracks into QGIS as vector layers.  Save the tracks as shapefiles to be concatenated into one file at the end of the season.
+
+11. Run 03anemstoqgis.Rmd - creates a csv/QGIS map layer containing the locations of anemones.  Import into QGIS as a delimited layer.
+
+12. Run 04divesummary.Rmd - creates a table of fish totals for each dive and site.
