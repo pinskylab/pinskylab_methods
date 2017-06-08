@@ -9,7 +9,7 @@ output: github_document
 knitr::opts_chunk$set(error = TRUE)
 library(tidyverse)
 library(stringr)
-excel_file <- ("data/GPSSurveys2017.xlsx")
+excel_file <- ("GPSSurveys2017.xlsx")
 problem <- data.frame()
 ```
 Import the diveinfo sheet to be checked
