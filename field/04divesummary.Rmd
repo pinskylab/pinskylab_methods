@@ -2,13 +2,17 @@
 title: "Summarize fish for each site and dive"
 author: "Michelle Stuart"
 date: "6/7/2017"
-output: github_document
+output:
+  html_document: default
+  keep_md: yes
+  html_notebook: default
+  
 ---
 ### This is a script to determine for each dive the number of fish captured, sampled and recatpured and the same numbers at each site, also the number of dives per site.
 ```{r setup}
 library(tidyverse)
 library(stringr)
-excel_file <- ("data/GPSSurveys2017.xlsx")
+excel_file <- ("GPSSurveys2017.xlsx")
 ```
 
 #### fish observation info from anem survey

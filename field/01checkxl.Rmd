@@ -2,7 +2,10 @@
 title: "Check GPSSurveys2017.xls for type-os"
 author: "Michelle Stuart"
 date: "6/7/2017"
-output: github_document
+output:
+  html_document:
+    keep_md: yes
+  html_notebook: default
 ---
 
 ```{r setup, include = FALSE, cache = FALSE}
@@ -116,7 +119,7 @@ problem
 
 Import tags from scanner
 ```{r}
-infile <- "../data/BioTerm.txt" 
+infile <- "BioTerm.txt" 
 pit <- read_csv(infile, 
   col_names = c("city", "tagid", "date", "time"), 
   col_types = cols(
@@ -145,6 +148,7 @@ clown <- clown %>%
   mutate(tagid = stringr::str_replace(tagid, "982_", "982000411"))
 
 tagids <- clown %>% select(contains("tag")) %>% filter(!is.na(tagid))
+tagids <- distinct(tagids)
 ```
 
 What tags are in excel that were not scanned by the scanner (type-os) - should return 0 rows

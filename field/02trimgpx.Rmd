@@ -15,7 +15,7 @@ source("writeGPXGarmin.R")
   
 Get the dive info from the excel spreadsheet
 ```{r}
-excel_file <- ("data/GPSSurveys2017.xlsx")
+excel_file <- ("GPSSurveys2017.xlsx")
 surv <- readxl::read_excel(excel_file, sheet = "diveinfo", col_names=TRUE)
 names(surv) <- stringr::str_to_lower(names(surv))
 ```
@@ -56,11 +56,11 @@ surv$pausend <- with_tz(surv$pausend, tzone = "UTC")
 ```
 Read in each GPX file, find the survey that matches, and trim the file to fit the survey, write an output file in gpx format.  **TODO: This is taking a very long time to run.**  Need to find a better way to do this. **TODO: This is producing an NA file, figure out why**
 ```{r}
-folders  <-  list.files(path = "data", pattern ="gps") # move any empty folders out of the data folder
+folders  <-  list.files(path = "./", pattern ="gps") # move any empty folders out of the data folder
 for (l in 1:length(folders)){
-  files <- list.files(path = paste("data/",folders[l], sep = ""), pattern = "*Track*")
+  files <- list.files(path = paste("./",folders[l], sep = ""), pattern = "*Track*")
   for(i in 1:length(files)){ # for each file
-	infile <- readGPXGarmin(paste("data/", folders[l], "/", files[i], sep="")) 
+	infile <- readGPXGarmin(paste("./", folders[l], "/", files[i], sep="")) 
 	header <- infile$header
 	data <- infile$data
 	data$time <- ymd_hms(data$time)
@@ -105,7 +105,7 @@ for (l in 1:length(folders)){
 				outfile <- k
 			
 				
-				writeGPX(filename = str_c("data/gpx_trimmed/GPS", outfile$unit[1], "_", inds$divenum[j], "_", files[i], sep=""), outfile = outfile)
+				writeGPX(filename = str_c("gpx_trimmed/GPS", outfile$unit[1], "_", inds$divenum[j], "_", files[i], sep=""), outfile = outfile)
 			}
 			if(!is.na(inds$paust[j])){ # account for a pause if need be
 			  k1 <- data %>%
@@ -124,8 +124,8 @@ for (l in 1:length(folders)){
 			  k2$time <- as.character(k2$time)
 			  outfile2 <- k2
 
-			  writeGPX(filename = paste("data/gpx_trimmed/GPS", outfile$unit[1], "_",inds$divenum[j], "_", files[i], '_1.gpx', sep=''), outfile = outfile1) # write as two tracks
-			  writeGPX(filename = paste("data/gpx_trimmed/GPS", outfile$unit[1], "_",inds$divenum[j], "_", files[i], '_2.gpx', sep=''), outfile = outfile2)
+			  writeGPX(filename = paste("gpx_trimmed/GPS", outfile$unit[1], "_",inds$divenum[j], "_", files[i], '_1.gpx', sep=''), outfile = outfile1) # write as two tracks
+			  writeGPX(filename = paste("gpx_trimmed/GPS", outfile$unit[1], "_",inds$divenum[j], "_", files[i], '_2.gpx', sep=''), outfile = outfile2)
 			  
 
 			}
