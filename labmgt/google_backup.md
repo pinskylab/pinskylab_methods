@@ -1,13 +1,16 @@
 - Open Fetch
 - Open the web interface of Google Drive (not Finder interface)
 - right Click and download:
-    - Sample_Data - will download as excel - rename to include the date (Sample_Data-2014-12-04.xlsx) - In the process of becoming a database, this file will be obsolete
     - Oligo - will download as excel - rename to include date (Oligo-2014-12-04.xlsx) 
-    - Plate_Maps - will download as excel - rename to include date (Plate_Maps-2014-12-04.xlsx) - In the process of moving to individual files on github
     - the entire folder Pinsky Lab Orders -  will zip folder
+    - Sample_Data and Plate_Maps are no longer backed up from google drives because the data should not be changing from month to month, that data is now stored in the Laboratory database and is backed up through sequel pro below.
+- Open Sequel Pro
+- Select the Laboratory database and right click on each table, selecting Export > SQL dump
+- Customize the filename to be tablename_date_time.sql and click export.
+- Select the Leyte database and repeat the 2 steps above.
 - In Fetch, click on the Path button and select local
 - Double click shared, double click pinsky_lab, double click GDbackups
-- Click the New folder button and name it with today’s date (YYYY_MM_DD)
+- Click the New folder button and name it with today’s date (YYYY-MM-DD)
 - Double click on the new folder to open it
-- Drag the downloaded files above into the folder - make sure you get all four files
+- Drag the downloaded files above into the folder - make sure you get all four sources
 - Quit Fetch
