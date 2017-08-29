@@ -84,6 +84,6 @@ Discard solution in S-plate and 3x rinse
 
 Update the database with the date of extraction and removing the "waiting to be extracted" notes using the [changedb.R script](https://github.com/mstuart1/laboratory/blob/master/scripts/changedb.R) 
 
-[Run a gel] (https://github.com/mpinsky/pinskylab_methods/blob/master/genomics/laboratory/gels.md) to check quality of DNA extraction.  Use the changedb.R script above to add the date of gel to the database.
+[Run a gel]  to check quality of DNA extraction.  Use the changedb.R script above to add the date of gel to the database.
 
 Use the plate reader to check the quantity of DNA extraction.  Use the platereadertodb.R script to add the quantity to the database.
