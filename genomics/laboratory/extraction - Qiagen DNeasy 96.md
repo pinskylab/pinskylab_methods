@@ -86,4 +86,4 @@ Update the database with the date of extraction and removing the "waiting to be 
 
 Run a gel to check quality of DNA extraction.  Use the changedb.R script above to add the date of gel to the database.
 
-Use the plate reader to check the quantity of DNA extraction.  Use the platereadertodb.R script to add the quantity to the database.
+Use the plate reader to check the quantity of DNA extraction.  Use the [platereadertodb.R script] (https://github.com/mstuart1/laboratory/blob/master/scripts/platerdrtodb.R) to add the quantity to the database.
