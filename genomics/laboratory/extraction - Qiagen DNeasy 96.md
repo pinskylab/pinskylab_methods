@@ -24,7 +24,7 @@ Double check the sample numbers, comparing to map/plan as you go.
 
 Place tube strip in an extra plate holder so that you can easily see the fins in the tubes.
 
-Add fin clips, washing forceps between each sample with EtOH.
+Add fin clips, sterilizing forceps between each sample by placing in a beaker of EtOH, removing from beaker, and passing through flame. 
 
 Add 200µL lysis buffer as soon as each strip is finished, make sure fins are completely submerged (cut if necessary, wash scissors between each sample).
 
