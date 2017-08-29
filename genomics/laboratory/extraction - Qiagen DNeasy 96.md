@@ -3,9 +3,9 @@
 ## Day 1
 *It takes about 2 hours to load fins into a plate.*
 
-Make a plan/map of where samples will be in a 96-well plate, either by hand or using the [extraction script](https://github.com/stuartmichelle/Laboratory/blob/master/R/extraction.R) 
+Make a plan/map of where samples will be in a 96-well plate, either by hand or using the [plan extraction script](https://github.com/mstuart1/laboratory/blob/master/scripts/1_prep_samples_for_extraction.R) 
 
-Place 2 tube blocks together and put the samples to be extracted in the tube blocks in relation to the location they will be on 
+Place 2 vial blocks together and put the samples to be extracted in the vial blocks relative to the location they will hold on 
 the plate.  It may help to tape off the wells that correspond to a 96 well plate. Remember to leave room for 2 negative controls!!!
 
 Label the front of the blue collection vial tray as well as the front of the collection vials 1-12.  These vials do come out of the tray and can get mixed up. It’s also good to be able to tell the front of the tube strip from the back (the A row from the H row).
