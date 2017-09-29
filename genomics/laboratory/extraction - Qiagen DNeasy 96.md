@@ -20,21 +20,23 @@ number of samples|10% error|ml proteinase K|ml ATL buffer
 ---|---|---|---
 192|211.2|4.224|38.016
 
+Add 200µL lysis buffer to each tube and make sure to keep plate cover closed while working to avoid evaporation.
+
 Double check the sample numbers, comparing to map/plan as you go.
 
 Place tube strip in an extra plate holder so that you can easily see the fins in the tubes.
 
-Add fin clips, sterilizing forceps between each sample by placing in a beaker of EtOH, removing from beaker, and passing through flame. 
+Add fin clips, making sure they are fully submerged in lysis buffer.
 
-Add 200µL lysis buffer as soon as each strip is finished, make sure fins are completely submerged (cut if necessary, wash scissors between each sample).
+Sterilize forceps between each sample by placing in a beaker of EtOH, removing from beaker, and passing through flame. Also sterilize scissors if using.
 
-Cap tubes immediately after adding buffer, place tab of cap strip to the back of the plate.
+Cap tubes immediately after adding all fins to the strip, place tab of cap strip to the back of the plate.
 
 When plate is finished, roll caps with plate roller, push down with force.
 
 When 2 plates are finished, double check that caps are firmly in place, invert to mix, spin down
 
-Place in 56˚C incubator overnight.  Placing 5 lab notebooks on top of plate still allowed caps to raise out of tubes while incubating.
+Place in 56˚C incubator overnight. 
 
 *After proteinase K digestion, tissue samples can also be stored in Buffer ATL for up 6 months at ambient temperature without any reduction in DNA quality.*
 
