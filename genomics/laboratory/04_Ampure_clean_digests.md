@@ -22,3 +22,4 @@ This protocol is to clean DNA in a 96 well plate
 11. Remove the yellow tray tip liners from the magnet and place the plate back on magnet for 1-2 minutes (until liquid appears clear)
 12. Pull 45µL of supernatant into a new labeled plate and seal with film (sometimes all 45uL does not come back, label as 40uL of sample regardless of how much fills pipet)
 13. Discard plate with pellets and move the 70% EtOH into the spraybottle for cleaning the benchtop.
+14. In the laboratory project in RStudio, open changedb.R and update the final_vol field for this digest plate to reflect the 40uL (or other volume if applicable) that was used to elute the DNA from the pellet.
