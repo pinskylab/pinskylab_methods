@@ -1,9 +1,9 @@
 ---
 title: "Loading digests"
 output:
-  pdf_document: default
   html_notebook: default
   html_document: default
+  pdf_document: default
 ---
 
 This document is able to take a set of extracts and prepare them for digest by assigning digest_ids to them, mapping where they will go in the digest plate, and mapping where to find them in extraction plates. Currently this only fills one plate and puts the excess in tubes.  Adjust as needed.
@@ -13,14 +13,15 @@ source("../../laboratory/scripts/lab_helpers.R")
 library(knitr)
 ```
 
-Get a list of extracts to be digested, in this case they are in a csv.  It is important to have extraction_id, well, plate, and quant.  
+###Get a list of extracts to be digested, 
+in this case they are in a csv.  It is important to have extraction_id, well, plate, and quant.  
 ```{r echo = F}
 infile = "../../laboratory/data/attempt_to_rescue_as_of_2018-05-22.csv"
 extr <- read.csv(infile, stringsAsFactors = F) 
 kable(extr)
 ```
 
-How many plates will this fill?
+###How many plates will this fill?
 
 ```{r echo = F}
 nrow(extr)/96
@@ -34,8 +35,7 @@ plates <- extr %>%
 kable(plates)
 ```
 
-
-Loop through plates to assign as many samples to the same well they are currently in on their extraction plate
+###Loop through plates to assign as many samples to the same well they are currently in on their extraction plate
 ```{r echo = F}
 # this makes a set of available wells
 avail <- data.frame(row = rep(LETTERS[1:8], 12), col = unlist(lapply(1:12, rep, 8))) %>%
@@ -58,7 +58,7 @@ for(i in seq(nrow(plates))){
 }
 ```
 
-What is left over should fill in any gaps in the plate:
+###What is left over should fill in any gaps in the plate:
 ```{r echo = F}
 # reorder the plates by number of samples left
 plates <- need_wells %>% 
@@ -122,7 +122,7 @@ extr <- extr %>%
 
 ```
 
-Make plate maps of destinations
+###Make plate maps of destinations
 
 ```{r echo = F}
 dig_dest <- plate_from_db(extr, "digest_id")
@@ -133,7 +133,7 @@ extr_dest <- plate_from_db(extr, "extraction_id")
 kable(platemap)
 ```
 
-Make platemaps of source plates
+###Make plate maps of source plates
 ```{r echo = F, fig.width=10}
 # define the source plates
 sources <- extr %>% 
