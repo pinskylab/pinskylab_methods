@@ -1,4 +1,4 @@
-This protocol assumes that you have read and understand the manufacturer’s instructions attached below.  Please read the full manufacturer’s instructions before using this abbreviated protocol.
+*This protocol assumes that you have read and understand the manufacturer’s instructions attached below.  Please read the full manufacturer’s instructions before using this abbreviated protocol.*
 
 - Pull out enough thin wall 0.5mL tubes for all of the samples plus 2 for standards
 - Label the tubes (just have to put numbers on the top)
