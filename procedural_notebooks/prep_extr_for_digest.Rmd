@@ -1,16 +1,17 @@
 ---
 title: "Loading digests"
 output:
+  pdf_document: default
   html_notebook: default
   html_document: default
-  pdf_document: default
 ---
 
 This document is able to take a set of extracts and prepare them for digest by assigning digest_ids to them, mapping where they will go in the digest plate, and mapping where to find them in extraction plates. Currently this only fills one plate and puts the excess in tubes.  Adjust as needed.
 
-```{r echo = F}
+```{r echo = F, message=F}
 source("../../laboratory/scripts/lab_helpers.R")
 library(knitr)
+
 ```
 
 ###Get a list of extracts to be digested, 
@@ -124,17 +125,17 @@ extr <- extr %>%
 
 ###Make plate maps of destinations
 
-```{r echo = F}
+```{r echo = F, message=FALSE}
 dig_dest <- plate_from_db(extr, "digest_id")
 kable(platemap)
 ```
-```{r echo = F}
+```{r echo = F, message=F}
 extr_dest <- plate_from_db(extr, "extraction_id")
 kable(platemap)
 ```
 
 ###Make plate maps of source plates
-```{r echo = F, fig.width=10}
+```{r echo = F, fig.width=10, message=F}
 # define the source plates
 sources <- extr %>% 
   select(plate) %>% 
