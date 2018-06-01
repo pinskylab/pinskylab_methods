@@ -5,6 +5,9 @@ output:
   html_notebook: default
   html_document: default
 ---
+<font size=6>
+
+## Knit to pdf before writing to database 
 
 This document is able to take a set of extracts and prepare them for digest by assigning digest_ids to them, mapping where they will go in the digest plate, and mapping where to find them in extraction plates. Currently this only fills one plate and puts the excess in tubes.  Adjust as needed.
 
@@ -100,6 +103,8 @@ extr <- anti_join(extr, blanks, by = "extraction_id")
 
 # create new blanks that will be assigned digest numbers to fill the plate
 new_blanks <- data.frame(sample_id = c("XXXX", "XXXX"), extraction_id = c("XXXX","XXXX"), quant = c(0,0), plate = c("XXXX","XXXX"), well = c("D2", "E8"))
+
+extr <- rbind(extr, new_blanks)
 ```
 
 Generate a digest_id place holder
@@ -134,11 +139,12 @@ extr_dest <- plate_from_db(extr, "extraction_id")
 kable(platemap)
 ```
 
-###Make plate maps of source plates
+### Make plate maps of source plates
 ```{r echo = F, fig.width=10, message=F}
 # define the source plates
 sources <- extr %>% 
   select(plate) %>% 
+  filter(plate != "XXXX") %>% 
   distinct() %>% 
   arrange(plate)
 
@@ -156,10 +162,21 @@ for (i in 1:nrow(sources)){
 ```
 
 
+```{r echo=F, message=F}
+# write the data to the database
+w_lab <- write_db("Laboratory")
+dig <- extr %>% 
+  select(digest_id, extraction_id, ng_in, well)
+# dbWriteTable(w_lab, "digest", dig, append = T, row.names = F)
+
+```
 
 
 
+### Prepare digest plate by adding 30µL of sample to each well according to the digest map prepared above.  If you are not continuing on to the digest step now, seal the plate with film, label it, and put it in the fridge.
 
+
+</font>
 
 
 
