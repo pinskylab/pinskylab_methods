@@ -6,31 +6,33 @@ output:
 ---
 
 This script will change rows in the database to update information.
-```{r echo = F}
-source("../laboratory/scripts/lab_helpers.R")
+```{r echo = F, message=FALSE}
+source("../genomics/scripts/lab_helpers.R")
 lab <- write_db("Laboratory")
 library(knitr)
 ```
 
-1. Pull in an entire table.
-```{r}
+Find which samples are in the csv of rescues that are not in the next plate of digests
+```{r echo = F}
 # pull in all table
-extr <- lab %>% dbReadTable("extraction") %>% collect()
-# digs <- lab %>% dbReadTable("digest") %>% collect()
+# extr <- lab %>% dbReadTable("extraction") %>% collect()
+digs <- lab %>% dbReadTable("digest") %>% collect()
 # ligs <- lab %>% dbReadTable("ligation") %>% collect()
 
 # list of extraction_ids to change
-samples <- c("E0331", "E0446", "E0459", "E0468", "E0509", "E0519", "E0443", "E0494", "E1331", "E1334", "E1389")
+infile <- "../../laboratory/data/attempt_to_rescue_as_of_2018-05-22.csv"
+samples <- read.csv(infile, stringsAsFactors = F)
 
-change <- extr %>%
-  filter(extraction_id %in% samples, notes != "empty") %>%
-  mutate(notes = ifelse(is.na(notes), "empty", paste("empty, ", notes)))
-kable(change)
+# narrow down the digests to the most recent plate
+digs <- digs %>% 
+  filter(is.na(date), is.na(enzymes))
+
+missing <- samples %>% 
+  filter(!extraction_id %in% digs$extraction_id)
+kable(missing)
 
 
 
-extr <- change_rows(extr, change, "extraction_id")
- 
 
 ################### BE CAREFUL ########################################
 # dbWriteTable(lab, "extraction", extr, row.names = F, overwrite = T)
