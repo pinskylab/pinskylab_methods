@@ -1,5 +1,5 @@
 ---
-title: "Digest of"
+title: "Low Concentration Digest of"
 author: "D5581-D5675"
 output:
   pdf_document: 
@@ -41,8 +41,8 @@ kable(setup) %>%
 per_sample <- data.frame(NA)
 per_sample <- per_sample %>% 
   mutate(uL_sample = 30, 
-    ul_enzyme1 = (setup$unts_ech_enzyme/50 * setup$reaction_size)/(setup$enzyme1_conc/1000), 
-    ul_enzyme2 = (setup$unts_ech_enzyme/50 * setup$reaction_size)/(setup$enzyme2_conc/1000), 
+    ul_enzyme1 = (setup$unts_ech_enzyme/50 * setup$reaction_size)/(setup$enzyme1_conc/500), 
+    ul_enzyme2 = (setup$unts_ech_enzyme/50 * setup$reaction_size)/(setup$enzyme2_conc/500), 
     ul_buffer = setup$reaction_size/10, 
     ul_pH2O = 50 - sum(uL_sample, ul_enzyme1, ul_enzyme2, ul_buffer)) %>% 
   select(-NA.)
