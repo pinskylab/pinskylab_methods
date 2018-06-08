@@ -1,0 +1,59 @@
+---
+title: "Fix APCL type-o"
+output:
+  pdf_document: default
+  html_notebook: default
+date: '`r Sys.Date()`'
+---
+
+Alison found a fish in the database that has a pit tag but is 1.6 cm and a tail color of "O".  This raised a red flag because we can't tag a fish that small.
+
+Information provided:
+```{r}
+this_tag_id <- 986112100163474
+this_anem_table_id <- 9736
+this_dive_table_id <- 450
+```
+
+```{r echo=FALSE, message=FALSE}
+source("../genomics/scripts/lab_helpers.R")
+source("../genomics/scripts/field_helpers.R")
+library(knitr)
+```
+
+```{r}
+leyte <- read_db("Leyte")
+
+day <- leyte %>%
+    tbl("diveinfo") %>%
+    select(date, dive_table_id, site, dive_num) %>%
+    collect() %>% 
+    filter(dive_table_id == this_dive_table_id)
+
+kable(day)
+```
+
+Checking the datasheet shows that the pencil is pale and really says 7.6, but looks a lot like 1.6.  Changing the database:
+
+```{r message=FALSE}
+w_leyte <- write_db("Leyte")
+
+fish <- dbReadTable(w_leyte, "clownfish")
+
+change <- fish %>% 
+  filter(tag_id == this_tag_id) %>% 
+  mutate(size = 7.6, 
+    correction = "Y", 
+    corr_date = "2018-06-08", 
+    corr_editor = "MRS", 
+    corr_message = "Changed size from 1.6 to 7.6 because this was clearly a type-o and 7.6 was written on the data sheet.")
+
+fish <- change_rows(fish, change, "fish_table_id")
+
+# dbWriteTable(w_leyte, "clownfish", fish, row.names = F, overwrite = T)
+
+```
+
+
+
+
