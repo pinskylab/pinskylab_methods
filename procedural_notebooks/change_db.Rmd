@@ -1,9 +1,15 @@
 ---
-title: "Change Database"
+title: "Update database"
 output:
   pdf_document: default
   html_notebook: default
 ---
+
+```{r}
+first <- "D5309"
+last <- "D5404"
+```
+
 
 This script will change rows in the database to update information.
 ```{r echo = F, message=FALSE}
@@ -12,32 +18,21 @@ lab <- write_db("Laboratory")
 library(knitr)
 ```
 
-Find which samples are in the csv of rescues that are not in the next plate of digests
-```{r echo = F}
+Update the database for the recent plate of digests
+```{r}
 # pull in all table
 # extr <- lab %>% dbReadTable("extraction") %>% collect()
 digs <- lab %>% dbReadTable("digest") %>% collect()
 # ligs <- lab %>% dbReadTable("ligation") %>% collect()
 
-# list of extraction_ids to change
-infile <- "../../laboratory/data/attempt_to_rescue_as_of_2018-05-22.csv"
-samples <- read.csv(infile, stringsAsFactors = F)
+change <- digs %>% 
+  filter(digest_id >= first, digest_id <= last) %>% 
+  mutate(final_vol = 40)
 
-# narrow down the digests to the most recent plate
-digs <- digs %>% 
-  filter(is.na(date), is.na(enzymes))
-
-missing <- samples %>% 
-  filter(!extraction_id %in% digs$extraction_id)
-kable(missing)
-
-
-
+digs <- change_rows(digs, change, "digest_id")
 
 ################### BE CAREFUL ########################################
 # dbWriteTable(lab, "extraction", extr, row.names = F, overwrite = T)
-# dbWriteTable(lab, "digest", digs, row.names = F, overwrite = T)
-# dbWriteTable(lab, "ligation", ligs, row.names = F, overwrite = T)
 # 
 # dbDisconnect(lab)
 # rm(lab)

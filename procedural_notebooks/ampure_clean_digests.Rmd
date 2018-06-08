@@ -12,8 +12,26 @@ output:
 
 Number of samples
 ```{r}
-x <- 80
+x <- 93
 ```
+```{r}
+source("../genomics/scripts/lab_helpers.R")
+library(knitr)
+library(kableExtra)
+setup <- data.frame(NA)
+setup <- setup %>% 
+  mutate(number_samples = x, 
+    error = 1.1 * x, 
+    volume_sample = 50, 
+    volume_ampure = 1.5 * volume_sample, 
+    total_ampure = volume_ampure * error,
+    total_EtOH = 400 * error) %>% 
+  select(-NA.)
+kable(setup) %>%
+  kable_styling() %>%
+  add_header_above(c("Clean" = 6))
+```
+
 10% error
 ```{r echo = F}
 z <- x * 1.1
