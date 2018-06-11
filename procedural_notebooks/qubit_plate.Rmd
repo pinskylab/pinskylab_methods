@@ -24,29 +24,30 @@ This protocol is to quantify a digest plate that has been cleaned.  This is not 
 
 10. Import the qubit results to the database
 
-```{r}
+```{r message=FALSE}
 # update parameters for the current analysis ####
 # name of results file
 ### HAVE TO CHANGE THE MICROLITER SYMBOL TO UL INSTEAD OF THE SPECIAL CHARACTER ###
-infile <- "../laboratory/data/QUBIT_2018-05-15_2-06-PM.csv"
+infile <- "/Volumes/USB DISK/2018 6/QUBIT_2018-06-11_11-14-AM.csv"
 
 # date of qubit analysis
-# today <- Sys.Date()
-today <- "2018-05-15"
+today <- Sys.Date()
+# today <- "2018-05-15"
 
 # name of plate measured
-this_plate <- "E4478-E4550"
+this_plate <- "D4698-D4793"
+
 
 # type of plate 
-type <- "extraction"
-id <- "extraction_id"
+type <- "digest"
+id <- "digest_id"
 
 # type of analysis - HS or BR
 anly <- "HS"
 ```
 
 ```{r echo=FALSE, message=FALSE}
-source("genomics/scripts/lab_helpers.R")
+source("../genomics/scripts/lab_helpers.R")
 library(knitr)
 lab <- read_db("Laboratory")
 qubit <- read.csv(infile, header = T, stringsAsFactors = F)
@@ -62,7 +63,7 @@ qubit <- qubit %>%
 # create a table of samples that were measured
 samples <- lab %>%
   tbl(type) %>%
-  filter(plate == this_plate & is.na(quant)) %>%
+  filter(plate == this_plate) %>%
   collect() %>%
   mutate(row = substr(well, 1, 1), 
     col = as.numeric(substr(well, 2, 3))) %>% 
@@ -74,16 +75,21 @@ qubit <- cbind(qubit, samples)
 
 
 # calculate ng/ul
-qubit <- qubit %>% 
-  mutate(quant = ifelse(anly == "HS", as.numeric(Assay.Conc.) * 0.2, as.numeric(Assay.Conc.) * 200)) %>%
-      select(contains("id"), quant)
-    
-    
-    kable(qubit)
-    
-    ```
-### Update database rows
-```{r echo = F}
+if(anly == "HS"){
+  qubit <- qubit %>% 
+  mutate(quant = as.numeric(Assay.Conc.) * 0.2) %>% 
+    select(contains("id"), quant)
+}else{
+  qubit <- qubit %>% 
+    mutate(quant = as.numeric(Assay.Conc.) * 200) %>% 
+    select(contains("id"), quant)
+}
+
+kable(qubit)
+```
+
+```{r echo = F, message=FALSE}
+# Update database rows  ####
 wlab <- write_db("Laboratory")
 
 full <- lab %>%
@@ -92,15 +98,16 @@ full <- lab %>%
 
 
 ```
-Uncomment the write to database line if it is time to commit the changes to the databse.
-```{r}
+
+```{r echo=FALSE, message=FALSE}
+# Uncomment the write to database line if it is time to commit the changes to the databse.
 if (id == "extraction_id"){
   change <- full %>%
   filter(extraction_id %in% qubit$extraction_id) %>% 
   select(-quant)
   change <- left_join(change, select(qubit, -sample_id), by = "extraction_id") 
   full <- change_rows(full, change, "extraction_id")
-  # dbWriteTable(lab, "extraction", full, row.names = F, overwrite = T)
+  # dbWriteTable(wlab, "extraction", full, row.names = F, overwrite = T)
   
 }
 
@@ -110,7 +117,7 @@ if (id == "digest_id"){
   select(-quant)
   change <- left_join(change, select(qubit, -extraction_id), by = "digest_id") 
   full <- change_rows(full, change, "digest_id")
-  # dbWriteTable(lab, "digest", full, row.names = F, overwrite = T)
+  # dbWriteTable(wlab, "digest", full, row.names = F, overwrite = T)
 }
 ```
 
