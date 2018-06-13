@@ -1,43 +1,29 @@
 ---
-title: "Update database"
+title: "Calculate range of digest quantification"
 output:
   pdf_document: default
   html_notebook: default
 ---
 
-Cleaned plate - updating final volume in database
-```{r}
-plate <- "D5581-D5675"
-first <- substr(plate, 1, 5)
-last <- substr(plate, 7, 11)
-```
-
-
-This script will change rows in the database to update information.
+Access database.
 ```{r echo = F, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
-lab <- write_db("Laboratory")
+lab <- read_db("Laboratory")
 library(knitr)
 ```
-
-Update the database for the recent plate of digests
+Find the range of quantifications
 ```{r}
 # pull in all table
 # extr <- lab %>% dbReadTable("extraction") %>% collect()
-digs <- lab %>% dbReadTable("digest") %>% collect()
+digs <- lab %>% tbl("digest") %>% collect()
 # ligs <- lab %>% dbReadTable("ligation") %>% collect()
 
-change <- digs %>% 
-  filter(digest_id >= first, digest_id <= last) %>% 
-  mutate(final_vol = 40)
+range <- digs %>% 
+  summarise(min = min(quant, na.rm = T), 
+    max = max(quant, na.rm = T)) %>% 
+  mutate(meas1 = min/200, 
+    meas2 = max/200)
 
-digs <- change_rows(digs, change, "digest_id")
 
-################### BE CAREFUL ########################################
-# dbWriteTable(lab, "extraction", extr, row.names = F, overwrite = T)
-# dbWriteTable(lab, "digest", digs, row.names = F, overwrite = T)
-# 
-# dbDisconnect(lab)
-# rm(lab)
 
 ```

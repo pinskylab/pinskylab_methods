@@ -2,11 +2,15 @@
 title: "Low Concentration Digest of"
 author: "D5581-D5675"
 output:
-  pdf_document: 
-    latex_engine: xelatex
-  html_notebook: default
   html_document: default
+  html_notebook: default
+  pdf_document:
+    latex_engine: xelatex
 ---
+
+```{r}
+
+```
 
 *This protocol assumes that you have read and understand the manufacturer’s instructions attached below.  Please read the full manufacturer’s instructions before using this abbreviated protocol.*
 

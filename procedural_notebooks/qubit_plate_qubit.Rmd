@@ -28,14 +28,14 @@ This protocol is to quantify a digest plate that has been cleaned.  This is not 
 # update parameters for the current analysis ####
 # name of results file
 ### HAVE TO CHANGE THE MICROLITER SYMBOL TO UL INSTEAD OF THE SPECIAL CHARACTER ###
-infile <- "/Volumes/USB DISK/2018 6/QUBIT_2018-06-11_11-14-AM.csv"
+infile <- "/Volumes/USB DISK/2018 6/QUBIT_2018-06-12_12-33-PM.csv"
 
 # date of qubit analysis
 today <- Sys.Date()
 # today <- "2018-05-15"
 
 # name of plate measured
-this_plate <- "D4698-D4793"
+this_plate <- "D4888-D4946"
 
 
 # type of plate 
@@ -85,6 +85,9 @@ if(anly == "HS"){
     select(contains("id"), quant)
 }
 
+qubit <- qubit %>%
+  mutate(quant = ifelse(digest_id == "D4818", 137, quant),
+         quant = ifelse(digest_id == "D4850", 152, quant))
 kable(qubit)
 ```
 
