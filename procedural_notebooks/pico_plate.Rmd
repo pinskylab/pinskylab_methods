@@ -1,0 +1,44 @@
+---
+title: "Pico Platereader Quantification"
+output: html_notebook
+---
+```{r echo=FALSE, message=FALSE}
+library(knitr)
+library(dplyr)
+```
+
+The manufacturers directions for this method describe preparing a solution that is 2mL in volume.  Our plates hold a leaky maximum of 400uL so the volumes must be adusted to fit.
+
+**Prepare the reagent**
+
+Make a 200 fold dilution of pico dye.  Keep this in the dark.
+ *Units for volume of 1x TE and units for volume of pico are uL*
+```{r}
+num_samples <- 20
+```
+
+```{r echo=FALSE, results='asis'}
+final_vol_samp <- 200
+
+final_vol_pico <- 100*num_samples
+
+vol_1x_TE <- 0.995 * final_vol_pico
+
+vol_pico_conc <- final_vol_pico - vol_1x_TE
+
+pico <- data.frame(num_samples, vol_1x_TE, vol_pico_conc)
+
+kable(pico)
+```
+**Prepare a standard curve**
+**Units of final DNA concentration are ng/mL
+```{r}
+STD_DNA_conc <- 2
+vol_1x_TE <- c(0, 900, 990, 999, 1000)
+vol_STD_DNA <- c(1000, 100, 10, 1, 0)
+vol_pico <- c(rep(1000, 5))
+STD <- data.frame(vol_1x_TE, vol_STD_DNA, vol_pico)
+STD <- STD %>% 
+  mutate(final_DNA_conc = (STD_DNA_conc * vol_STD_DNA)/final_vol_samp)
+```
+
