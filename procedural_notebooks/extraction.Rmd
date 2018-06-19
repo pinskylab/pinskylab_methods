@@ -56,7 +56,7 @@ work <- fish %>%
 
 <!-- ``` -->
 
-
+This is set up to handle one plate at a time.
 ```{r}
 # how many plates would these make, 94 samples plus 2 blanks per plate
 (nplates <- floor(nrow(work)/94)) # extra parenthesis are to print
