@@ -1,5 +1,6 @@
 ---
 title: "Pico Platereader Quantification"
+author: "D4888-D4946"
 output: html_notebook
 ---
 ```{r echo=FALSE, message=FALSE}
@@ -14,7 +15,7 @@ The manufacturers directions for this method describe preparing a solution that 
 Make a 200 fold dilution of pico dye.  Keep this in the dark.
  *Units for volume of 1x TE and units for volume of pico are uL*
 ```{r}
-num_samples <- 20
+num_samples <- (96+8)*1.1
 ```
 
 ```{r echo=FALSE, results='asis'}
@@ -30,15 +31,155 @@ pico <- data.frame(num_samples, vol_1x_TE, vol_pico_conc)
 
 kable(pico)
 ```
-**Prepare a standard curve**
-**Units of final DNA concentration are ng/mL
-```{r}
-STD_DNA_conc <- 2
-vol_1x_TE <- c(0, 900, 990, 999, 1000)
-vol_STD_DNA <- c(1000, 100, 10, 1, 0)
-vol_pico <- c(rep(1000, 5))
-STD <- data.frame(vol_1x_TE, vol_STD_DNA, vol_pico)
-STD <- STD %>% 
-  mutate(final_DNA_conc = (STD_DNA_conc * vol_STD_DNA)/final_vol_samp)
+<!-- **Prepare a standard curve** -->
+<!-- **Units of final DNA concentration are ng/mL -->
+<!-- ```{r} -->
+<!-- STD_DNA_conc <- 2 -->
+<!-- vol_1x_TE <- c(0, 900, 990, 999, 1000) -->
+<!-- vol_STD_DNA <- c(1000, 100, 10, 1, 0) -->
+<!-- vol_pico <- c(rep(1000, 5)) -->
+<!-- STD <- data.frame(vol_1x_TE, vol_STD_DNA, vol_pico) -->
+<!-- STD <- STD %>%  -->
+<!--   mutate(final_DNA_conc = (STD_DNA_conc * vol_STD_DNA)/final_vol_samp) -->
+<!-- ``` -->
+
+Results:
+# Read in quantification results ------------------------------------------
+```{r echo=FALSE, message=FALSE}
+library(dplyr)
+library(RMySQL)
+library(stringr)
+source("../genomics/scripts/lab_helpers.R")
 ```
+
+```{r}
+# what types of samples are these
+table = "digest"
+
+
+# which plates?
+range <- "D4947-D5028"
+# range <- c("D4888-D4946", "D4947-D5028", "D5029-D5113", "D5114-D5161", "D5162-D5219", "D5309-D5404", "D5405-D5500", "D5501-D5580", "D5581-D5675")
+
+# which files
+file <- "~/Downloads/drive-download-20180615T221044Z-001/2018-06-15-plate2.txt"
+# folder <- list.files("~/Downloads/drive-download-20180615T221044Z-001/", pattern = "2018-06-15")
+
+
+```
+```{r echo=FALSE, message=FALSE}
+# skip the lines before the data
+strs <- readLines(file, skipNul = T)
+linestoskip = (which(strs == "Group: Unknowns")) # the number of lines to skip
+
+# create a table that contains well locations and quantities
+dat1 <- read.table(text = strs,  skip = linestoskip, sep = "\t", fill = T, header = T, stringsAsFactors = F)
+
+# remove footer rows
+dat1 <- dat1[1:(which(dat1$Sample == "Group Summaries")-1), ]
+
+# read in names for the samples
+lab <- write_db("Laboratory")
+
+# all of the data in the db for this table (for example, "digest")
+dat <- dbReadTable(lab, table)
+
+# select your desired plate
+plate <- dat %>%
+  select(contains("id"), well, plate) %>%
+  filter(plate == range[i]) %>%
+  collect()
+
+# special ####
+# quant1 <- left_join(dat1, reader, by = c("Wells" = "well"))
+quant1 <- left_join(dat1, plate, by = c("Wells" = "well"))
+quant1 <- quant1 %>%
+  select(contains("id"), AdjConc) %>% 
+  # remove any empty wells
+  filter(!is.na(extraction_id)) %>% 
+  # rename the quant column
+  rename(quant = AdjConc)
+
+
+
+
+############### add this information to the database ##################
+# BE CAREFUL #
+
+# the entire table was pulled in as dat above
+
+change <- dat %>%
+  filter(plate == range) %>% 
+  select(-quant) # don't bring in the quant column, will add that here
+
+# add in the new quants
+change <- left_join(change, quant1, by = c("digest_id", "extraction_id"))
+
+dat <- change_rows(dat, change, "digest_id")
+
+# write the group back to the database
+# dbWriteTable(lab, "digest", dat, row.names = F, overwrite = T)
+# dbDisconnect(lab)
+
+
+# import the firsts #### 
+# this is for the first column of each plate that was put onto a separate plate to make room for the standards
+
+firsts <- "~/Downloads/drive-download-20180615T221044Z-001/2018-06-15-platefirsts.txt"
+strs <- readLines(firsts, skipNul = T)
+linestoskip = (which(strs == "Group: Unknowns")) # the number of lines to skip
+
+dat2 <- read.table(text = strs,  skip = linestoskip, sep = "\t", fill = T, header = T, stringsAsFactors = F)
+
+# remove footer rows
+dat2 <- dat2[1:(which(dat2$Sample == "Group Summaries")-1), ]
+
+x <- as.character(i+1)
+
+# pull first column samples from database
+firsts <- dat %>% 
+  filter(plate == range, is.na(quant)) %>% 
+  # replace the 1 with whatever column of the firsts plate
+  mutate(well = stringr::str_replace(well, "1", x)) %>% 
+  select(digest_id, well)
+
+# read in names for the samples
+quant2 <- left_join(dat2, firsts, by = c("Wells" = "well"))
+quant2 <- quant2 %>%
+  ### THIS DEPENDS ON THE TYPE OF SAMPLE YOU ARE LOOKING AT extraction_id, digest_id, etc) ###
+  select(contains("id"), AdjConc) %>% 
+  rename(quant = AdjConc) %>% 
+  # filter(!is.na(extraction_id))
+  filter(!is.na(digest_id))
+
+# import into database
+lab <- write_db("Laboratory")
+dat <- dbReadTable(lab, table)
+
+# select the samples that will be changed
+change <- dat %>%
+  # filter(extraction_id %in% quant2$extraction_id) %>% 
+  filter(digest_id %in% quant2$digest_id) %>%
+  select(-quant)
+
+# add in the new quants
+change <- left_join(change, quant2, by = "digest_id")
+# change <- left_join(change, quant2, by = "extraction_id")
+
+# dat <- change_rows(dat, change, "extraction_id")
+dat <- change_rows(dat, change, "digest_id")
+
+
+# write the group back to the database
+# dbWriteTable(lab, "digest", dat, row.names = F, overwrite = T)
+# dbDisconnect(lab)
+
+
+# # which samples are too low to digest with the regular concentration of enzyme?
+# test <- dat %>% 
+#   filter(quant < 40 & sample_id != "XXXX")
+
+```
+
+
 

@@ -2,7 +2,9 @@
 title: "Ordering lab supplies"
 author: "Michelle Stuart"
 date: "6/13/2018"
-output: pdf_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 ```{r echo=FALSE, message=FALSE}
 library(dplyr)
@@ -11,7 +13,7 @@ library(knitr)
 
 I need to order lab supplies.
 
-Quantification of 7 digest plates
+####Quantification of 7 digest plates
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 pico <- data.frame(NA)
@@ -31,7 +33,7 @@ pico <- pico %>%
 kable(pico)
 ```
 
-Extraction of 8 2018 APCL plates
+####Extraction of 8 2018 APCL plates
 ```{r, echo=FALSE}
 extr <- data.frame(NA)
 extr <- extr %>% 
@@ -43,7 +45,7 @@ extr <- extr %>%
   select(-NA.)
 ```
 
-Quantify 8 plates of extracts
+####Quantify 8 plates of extracts
 ```{r, echo=FALSE}
 pico2 <- data.frame(NA)
 pico2 <- pico2 %>% 
@@ -72,7 +74,7 @@ kable(pico)
 rm(pico2)
 ```
 
-Digest 8 plates
+####Digest 8 plates
 ```{r, echo=FALSE}
 digest <- data.frame(NA)
 digest <- digest %>% 
@@ -87,7 +89,7 @@ digest <- digest %>%
   select(-NA.)
 ```
 
-Clean 8 plates
+####Clean 8 plates
 ```{r, echo=FALSE}
 clean <- data.frame(NA)
 clean <- clean %>% 
@@ -103,7 +105,7 @@ clean <- clean %>%
   select(-NA.)
 ```
 
-Quantify 8 digest plates
+####Quantify 8 digest plates
 ```{r, echo=FALSE}
 pico3 <- data.frame(NA)
 pico3 <- pico3 %>% 
@@ -131,7 +133,7 @@ pico <- pico %>%
 kable(pico)
 rm(pico3)
 ```
-Merge these 4 tables into one grocery list
+####Merge these 4 tables into one grocery list
 ```{r, echo=FALSE}
 # get rid of columns that aren't supplies
 clean <- clean %>%
@@ -207,6 +209,7 @@ full <- total %>%
       tips_10 = sum(tips_10, na.rm = T) ,
       foil = sum(foil, na.rm = T)
     )
+full <- tidyr::gather(full, key = "item", value = "qty")
 kable(full)
 ```
 
