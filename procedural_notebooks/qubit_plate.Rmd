@@ -1,0 +1,128 @@
+---
+title: "Qubit quantification of digest plate"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+*This protocol assumes that you have read and understand the manufacturer’s instructions attached below.  Please read the full manufacturer’s instructions before using this abbreviated protocol.*
+
+This protocol is to quantify a digest plate that has been cleaned.  This is not the manufacturers method of quantification and is not recommended without testing against other methods for accuracy.  
+
+1. For a full plate of 96 wells, make a working solution of HS buffer and dye by combining 19mL + 502uL of HS buffer with 98uL of HS dye.  (96 wells plus 2 standards)
+
+2. Place 190 uL of working solution into an empty well and add 10uL of standard 1.
+3. Place 190 uL of working solution into an empty well and add 10uL of standard 2.
+4. For the rest of the wells, add 199uL of working solution with a multichannel pipet
+5. Add 1uL sample to each well
+5. Vortex the plate
+6. Allow the plate to incubate 2 minutes.
+6. Qubit the standards
+7. Qubit the wells by cutting the plate apart, being very careful to keep track of the order that the wells are analyzed.
+8. Export data to usb drive by hitting the data button and then the image of the usb drive.
+9. Once you have verified that you have safely stored all of the data on the computer, clear the data on the qubit machine
+
+10. Import the qubit results to the database
+
+```{r message=FALSE}
+# update parameters for the current analysis ####
+# name of results file
+### HAVE TO CHANGE THE MICROLITER SYMBOL TO UL INSTEAD OF THE SPECIAL CHARACTER ###
+infile <- "/Volumes/USB DISK/2018 6/QUBIT_2018-06-12_12-33-PM.csv"
+
+# date of qubit analysis
+today <- Sys.Date()
+# today <- "2018-05-15"
+
+# name of plate measured
+this_plate <- "D4888-D4946"
+
+
+# type of plate 
+type <- "digest"
+id <- "digest_id"
+
+# type of analysis - HS or BR
+anly <- "HS"
+```
+
+```{r echo=FALSE, message=FALSE}
+source("../genomics/scripts/lab_helpers.R")
+library(knitr)
+lab <- read_db("Laboratory")
+qubit <- read.csv(infile, header = T, stringsAsFactors = F)
+
+### you get an error because there is a special symbol in the header row, change micro symbol to u ###
+
+# eliminate unwanted data by date
+qubit <- qubit %>% 
+  filter(grepl(today, Date.Time)) %>% 
+  select(Date.Time, Assay.Conc., Name) %>% 
+  arrange(Name)
+
+# create a table of samples that were measured
+samples <- lab %>%
+  tbl(type) %>%
+  filter(plate == this_plate) %>%
+  collect() %>%
+  mutate(row = substr(well, 1, 1), 
+    col = as.numeric(substr(well, 2, 3))) %>% 
+  arrange(col, row) %>% 
+  select(contains("id"))
+
+# attach to qubit results
+qubit <- cbind(qubit, samples)
+
+
+# calculate ng/ul
+if(anly == "HS"){
+  qubit <- qubit %>% 
+  mutate(quant = as.numeric(Assay.Conc.) * 0.2) %>% 
+    select(contains("id"), quant)
+}else{
+  qubit <- qubit %>% 
+    mutate(quant = as.numeric(Assay.Conc.) * 200) %>% 
+    select(contains("id"), quant)
+}
+
+qubit <- qubit %>%
+  mutate(quant = ifelse(digest_id == "D4818", 137, quant),
+         quant = ifelse(digest_id == "D4850", 152, quant))
+kable(qubit)
+```
+
+```{r echo = F, message=FALSE}
+# Update database rows  ####
+wlab <- write_db("Laboratory")
+
+full <- lab %>%
+  tbl(type) %>%
+  collect()
+
+
+```
+
+```{r echo=FALSE, message=FALSE}
+# Uncomment the write to database line if it is time to commit the changes to the databse.
+if (id == "extraction_id"){
+  change <- full %>%
+  filter(extraction_id %in% qubit$extraction_id) %>% 
+  select(-quant)
+  change <- left_join(change, select(qubit, -sample_id), by = "extraction_id") 
+  full <- change_rows(full, change, "extraction_id")
+  # dbWriteTable(wlab, "extraction", full, row.names = F, overwrite = T)
+  
+}
+
+if (id == "digest_id"){
+  change <- full %>%
+  filter(digest_id %in% qubit$digest_id) %>% 
+  select(-quant)
+  change <- left_join(change, select(qubit, -extraction_id), by = "digest_id") 
+  full <- change_rows(full, change, "digest_id")
+  # dbWriteTable(wlab, "digest", full, row.names = F, overwrite = T)
+}
+```
+
+
+
