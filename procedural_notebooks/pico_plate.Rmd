@@ -1,6 +1,8 @@
 ---
 title: "Pico Platereader Quantification"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 ```{r echo=FALSE, message=FALSE}
 library(knitr)
@@ -14,7 +16,7 @@ The manufacturers directions for this method describe preparing a solution that 
 Make a 200 fold dilution of pico dye.  Keep this in the dark.
  *Units for volume of 1x TE and units for volume of pico are uL*
 ```{r}
-num_samples <- 20
+num_samples <- (96*5)+(8+5) #4 plates
 ```
 
 ```{r echo=FALSE, results='asis'}
@@ -30,15 +32,19 @@ pico <- data.frame(num_samples, vol_1x_TE, vol_pico_conc)
 
 kable(pico)
 ```
-**Prepare a standard curve**
-**Units of final DNA concentration are ng/mL
-```{r}
-STD_DNA_conc <- 2
-vol_1x_TE <- c(0, 900, 990, 999, 1000)
-vol_STD_DNA <- c(1000, 100, 10, 1, 0)
-vol_pico <- c(rep(1000, 5))
-STD <- data.frame(vol_1x_TE, vol_STD_DNA, vol_pico)
-STD <- STD %>% 
-  mutate(final_DNA_conc = (STD_DNA_conc * vol_STD_DNA)/final_vol_samp)
-```
+
+
+
+
+<!-- **Prepare a standard curve** -->
+<!-- **Units of final DNA concentration are ng/mL -->
+<!-- ```{r} -->
+<!-- STD_DNA_conc <- 5 -->
+<!-- vol_1x_TE <- c(0, 900, 990, 999, 1000) -->
+<!-- vol_STD_DNA <- c(1000, 100, 10, 1, 0) -->
+<!-- vol_pico <- c(rep(1000, 5)) -->
+<!-- STD <- data.frame(vol_1x_TE, vol_STD_DNA, vol_pico) -->
+<!-- STD <- STD %>%  -->
+<!--   mutate(final_DNA_conc = (STD_DNA_conc * vol_STD_DNA)/final_vol_samp) -->
+<!-- ``` -->
 
