@@ -1,0 +1,131 @@
+---
+title: "Extraction"
+author: "APCL18_095 - APCL18_188"
+date: "2018-06-19"
+output:
+  pdf_document: default
+  # html_notebook: default
+---
+
+This is a script for adding samples that are not in the laboratory database and have not been extracted 
+source("scripts/lab_helpers.R")
+```{r echo=FALSE, message=FALSE}
+source("../genomics/scripts/lab_helpers.R")
+library(kableExtra)
+```
+#### obtain a list of all clownfish sample ids from the Leyte database ####
+```{r}
+# connect to leyte fieldwork db
+leyte <- read_db("Leyte")
+# import fish table
+# select down to only sample_id numbers and remove any rows without a sample
+fish <- leyte %>% tbl("clownfish") %>% 
+  select(sample_id) %>%                      # select only the column sample_id
+  filter(!is.na(sample_id)) %>%              # remove any non-sample observations
+  distinct(sample_id) %>%                         # remove any repeat sample_ids (this should not be needed)
+  collect()
+
+# make sure each sample_id is only represented once
+fish <- distinct(fish)
+```
+
+####Because we are targeting a known range of fin clips, going to comment out the following portion and select the range
+```{r}
+work <- fish %>% 
+  filter(sample_id >= "APCL18_095", sample_id <= "APCL18_188")
+```
+
+<!-- #### compare that list to samples that have already been extracted #### -->
+<!-- ```{r} -->
+<!-- #connect to laboratory db -->
+<!-- lab <- read_db("Laboratory") -->
+
+<!-- # import extraction table and reduce to only the sample_id column -->
+<!-- extr <- lab %>% tbl("extraction") %>%  -->
+<!--   select(sample_id) %>%  -->
+<!--   collect() -->
+<!-- ``` -->
+<!-- #### select any samples in "fish" that have notbeen extracted in "extr"  -->
+<!-- ```{r} -->
+<!-- work <- fish %>%  -->
+<!--   filter(!sample_id %in% extr$sample_id) -->
+
+<!-- # remove samples that cannot be extracted -->
+<!-- errors <- c("APCL12_271", "APCL13_024", "APCL13_547", "APCL13_549", "APCL13_551", "APCL13_553", "APCL14_030", "APCL14_157", "APCL14_161", "APCL14_164", "APCL14_301", "APCL14_304", "APCL14_305", "APCL14_306", "APCL14_492", "APCL14_494", "APCL15_355550", "APCL15_404305", "APCL15_405807") -->
+
+<!-- work <- work %>%  -->
+<!--   filter(!sample_id %in% errors) %>%  -->
+<!--   select(sample_id) %>%  -->
+<!--   arrange(sample_id) -->
+
+<!-- ``` -->
+
+This is set up to handle one plate at a time.
+```{r}
+# define wells
+plate <- data.frame(row = rep(LETTERS[1:8], 12), col = unlist(lapply(1:12, rep, 8))) %>% 
+  mutate(sample_id = ifelse(row == "D" & col == 2, "XXXX", NA), 
+    sample_id = ifelse(row == "E" & col == 8, "XXXX", sample_id))
+
+samples <- plate %>% 
+  filter(is.na(sample_id)) %>% 
+  select(-sample_id)
+
+plate <- anti_join(plate, samples, by = c("row", "col"))
+
+samples <- cbind(samples, work)
+
+plate <- rbind(plate, samples)
+
+
+#### make a plate map of sample IDs (for knowing where to place fin clips) ####
+  platemap <- as.matrix(reshape2::acast(plate, plate[,1] ~ plate[,2]), value.var = plate[,3])
+knitr::kable(platemap, booktabs = T) %>% 
+  kable_styling(latex_options = "scale_down")
+```
+### ONLY DO THIS ONCE ### generate extract numbers for database ####
+```{r}
+lab <- read_db("Laboratory")
+extracted <- lab %>% tbl("extraction") %>% 
+  summarise(last = max(extraction_id)) %>% 
+  collect() %>% 
+  mutate(last = substr(last, 2,5))
+
+plate <- plate %>% 
+  mutate(well = 1:nrow(plate)) %>% 
+  mutate(extraction_id = paste("E", well + as.numeric(extracted$last), sep = "")) %>% 
+  mutate(well = paste(row, col, sep = "")) %>% 
+  mutate(notes = "lysed 2018-06-19", 
+    method = "DNeasy96", 
+    final_vol = "200")
+
+plate_name <- plate %>% 
+  summarise(first = min(extraction_id), 
+    last = max(extraction_id))
+
+# make a platemap with extraction ids ####
+map <- plate %>% 
+  select(row, col, extraction_id)
+  platemap <- as.matrix(reshape2::acast(map, map[,1] ~ map[,2]), value.var = map[,3])
+knitr::kable(platemap, booktabs = T) %>% 
+  kable_styling()
+
+plate <- plate %>% 
+  mutate(plate = paste(plate_name$first, plate_name$last, sep = "-")) %>% 
+  select(-row, -col)
+
+
+```
+### import the extract_list into the database ####
+##Make sure you have created your output PDF for this labwork before sending to the database ##
+
+```{r}
+rm(lab)
+lab <- write_db("Laboratory")
+# dbWriteTable(lab, "extraction", plate, row.names = F, overwrite = F, append = T)
+
+dbDisconnect(lab)
+rm(lab)
+```
+
+
