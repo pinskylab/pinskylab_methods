@@ -1,28 +1,48 @@
 ---
 title: "Make platemap from database well locations"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 This document will generate a platemap based on the well locations recorded in the database.
 
 ```{r echo=FALSE, message=FALSE}
-source("genomics/scripts/lab_helpers.R")
+source("../genomics/scripts/lab_helpers.R")
 lab <- read_db("Laboratory")
 ```
 Which plate would you like to make a map for?
 ```{r}
-plate_name <- "D4888-D4946"
+plate_name <- "L2488-L2583"
 ```
 
 Make a plate map:
 ```{r}
+if (substr(plate_name, 1, 1) == "D"){
 map <- lab %>% 
   tbl("digest") %>% 
   filter(plate == plate_name) %>% 
   collect()
 
-map <- plate_from_db(map, "digest_id")
+map <- plate_from_db(map, "digest_id")  
+}
 
+if (substr(plate_name, 1, 1) == "L"){
+map <- lab %>% 
+  tbl("ligation") %>% 
+  filter(plate == plate_name) %>% 
+  collect()
+
+dig_dest_map <- plate_from_db(map, "digest_id")
+dig_plate <- platemap
+
+lig_dest_map <- plate_from_db(map, "ligation_id")
+}
+# taking up room so the ligation plate is all on one page
+#
+#
+
+knitr::kable(dig_plate)
 knitr::kable(platemap)
 ```
 
