@@ -1,29 +1,34 @@
 ---
-title: "Calculate range of digest quantification"
+title: "Fix the plate name"
 output:
   pdf_document: default
   html_notebook: default
+params: 
+  type: "digest"
+  id: "digest_id"
+  
 ---
 
 Access database.
 ```{r echo = F, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
-lab <- read_db("Laboratory")
+lab <- write_db("Laboratory")
 library(knitr)
 ```
-Find the range of quantifications
+Find the range of rows to be changed
 ```{r}
 # pull in all table
-# extr <- lab %>% dbReadTable("extraction") %>% collect()
-digs <- lab %>% tbl("digest") %>% collect()
-# ligs <- lab %>% dbReadTable("ligation") %>% collect()
+dat <- dbReadTable(lab, params$type)
 
-range <- digs %>% 
-  summarise(min = min(quant, na.rm = T), 
-    max = max(quant, na.rm = T)) %>% 
-  mutate(meas1 = min/200, 
-    meas2 = max/200)
+change <- dat %>% 
+  filter(plate == "D5501-5580") %>% 
+  mutate(plate = "D5501-D5580")
 
-
-
+dat <- change_rows(dat, change, params$id)
 ```
+Write to database
+```{r}
+# dbWriteTable(lab, params$type, dat, row.names = F, overwrite = T)
+# dbDisconnect(lab)
+```
+
