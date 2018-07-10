@@ -1,48 +1,32 @@
 ---
-title: "Fix mis-matched quantification"
-output: html_notebook
+title: "Move samples to known issues"
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
-The digest plate D4888-D4946 is not in digest_id order so the quantification script needs to be amended to accurately match quantifications to samples.
+Some of the samples in the ligation table have a note that says "questionable sample identity".  Moving these to the known issues table
 
-Pull the plate from the database
-```{r echo=FALSE, message=FALSE}
-source("genomics/scripts/lab_helpers.R")
+Pull the info from the database
+```{r pull info from database, echo=FALSE, message=FALSE}
+source("../genomics/scripts/lab_helpers.R")
 lab <- read_db("Laboratory")
-```
-```{r}
-change <- lab %>% tbl("digest") %>% 
-  filter(plate == "D4888-D4946") %>% 
+
+issues <- lab %>% 
+  tbl("ligation") %>% 
   collect() %>% 
-  mutate(row = substr(well, 1, 1), 
-    col = as.numeric(substr(well, 2, 3))) %>% 
-  arrange(col, row)
+  filter(grepl("2015-09-01", notes), 
+    !is.na(plate)) %>% 
+  select(ligation_id, notes) %>% 
+  rename(issue = notes)
+
+knitr::kable(issues)
 ```
-Pull in the qubit quantification file
+
+Write info  to known_issues in database
 ```{r}
-qubit <- read.csv("/Volumes/USB DISK/2018 6/QUBIT_2018-06-12_12-33-PM.csv", stringsAsFactors = F)
-
-qubit <- qubit  %>% 
-  select(Date.Time, Assay.Conc.) %>% 
-  mutate(quant = 200*as.numeric(Assay.Conc.))%>% 
-  arrange(Date.Time)
-
-change <- select(change, -quant)
-change <- cbind(qubit, change)
-
-```
-I don't trust which wells I measured becasue I know I recorded that these were wells 4A and 4G, but there aren't samples in those wells, should have had 2 extra readings but didn't.  Going to remove the quants for this plate and re-run on the plate reader.
-
-```{r}
-change <- lab %>% tbl("digest") %>% 
-  filter(plate == "D4888-D4946") %>% 
-  collect() %>% 
-  mutate(quant = NA)
-
 w_lab <- write_db("Laboratory")
-
-digs <- dbReadTable(w_lab, "digest")
-digs <- change_rows(digs, change, "digest_id")
-# dbWriteTable(w_lab, "digest", digs, row.names = F, overwrite = T)
+dbWriteTable(w_lab, "known_issues", issues, append = T, row.names = F)
+dbDisconnect(w_lab, lab)
+rm(w_lab, lab)
 ```
-
