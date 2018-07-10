@@ -141,19 +141,19 @@ samp_to_site <- function(sample) {
   leyte <- read_db("Leyte")
   fish <- leyte %>% 
     tbl("clownfish") %>% 
-    filter(sample_id == sample) %>% 
+    filter(sample_id %in% sample) %>% 
     select(sample_id, anem_table_id) %>% 
     collect()
   anem <- leyte %>% 
     tbl("anemones") %>% 
-    filter(anem_table_id == fish$anem_table_id) %>% 
+    filter(anem_table_id %in% fish$anem_table_id) %>% 
     select(anem_table_id, anem_id, dive_table_id) %>% 
     collect()
   fish <- left_join(fish, anem, by = "anem_table_id")
   rm(anem)
   dive <- leyte %>% 
     tbl("diveinfo") %>% 
-    filter(dive_table_id == fish$dive_table_id) %>% 
+    filter(dive_table_id %in% fish$dive_table_id) %>% 
     select(dive_num, dive_table_id, site) %>% 
     collect()
   fish <- left_join(fish, dive, by = "dive_table_id")
