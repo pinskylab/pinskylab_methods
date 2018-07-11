@@ -3,10 +3,10 @@ title: "Identity Analysis of APCL"
 output:
   pdf_document: default
   html_notebook: default
-date: '2018-06-07'
+date: "`r Sys.Date()"
 ---
 
-This cervus identity analysis was conducted by KAC on the individuals included in APCL sequencing runs 03-17 (majority of individuals captured in 2012-2015, <100 from 2016).
+This cervus identity analysis was conducted by KAC on the individuals included in APCL sequencing runs 03-17 (majority of individuals captured in 2012-2015, <50 from 2016).
 
 1. Add "pop" line to genepop in text editor. 
 *File "SNP.DP3g95p5maf05HM_seq_17_03.LDpruned.beta.noissues.IDfin.gen" is in the id_support folder.*
@@ -48,10 +48,14 @@ source("../genomics/scripts/lab_helpers.R")
 source("../genomics/scripts/gen_helpers.R")
 
 # infile <- "id_support/"
-infile <- "~/Downloads/809_seq17-03_ID.csv"
+infile <- "id_support/SNP.DP3g95p5maf05HM.HWE.recode.LDpruned.ID2.noissues_ID.csv"
+
+# KAC created a file of samples that are of special interest and not regenotypes
+filtered <- "id_support/notregenos_notin809ID.csv"
 
 # Import cervus identity results ------------------------------------------
 idcsv <- readr::read_csv(infile)
+filtered <- readr::read_csv(filtered)
 
 # convert column names to lower case
 names(idcsv) <- stringr::str_to_lower(names(idcsv))
@@ -101,7 +105,10 @@ rm(lab1, lab2)
 ```
 4. Add field data
 ```{r field_data}
-samp1 <- samp_to_field_meta(idcsv$first_sample_id)
+debugonce(samp_to_field_meta)
+samp1 <- idcsv %>% 
+  select(first_sample_id)
+fish <- samp_to_field_meta(samp1)
 
 
 c1 <- leyte %>% tbl("diveinfo") %>% select(id, date, site))
