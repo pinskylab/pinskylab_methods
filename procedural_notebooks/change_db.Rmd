@@ -1,34 +1,36 @@
 ---
-title: "Fix the plate name"
+title: "Remove compromised samples from plate"
 output:
   pdf_document: default
   html_notebook: default
 params: 
-  type: "digest"
-  id: "digest_id"
+  type: "clownfish"
+  id: "sample_id"
+  db: "Leyte"
   
 ---
 
 Access database.
 ```{r echo = F, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
-lab <- write_db("Laboratory")
+write <- write_db(params$db)
 library(knitr)
 ```
 Find the range of rows to be changed
 ```{r}
 # pull in all table
-dat <- dbReadTable(lab, params$type)
+dat <- dbReadTable(write, params$type)
 
 change <- dat %>% 
-  filter(plate == "D5501-5580") %>% 
-  mutate(plate = "D5501-D5580")
+  filter(sample_id == "APCL18_235" | sample_id == "APCL18_259") %>% 
+  mutate(notes = "Sample tube did not contain ethanol and was stinky, fin was degraded, no longer useable")
+
 
 dat <- change_rows(dat, change, params$id)
 ```
 Write to database
 ```{r}
-# dbWriteTable(lab, params$type, dat, row.names = F, overwrite = T)
-# dbDisconnect(lab)
+# dbWriteTable(write, params$type, dat, row.names = F, overwrite = T)
+# dbDisconnect(write)
 ```
 
