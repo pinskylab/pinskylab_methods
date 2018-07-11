@@ -266,7 +266,6 @@ samp_to_field_meta <- function(sample) {
     filter(sample_id %in% sample) %>% 
     select(sample_id, anem_table_id, size, color, cap_id, tag_id) %>% 
     collect()
-  fish <- left_join(fish, sample, by = "sample_id")
   anem <- leyte %>% 
     tbl("anemones") %>% 
     filter(anem_table_id %in% fish$anem_table_id) %>% 
