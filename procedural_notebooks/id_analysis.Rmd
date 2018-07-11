@@ -42,67 +42,61 @@ MRS notes from the past said this took 30 seconds with 809 loci, KAC notes from 
   ix. Do not show all comparisons
   
 *MRS to run the remaining identity analysis in R*
-```{r echo=FALSE, message=FALSE}
+1. Setup workspace, load and format data
+```{r workspace, echo=FALSE, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
 source("../genomics/scripts/gen_helpers.R")
 
-# infile <- "id_support/SNP.DP3g95p5maf05HM_seq_17_03.LDpruned.beta.noissues.IDfin.ident_1.txt"
-infile <- "../../Identity/seq03-16_20160718_ID_all.csv"
+# infile <- "id_support/"
+infile <- "~/Downloads/809_seq17-03_ID.csv"
 
 # Import cervus identity results ------------------------------------------
-idcsv <- read.csv(infile, stringsAsFactors = F)
+idcsv <- readr::read_csv(infile)
 
-# fix formatting
+# convert column names to lower case
 names(idcsv) <- stringr::str_to_lower(names(idcsv))
+# convert spaces in names to underscores
+names(idcsv) <- stringr::str_replace(names(idcsv), " ", "_")
 
-idcsv <- slice(idcsv, 1:10)
-
-# if necessary, strip IDs down to ligation id only
+# if necessary, strip ids down to ligation id only
 idcsv <- idcsv %>% 
-  mutate(first.id = ifelse(nchar(first.id) == 15, paste("APCL_", substr(first.id, 11, 15), sep = ""), ifelse(nchar(first.id) == 10, substr(first.id, 6, 10), first.id)), 
-    second.id = ifelse(nchar(second.id) == 15, paste("APCL_", substr(second.id, 11, 15), sep = ""), ifelse(nchar(second.id) == 10, substr(second.id, 6, 10), second.id)))
-  
-
-# Add metadata ------------------------------------------------------------
-
+  mutate(first_id = ifelse(nchar(first_id) == 15, paste("APCL_", substr(first_id, 11, 15), sep = ""), ifelse(nchar(first_id) == 10, substr(first_id, 6, 10), first_id)), 
+    second_id = ifelse(nchar(second_id) == 15, paste("APCL_", substr(second_id, 11, 15), sep = ""), ifelse(nchar(second_id) == 10, substr(second_id, 6, 10), second_id)))
+```  
+2. Add metadata  
+```{r metadata}
 # Connect to database -----------------------------------------------------
-
-suppressMessages(library(dplyr))
-labor <- src_mysql(dbname = "Laboratory", default.file = path.expand("~/myconfig.cnf"), port = 3306, create = F, host = NULL, user = NULL, password = NULL)
+lab <- read_db("Laboratory")
 
 # add Sample IDs
-suppressWarnings(c1 <- labor %>% tbl("extraction") %>% select(extraction_id, sample_id))
-suppressWarnings(c2 <- labor %>% tbl("digest") %>% select(digest_id, extraction_id))
-c3 <- left_join(c2, c1, by = "extraction_id")
-suppressWarnings(c4 <- labor %>% tbl("ligation") %>% select(ligation_id, digest_id))
-c5 <- left_join(c4, c3, by = "digest_id") %>% collect()
+lab1 <- idcsv %>% 
+  rename(ligation_id = first_id)
+lab1 <- samp_from_lig(lab1)
 
-### WAIT ###
+lab2 <- idcsv %>% 
+  rename(ligation_id = second_id)
+lab2 <- samp_from_lig(lab2)
 
-# for First.ids 
-lab1 <- c5
-names(lab1) <- paste("First.", names(lab1), sep = "")
+# change names to represent first fish
+names(lab1) <- paste("first_", names(lab1), sep = "")
+names(lab2) <- paste("second_", names(lab2), sep = "")
 
-idcsv <- left_join(idcsv, lab1, by = c("First.ID" = "First.ligation_id"))
-
-### WAIT ###
-
-# For Second.IDs
-lab2 <- c5
-names(lab2) <- paste("Second.", names(lab2), sep = "")
-
-idcsv <- left_join(idcsv, lab2, by = c("Second.ID" = "Second.ligation_id"))
-
+# add to full table
+idcsv <- left_join(idcsv, lab1, by = c("first_id" = "first_ligation_id"))
+idcsv <- left_join(idcsv, lab2, by = c("second_id" = "second_ligation_id"))
 
 # check proportion of matches/mismatches
-idcsv <- idcsv %>% mutate(mismatch_prop = Mismatching.loci/(Mismatching.loci+Matching.loci))
+idcsv <- idcsv %>% 
+  mutate(mismatch_prop = mismatching_loci/(mismatching_loci + matching_loci))
 
-plot(mismatch_prop ~ Matching.loci, idcsv, bty = "n", las = 1, xlim = c(600,1100), ylim = c(0,0.15))
+plot(mismatch_prop ~ matching_loci, idcsv, bty = "n", las = 1, xlim = c(600,1100), ylim = c(0,0.15))
+
 # bty "l" is this type, "n" is no box
 #las 1 is all labels horizontal, 2 is always perpendicular to axis, 3 is always vertical.
 
 # clean up
-rm(lab1, lab2, c1, c2, c3, c4, c5, i)
+rm(lab1, lab2)
+```
 
 # Add field data ----------------------------------------------------------
 leyte <- src_mysql(dbname = "Leyte", default.file = path.expand("~/myconfig.cnf"), port = 3306, create = F, host = NULL, user = NULL, password = NULL)
@@ -133,7 +127,7 @@ latlong <- leyte %>% tbl("GPX") %>% collect()
 
 ### WAIT ###
 
-# Add lat long for first.id -----------------------------------------------
+# Add lat long for first_id -----------------------------------------------
 for(i in 1:nrow(idcsv)){
   #Get date and time information for the anemone
   date <- as.character(idcsv$First.date[i])
@@ -167,7 +161,7 @@ for(i in 1:nrow(idcsv)){
 
 ### WAIT ###
 
-# Add lat long for second.id ----------------------------------------------
+# Add lat long for second_id ----------------------------------------------
 for(i in 1:nrow(idcsv)){
   #Get date and time information for the anemone
   date <- as.character(idcsv$Second.date[i])
@@ -203,6 +197,9 @@ for(i in 1:nrow(idcsv)){
 
 # cleanup
 rm(date, datesplit, day, hour , i , i2, latlongindex, min, month, sec, time, timesplit, year, latlong)
+
+```
+
 
 # Flag matches with same date of capture ----------------------------------
 # idcsv$First.date <- as.Date(idcsv$First.date, "%m/%d/%Y")
@@ -301,8 +298,8 @@ genedf$drop <- NA
 # Run through id analysis and compare to determine which to remove --------
 for(i in 1:nrow(idcsv)){
   # a & b are  the line numbers from genepop file that matches an the first and second ID in the match table
-  a <- which(genedf$names == idcsv$First.ID[i])
-  b <- which(genedf$names == idcsv$Second.ID[i])
+  a <- which(genedf$names == idcsv$First_id[i])
+  b <- which(genedf$names == idcsv$Second_id[i])
 if (genedf$numloci[a] > genedf$numloci[b]){
   genedf$drop[b] <- "DROP"
 } else{
