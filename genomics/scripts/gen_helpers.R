@@ -250,3 +250,37 @@ anemid_latlong <- function(anem.table.id, latlondata) { #anem.table.id is one an
   
 }
 
+# samp_to_field_meta ####
+#' add field data for a sample 
+#' @export
+#' @name samp_to_field_meta
+#' @author Michelle Stuart
+#' @param x = sample_id
+#' @examples 
+#' new <- samp_to_field_meta(sample)
+
+samp_to_field_meta <- function(sample) {
+  leyte <- read_db("Leyte")
+  fish <- leyte %>% 
+    tbl("clownfish") %>% 
+    filter(sample_id %in% sample) %>% 
+    select(sample_id, anem_table_id, size, color, cap_id, tag_id) %>% 
+    collect()
+  fish <- left_join(fish, sample, by = "sample_id")
+  anem <- leyte %>% 
+    tbl("anemones") %>% 
+    filter(anem_table_id %in% fish$anem_table_id) %>% 
+    select(anem_table_id, anem_id, dive_table_id, obs_time) %>% 
+    collect()
+  fish <- left_join(fish, anem, by = "anem_table_id")
+  rm(anem)
+  dive <- leyte %>% 
+    tbl("diveinfo") %>% 
+    filter(dive_table_id %in% fish$dive_table_id) %>% 
+    select(dive_num, dive_table_id, site, date) %>% 
+    collect()
+  fish <- left_join(fish, dive, by = "dive_table_id")
+  rm(dive)
+  return(fish)
+  
+}
