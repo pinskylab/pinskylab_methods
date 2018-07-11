@@ -6,8 +6,8 @@ output:
   html_document: default
 date: '`r Sys.Date()`'
 params:
-  first: APCL18_189
-  last: APCL18_282
+  first: APCL18_095
+  last: APCL18_188
   num_samples: 96
 ---
 
@@ -52,7 +52,8 @@ plate <- anti_join(plate, samples, by = c("row", "col"))
 
 samples <- cbind(samples, work)
 
-plate <- rbind(plate, samples)
+plate <- rbind(plate, samples) %>% 
+  arrange(col, row)
 ```
 
 ####Make a plate map of sample IDs (for knowing where to place fin clips) ####
@@ -67,7 +68,7 @@ knitr::kable(platemap, booktabs = T) %>%
 ```{r}
 lab <- read_db("Laboratory")
 extracted <- lab %>% tbl("extraction") %>% 
-  summarise(last = max(extraction_id)) %>% 
+  summarise(last = max(extraction_id, na.rm = T)) %>% 
   collect() %>% 
   mutate(last = substr(last, 2,5))
 
@@ -80,7 +81,7 @@ plate <- plate %>%
 
 plate_name <- plate %>% 
   summarise(first = min(extraction_id), 
-    last = max(extraction_id))
+    last = max(extraction_id, na.rm = T))
 ```
 ####Make a platemap with extraction ids
 ```{r}
