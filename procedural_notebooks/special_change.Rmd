@@ -1,32 +1,88 @@
 ---
-title: "Move samples to known issues"
+title: "Sample id appearing in Leyte database twice, investigation"
 output:
   pdf_document: default
   html_notebook: default
+params: 
+  db: "Leyte"
+  
 ---
 
-Some of the samples in the ligation table have a note that says "questionable sample identity".  Moving these to the known issues table
+Why are there 2 entries with different anem_table_ids for APCL18_529?  Are there any other duplicated samples or fish in the Leyte db?
 
 Pull the info from the database
 ```{r pull info from database, echo=FALSE, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
-lab <- read_db("Laboratory")
+source("../genomics/scripts/gen_helpers.R")
+db <- read_db(params$db)
 
-issues <- lab %>% 
-  tbl("ligation") %>% 
+dups <- db %>% 
+  tbl("clownfish") %>% 
   collect() %>% 
-  filter(grepl("2015-09-01", notes), 
-    !is.na(plate)) %>% 
-  select(ligation_id, notes) %>% 
-  rename(issue = notes)
+  group_by(sample_id) %>% 
+  summarise(count = n()) %>% 
+  filter(count > 1, 
+    !is.na(sample_id))
 
-knitr::kable(issues)
+knitr::kable(dups)
 ```
-
-Write info  to known_issues in database
+There are 4 samples that appear in the database twice.  Why?  Get full meta data for these samples, including table_ids
 ```{r}
-w_lab <- write_db("Laboratory")
-dbWriteTable(w_lab, "known_issues", issues, append = T, row.names = F)
-dbDisconnect(w_lab, lab)
-rm(w_lab, lab)
+
+# full fish table for those samples
+fish <- leyte %>% 
+  tbl("clownfish") %>% 
+  filter(sample_id %in% dups$sample_id) %>% 
+  collect()
+
+# full anem table for those samples
+anem <- leyte %>% 
+  tbl("anemones") %>% 
+  filter(anem_table_id %in% fish$anem_table_id) %>% 
+  collect()
+
+# full dive table for these samples
+dive <- leyte %>% 
+  tbl("diveinfo") %>% 
+  filter(dive_table_id %in% anem$dive_table_id) %>% 
+  collect()
+
+# for one example, 2671, there are 2 dives listed, and for those divers, one is MRS and one is JJO but only MRS is listed as anem collector, so 
+
+delete_anem_dive <- left_join(anem, dive, by = "dive_table_id") %>% 
+  filter(collector != divers) %>% 
+  select(dive_table_id, anem_table_id, collector, divers, dive_num)
+
+# double check with the data sheet
+sheet <- readr::read_csv("~/Downloads/2018_clownfish_data_entry - diveinfo.csv")
+
+delete_anem_dive <- left_join(delete_anem_dive, sheet, by = "dive_num") 
+delete_anem_dive <- delete_anem_dive %>% 
+  filter(anem != 1)
+
+# this seems to have worked well
+
+anem <- leyte %>% 
+  tbl("anemones") %>% 
+  filter(!anem_table_id %in% delete_anem_dive$anem_table_id) %>% 
+  collect()
+
+fish <- leyte %>% 
+  tbl("clownfish") %>% 
+  filter(!anem_table_id %in% delete_anem_dive$anem_table_id) %>% 
+  collect()
+
+w_leyte <- write_db("Leyte")
+# dbWriteTable(w_leyte, "anemones", anem, row.names = F, overwrite = T)
+# dbWriteTable(w_leyte, "clownfish", fish, row.names = F, overwrite = T)
+dbDisconnect(w_leyte)
+
+
+
 ```
+
+Going back to the top, 2 duplicates still show up, re-running from the top to see if I can tease out why...
+The fish have different collectors
+And the anems have different collectors - the sheet doesn't work because they both have 1s for both of the roles.  Going to delete the anem_table_ids that show up before comparing with the sheet.
+
+Ran again from the top and now no more duplicates show up.

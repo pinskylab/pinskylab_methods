@@ -1,5 +1,5 @@
 ---
-title: '`r paste("Extraction plan for ", params$first, "-", params$last, sep =
+title: '`r paste("Extraction plan for ", params$first, "-", params$last, " on less than full plates",sep =
   "")`'
 output:
   pdf_document: default

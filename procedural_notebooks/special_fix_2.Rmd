@@ -1,143 +1,32 @@
 ---
-title: "Conflicting plate maps"
-author: "Michelle Stuart"
-date: "7/9/2018"
+title: "Sample id appearing in Leyte database twice, investigation"
 output:
   pdf_document: default
-  html_document: default
+  html_notebook: default
+params: 
+  db: "Leyte"
+  
 ---
 
-Ligation plate L2488-L2583 has a different labwork source plate map than the one recorded in the database. 
-
-The platemap in evernote matches the plate map in the old google sheets platemaps file.  The database matches the old google sheet labwork data.  However, the map and the spreadsheet don't match.
-
-```{r import old plate map of labwork, message=FALSE}
-library(tidyverse)
-old <- readr::read_csv("~/Downloads/Plate_Maps_old - Sheet93-2.csv") %>% 
-  rename(row = X1) %>% 
-  filter(!is.na(row)) %>% 
-  gather(key, value, -row) %>% 
-  rename(col = key, 
-    digest = value) %>% 
-  mutate(old_digest_id = substr(digest, 1, 5), 
-    well = paste(row, col, sep = ""))
-
-```
-```{r import the database version of the plate}
-source("../genomics/scripts/lab_helpers.R")
-lab <- read_db("Laboratory")
-
-ligs <- lab %>% 
-  tbl("ligation") %>% 
-  filter(plate == "L2488-L2583") %>% 
-  select(ligation_id, digest_id, plate, well, notes) %>% 
-  collect() %>% 
-  rename(new_digest_id = digest_id)
-```
-
-```{r compare the two versions}
-both <- left_join(old, ligs, by = "well") %>% 
-  mutate(warning = ifelse(old_digest_id != new_digest_id, "WARNING", NA))
-```
-Basically the entire 2nd pool on the plate could be mis-labeled.
-
-Do any of the fish involved have a cap_id?
-```{r find cap-ids to double check well identity}
+Are there duplicate lines in the clownfish database?
+```{r}
 source("../genomics/scripts/gen_helpers.R")
-samp <- samp_from_lig(both)
 
 leyte <- read_db("Leyte")
+
 fish <- leyte %>% 
   tbl("clownfish") %>% 
-  filter(sample_id %in% samp$sample_id) %>% 
-  select(sample_id, cap_id) %>% 
   collect()
 
-both <- left_join(both, samp, by = "ligation_id")
-rm(samp)
-both <- left_join(both, fish, by = "sample_id")
-rm(fish, ligs, old)
-```
-Double check the matches to see if a different match would make as much sense.
-```{r investigate identity matches}
-# separate out fish with cap_ids
-matches <- both %>% 
-  filter(!is.na(cap_id), 
-    !is.na(warning))
+# 5434 rows
 
-    
-# connect digest ids to extraction ids
-old_dig <- lab %>% 
-  tbl("digest") %>% 
-  filter(digest_id %in% matches$old_digest_id) %>% 
-  select(extraction_id, digest_id) %>% 
-  rename(old_extr = extraction_id) %>% 
-  collect()
+fish <- fish %>% 
+  distinct()
 
-matches <- left_join(matches, old_dig, by = c("old_digest_id" = "digest_id"))
-rm(old_dig)
+# 5361 rows
 
-new_dig <- lab %>% 
-  tbl("digest") %>% 
-  filter(digest_id %in% matches$new_digest_id) %>% 
-  select(extraction_id, digest_id) %>% 
-  rename(new_extr = extraction_id) %>% 
-  collect()
-
-matches <- left_join(matches, new_dig, by = c("new_digest_id" = "digest_id"))
-rm(new_dig)    
-  
-old_extr <- lab %>% 
-  tbl("extraction") %>% 
-  collect() %>% 
-  filter(extraction_id %in% matches$old_extr) %>% 
-  select(extraction_id, sample_id) %>% 
-  rename(old_sample_id = sample_id)
-
-matches <- left_join(matches, old_extr, by = c("old_extr" = "extraction_id"))
-rm(old_extr)
-
-new_extr <- lab %>% 
-  tbl("extraction") %>% 
-  collect() %>% 
-  filter(extraction_id %in% matches$new_extr) %>% 
-  select(extraction_id, sample_id) %>% 
-  rename(new_sample_id = sample_id)
-matches <- left_join(matches, new_extr, by = c("new_extr" = "extraction_id"))
-rm(new_extr)
+# w_leyte <- write_db("Leyte")
+# # dbWriteTable(w_leyte, "clownfish", fish, row.names = F, overwrite = T)
+# dbDisconnect(w_leyte)
 ```
 
-Get site data for these fish
-```{r get site data}
-old_sites <- samp_to_site(matches$old_sample_id) %>% 
-  select(sample_id, site) %>%
-  rename(old_sample_id = sample_id, 
-    old_site = site)
-matches <- left_join(matches, old_sites, by = "old_sample_id")
-rm(old_sites)
-
-new_sites <- samp_to_site(matches$new_sample_id) %>% 
-  select(sample_id, site) %>%
-  rename(new_sample_id = sample_id, 
-    new_site = site)
-matches <- left_join(matches, new_sites, by = "new_sample_id")
-rm(new_sites)
-```
-
-Compare fish
-```{r}
-for (i in seq(matches$row)){
-  fish <- leyte %>% 
-    tbl("clownfish") %>% 
-    filter(cap_id == matches$cap_id[i]) %>%
-    select(sample_id, size, color, cap_id) %>%
-    collect()
-}
-```
-old APCL14_377 is as plausible as current APCL14_427 because of size  
-old APCL12_023 is as plausible as current APCL12_029 because of size  
-old APCL14_467 does not make as much sense as current APCL12_063 because of location (old is not in Palanas, current and match both are)  
-old APCL12_145 does not make as much sense as current APCL12_183 because of location  
-old APCL12_155 does not make as much sense as current APCL12_184 because of location  
-old APCL12_183 does not make as much sense as current APCL12_189 because of size (old fish is much bigger than recapture)  
-old APCL12_195 does not make as much sense as current APCL15_403603 because of location.

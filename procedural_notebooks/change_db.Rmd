@@ -1,11 +1,11 @@
 ---
-title: "Remove compromised samples from plate"
+title: "Remove samples from plate where fin had degraded and there was no ethanol"
 output:
   pdf_document: default
   html_notebook: default
 params: 
   type: "clownfish"
-  id: "sample_id"
+  id: "fish_table_id"
   db: "Leyte"
   
 ---
@@ -22,9 +22,12 @@ Find the range of rows to be changed
 dat <- dbReadTable(write, params$type)
 
 change <- dat %>% 
-  filter(sample_id == "APCL18_235" | sample_id == "APCL18_259") %>% 
-  mutate(notes = "Sample tube did not contain ethanol and was stinky, fin was degraded, no longer useable")
-
+  filter(anem_table_id >= 9030, anem_table_id <= 9034) %>% 
+  mutate(anem_table_id = 8100,
+    correction = "Y",
+    corr_message = "Changed anem_table_id to 8100 because the fish observations on the anemone table were deleted", 
+    corr_date = "2018-07-12",
+    corr_editor = "MRS")
 
 dat <- change_rows(dat, change, params$id)
 ```
