@@ -42,20 +42,20 @@ MRS notes from the past said this took 30 seconds with 809 loci, KAC notes from 
   ix. Do not show all comparisons
   
 *MRS to run the remaining identity analysis in R*
+
 1. Setup workspace, load and format data
-```{r workspace, echo=FALSE, message=FALSE}
+```{r echo=FALSE, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
 source("../genomics/scripts/gen_helpers.R")
 
-# infile <- "id_support/"
-infile <- "id_support/SNP.DP3g95p5maf05HM.HWE.recode.LDpruned.ID2.noissues_ID.csv"
+# infile <- "id_support/SNP.DP3g95p5maf05HM.HWE.recode.LDpruned.ID2.noissues_ID.csv"
 
 # KAC created a file of samples that are of special interest and not regenotypes
-filtered <- "id_support/notregenos_notin809ID.csv"
+infile <- "id_support/notregenos_notin809ID.csv"
 
 # Import cervus identity results ------------------------------------------
 idcsv <- readr::read_csv(infile)
-filtered <- readr::read_csv(filtered)
+# filtered <- readr::read_csv(filtered)
 
 # convert column names to lower case
 names(idcsv) <- stringr::str_to_lower(names(idcsv))
@@ -89,7 +89,7 @@ names(lab2) <- paste("second_", names(lab2), sep = "")
 idcsv <- left_join(idcsv, lab1, by = c("first_id" = "first_ligation_id"))
 idcsv <- left_join(idcsv, lab2, by = c("second_id" = "second_ligation_id"))
 ```
-3. Check the proportion of mismatches.  In the past there was "a trail of smoke" that spread down to low numbers of loci and high mismatch proportion.  Make sure that's not there.
+3. Check the proportion of mismatches.  In the past there was "a trail of smoke" that spread down to low numbers of loci and high mismatch proportion.  Make sure there is no "trail of smoke"
 ```{r mismatches}
 # check proportion of matches/mismatches
 idcsv <- idcsv %>% 
@@ -105,164 +105,190 @@ rm(lab1, lab2)
 ```
 4. Add field data
 ```{r field_data}
-debugonce(samp_to_field_meta)
+leyte <- read_db("Leyte")
+
 samp1 <- idcsv %>% 
   select(first_sample_id)
-fish <- samp_to_field_meta(samp1)
 
+samp1 <- full_meta(samp1$first_sample_id, leyte) %>% 
+  select(-fish_table_id, -contains("notes"), -contains("collector"), -divers, -gps, -dive_num)
 
-c1 <- leyte %>% tbl("diveinfo") %>% select(id, date, site))
-suppressWarnings(c2 <- leyte %>% tbl("anemones") %>% select(dive_table_id, anem_table_id, ObsTime))
-c3 <- left_join(c2, c1, by = c("dive_table_id" = "id"))
-suppressWarnings(c4 <- tbl(leyte, sql("SELECT fish_table_id, anem_table_id, sample_id, Size FROM clownfish where sample_id is not NULL")))
-first <- left_join(c4, c3, by = "anem_table_id") %>% collect()
+samp2 <- idcsv %>% 
+  select(second_sample_id)
 
-### WAIT ###
+samp2 <- full_meta(samp2$second_sample_id, leyte) %>% 
+  select(-fish_table_id, -contains("notes"), -contains("collector"), -divers, -gps, -dive_num)
 
-second <- first
+names(samp1) <- paste("first", names(samp1), sep = "_")
+names(samp2) <- paste("second", names(samp2), sep = "_")
 
-names(first) <- paste("First.", names(first), sep = "")
-names(second) <- paste("Second.", names(second), sep = "")
-idcsv <- left_join(idcsv, first, by = c("First.sample_id" = "First.sample_id"))
-idcsv <- left_join(idcsv, second, by = c("Second.sample_id" = "Second.sample_id"))
+idcsv <- left_join(idcsv, samp1, by = "first_sample_id")
+idcsv <- left_join(idcsv, samp2, by = "second_sample_id")
 
-rm(first, second, labor, c1, c2, c3, c4)
+rm(samp1, samp2)
+```
 
-idcsv$First.lat <- NA
-idcsv$First.lon <- NA
-idcsv$Second.lat <- NA
-idcsv$Second.lon <- NA
+Add lat long data to first set of individuals
+```{r}
+library(lubridate)
 
-latlong <- leyte %>% tbl("GPX") %>% collect()
+# convert obs_times to UTC
+gpx1 <- idcsv %>% 
+  select(first_sample_id, first_anem_obs_time, first_date, first_anem_id, first_dive_table_id) %>% 
+  mutate(obs_time = force_tz(ymd_hms(str_c(first_date, first_anem_obs_time, sep = " ")), tzone = "Asia/Manila"),
+    obs_time = with_tz(obs_time, tzone = "UTC"), 
+    gpx_date = date(obs_time),
+    hour = hour(obs_time),
+    minute = minute(obs_time),  
+    sec = second(obs_time))
 
-### WAIT ###
+dive1 <- leyte %>%
+    tbl("diveinfo") %>%
+    filter(dive_table_id %in% gpx1$first_dive_table_id) %>%
+    select(dive_table_id, gps) %>%
+    collect()
+gpx1 <- left_join(gpx1, dive1, by = c("first_dive_table_id"  = "dive_table_id")) %>% 
+  rename(unit = gps, 
+    gpx_hour = hour) %>% 
+  mutate(gpx_date = as.character(gpx_date))
+rm(dive1)
 
-# Add lat long for first_id -----------------------------------------------
-for(i in 1:nrow(idcsv)){
-  #Get date and time information for the anemone
-  date <- as.character(idcsv$First.date[i])
-  datesplit <- strsplit(date,"-", fixed = T)[[1]]
-  year <- as.numeric(datesplit[1])
-  month <- as.numeric(datesplit[2])
-  day <- as.numeric(datesplit[3])
-  time <- as.character(idcsv$First.ObsTime[i])
-  timesplit <- strsplit(time, ":", fixed = T)[[1]]
-  hour <- as.numeric(timesplit[1])
-  min <- as.numeric(timesplit[2])
-  sec <- as.numeric(timesplit[3])
-  
-  # Convert time to GMT
-  hour <- hour - 8
-  if(!is.na(hour) & hour < 0){
-    day <- day - 1
-    hour <- hour + 24
-  }
+lat1 <- leyte %>%
+  tbl("GPX")  %>% 
+  mutate(gpx_date = date(time)) %>%
+  filter(gpx_date %in% gpx1$gpx_date) %>% 
+  mutate(gpx_hour = hour(time), 
+    minute = minute(time), 
+    second = second(time)) %>%
+  select(-time, -second)%>%
+  collect() 
 
-  # Find the location records that match the date/time stamp (to nearest second)
-  latlongindex <- which(latlong$year == year & latlong$month == month & latlong$day == day & latlong$hour == hour & latlong$min == min)
-  i2 <- which.min(abs(latlong$sec[latlongindex] - sec))
-  
-  # Calculate the lat/long for this time
-  if(length(i2)>0){
-    idcsv$First.lat[i] = latlong$lat[latlongindex][i2]
-    idcsv$First.lon[i] = latlong$long[latlongindex][i2]
-  }
-}
+sum_lat1 <- lat1 %>%
+  group_by(unit, gpx_date, gpx_hour, minute) %>% 
+  summarise(lat = mean(as.numeric(lat)),
+    lon = mean(as.numeric(lon)))
 
-### WAIT ###
+gpx1 <- left_join(gpx1, sum_lat1, by = c("unit", "gpx_date", "gpx_hour", "minute"))
 
-# Add lat long for second_id ----------------------------------------------
-for(i in 1:nrow(idcsv)){
-  #Get date and time information for the anemone
-  date <- as.character(idcsv$Second.date[i])
-  datesplit <- strsplit(date,"-", fixed = T)[[1]]
-  year <- as.numeric(datesplit[1])
-  month <- as.numeric(datesplit[2])
-  day <- as.numeric(datesplit[3])
-  time <- as.character(idcsv$Second.ObsTime[i])
-  timesplit <- strsplit(time, ":", fixed = T)[[1]]
-  hour <- as.numeric(timesplit[1])
-  min <- as.numeric(timesplit[2])
-  sec <- as.numeric(timesplit[3])
-  
-  # Convert time to GMT
-  hour <- hour - 8
-  if(!is.na(hour) & hour <0){
-    day <- day-1
-    hour <- hour + 24
-  }
-  
-  # Find the location records that match the date/time stamp (to nearest second)
-  latlongindex <- which(latlong$year == year & latlong$month == month & latlong$day == day & latlong$hour == hour & latlong$min == min)
-  i2 <- which.min(abs(latlong$sec[latlongindex] - sec))
-  
-  # Calculate the lat/long for this time
-  if(length(i2)>0){
-    idcsv$Second.lat[i] = latlong$lat[latlongindex][i2]
-    idcsv$Second.lon[i] = latlong$long[latlongindex][i2]
-  }
-}
+gpx1 <- gpx1 %>% 
+  select(first_sample_id, lat, lon) %>% 
+  rename(first_lat = lat, 
+    first_lon = lon)
+```
 
-### WAIT ###
+Add lat long to the second set of individuals
+```{r}
+library(lubridate)
+
+# convert obs_times to UTC
+gpx2 <- idcsv %>% 
+  select(second_sample_id, second_anem_obs_time, second_date, second_anem_id, second_dive_table_id) %>% 
+  mutate(obs_time = force_tz(ymd_hms(str_c(second_date, second_anem_obs_time, sep = " ")), tzone = "Asia/Manila"),
+    obs_time = with_tz(obs_time, tzone = "UTC"), 
+    gpx_date = date(obs_time),
+    hour = hour(obs_time),
+    minute = minute(obs_time),  
+    sec = second(obs_time))
+
+dive2 <- leyte %>%
+    tbl("diveinfo") %>%
+    filter(dive_table_id %in% gpx2$second_dive_table_id) %>%
+    select(dive_table_id, gps) %>%
+    collect()
+gpx2 <- left_join(gpx2, dive2, by = c("second_dive_table_id"  = "dive_table_id")) %>% 
+  rename(unit = gps, 
+    gpx_hour = hour) %>% 
+  mutate(gpx_date = as.character(gpx_date))
+rm(dive2)
+
+lat2 <- leyte %>%
+  tbl("GPX")  %>% 
+  mutate(gpx_date = date(time)) %>%
+  filter(gpx_date %in% gpx2$gpx_date) %>% 
+  mutate(gpx_hour = hour(time), 
+    minute = minute(time), 
+    second = second(time)) %>%
+  select(-time, -second)%>%
+  collect() 
+
+sum_lat2 <- lat2 %>%
+  group_by(unit, gpx_date, gpx_hour, minute) %>% 
+  summarise(lat = mean(as.numeric(lat)),
+    lon = mean(as.numeric(lon)))
+
+gpx2 <- left_join(gpx2, sum_lat2, by = c("unit", "gpx_date", "gpx_hour", "minute")) 
+
+gpx2 <- gpx2 %>% 
+  select(second_sample_id, lat, lon) %>% 
+  rename(second_lat = lat, 
+    second_lon = lon)
+```
+
+Add these lat longs back into the main idcsv file
+```{r}
+idcsv <- left_join(idcsv, gpx1, by = "first_sample_id") %>% 
+  distinct()
+
+idcsv <- left_join(idcsv, gpx2, by = "second_sample_id") %>% 
+  distinct()
 
 # cleanup
-rm(date, datesplit, day, hour , i , i2, latlongindex, min, month, sec, time, timesplit, year, latlong)
+rm(gpx1, gpx2, lat1, lat2, sum_lat1, sum_lat2)
+```
+** Now that the data has been compiled and the formatting has been fixed, we can begin quality analysis**
 
+1. Look for matches with same date of capture - create a column called "date_eval" and any pair that were captured on the same date will have a "FAIL" value in that column
+```{r}
+idcsv <- idcsv %>% 
+  mutate(date_eval = ifelse(first_date == second_date, "FAIL", NA))
+```
+
+# Flag matches that were caught more than 250m apart
+
+
+----------------------
+# library(fields)
+# source('greatcircle_funcs.R') # alternative, probably faster
+
+```{r}
+alldists <- fields::rdist.earth(as.matrix(idcsv[,c('first_lon', 'first_lat')]), as.matrix(idcsv[,c('second_lon', 'second_lat')]), miles=FALSE, R=6371) # see http://www.r-bloggers.com/great-circle-distance-calculations-in-r/ # slow because it does ALL pairwise distances, instead of just in order
+idcsv$distkm <- diag(alldists)
+
+idcsv <- idcsv %>% 
+  mutate(dist_eval = ifelse(distkm >= 0.250, "FAIL", NA))
+
+dist_fails <- idcsv %>% 
+  filter(dist_eval == "FAIL") %>% 
+  select(first_site, second_site, everything())
+
+```
+
+# Flag idcsves where size decreases by more than 1.5cm --------------------
+```{r}
+idcsv <- idcsv %>% 
+  mutate(size_eval = ifelse(first_date < second_date & (as.numeric(first_size)-1.5) > as.numeric(second_size), "FAIL", NA))
+
+idcsv <- idcsv %>% 
+  mutate(size_eval = ifelse(first_date > second_date & as.numeric(first_size) < (as.numeric(second_size)-1.5), "FAIL", size_eval))
+
+size_fails <- idcsv %>% 
+  filter(size_eval == "FAIL") %>% 
+  select(first_sample_id, first_size, second_sample_id, second_size, first_date, second_date, everything())
+```
+
+Check for site differences
+```{r}
+idcsv <- idcsv %>% 
+  mutate(site_eval = ifelse(first_site != second_site, "FAIL", NA))
+
+site_fails <- idcsv %>% 
+  filter(site_eval == "FAIL")
+select(first_sample_id, second_sample_id )
 ```
 
 
 
 
-# Flag matches with same date of capture ----------------------------------
-# idcsv$First.date <- as.Date(idcsv$First.date, "%m/%d/%Y")
-# idcsv$Second.date <- as.Date(idcsv$Second.date, "%m/%d/%Y")
-
-
-idcsv$date_eval <- NA
-for(i in 1:nrow(idcsv)){
-  a <- idcsv$First.date[i]
-  b <- idcsv$Second.date[i]
-  if (a == b & !is.na(a) & !is.na(b)){
-    idcsv$date_eval[i] <- "FAIL"
-  }
-}
-
-### WAIT ### - if you have to wait here, double check the number of obs, there may be a problem with the attachment of metadata
-
-# Flag matches that were caught more than 250m apart ----------------------
-
-
-# library(fields)
-# source('greatcircle_funcs.R') # alternative, probably faster
-alldists <- fields::rdist.earth(as.matrix(idcsv[,c('First.lon', 'First.lat')]), as.matrix(idcsv[,c('Second.lon', 'Second.lat')]), miles=FALSE, R=6371) # see http://www.r-bloggers.com/great-circle-distance-calculations-in-r/ # slow because it does ALL pairwise distances, instead of just in order
-idcsv$distkm <- diag(alldists)
-
-idcsv$disteval <- NA # placeholder
-for(i in 1:nrow(idcsv)){
-  if(!is.na(idcsv$distkm[i]) & 0.250 <= idcsv$distkm[i]){
-    idcsv$disteval[i] <- "FAIL"
-  }
-}
-
-
-# Flag idcsves where size decreases by more than 1.5cm --------------------
-
-idcsv$size_eval <- NA
-for (i in 1:nrow(idcsv)){
-  if(!is.na(idcsv$First.date[i]) & !is.na(idcsv$Second.date[i])  & idcsv$First.date[i] < idcsv$Second.date[i]) {
-    if(!is.na(idcsv$First.Size[i]) & !is.na(idcsv$Second.Size[i]) & (idcsv$First.Size[i] - 1.5) > idcsv$Second.Size[i]){
-      idcsv$size_eval[i] <- "FAIL"
-    }
-  }
-}
-  
-for (i in 1:nrow(idcsv)){
-  if(!is.na(idcsv$First.date[i]) & !is.na(idcsv$Second.date[i])  & idcsv$First.date[i] > idcsv$Second.date[i]) {
-    if(!is.na(idcsv$First.Size[i]) & (idcsv$First.Size[i] + 1.5) < idcsv$Second.Size[i]){
-      idcsv$size_eval[i] <- "FAIL"
-    }
-  }
-}
 
 
 # Write output ------------------------------------------------------------
