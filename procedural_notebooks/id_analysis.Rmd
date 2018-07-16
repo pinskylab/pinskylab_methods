@@ -3,10 +3,9 @@ title: "Identity Analysis of APCL"
 output:
   pdf_document: default
   html_notebook: default
-date: '2018-06-07'
 ---
 
-This cervus identity analysis was conducted by KAC on the individuals included in APCL sequencing runs 03-17 (majority of individuals captured in 2012-2015, <100 from 2016).
+This cervus identity analysis was conducted by KAC on the individuals included in APCL sequencing runs 03-17 (majority of individuals captured in 2012-2015, <50 from 2016).
 
 1. Add "pop" line to genepop in text editor. 
 *File "SNP.DP3g95p5maf05HM_seq_17_03.LDpruned.beta.noissues.IDfin.gen" is in the id_support folder.*
@@ -42,311 +41,356 @@ MRS notes from the past said this took 30 seconds with 809 loci, KAC notes from 
   ix. Do not show all comparisons
   
 *MRS to run the remaining identity analysis in R*
-```{r echo=FALSE, message=FALSE}
+
+1. Setup workspace, load and format data
+```{r load_functions, echo=FALSE, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
 source("../genomics/scripts/gen_helpers.R")
+library(kableExtra)
 
-# infile <- "id_support/SNP.DP3g95p5maf05HM_seq_17_03.LDpruned.beta.noissues.IDfin.ident_1.txt"
-infile <- "../../Identity/seq03-16_20160718_ID_all.csv"
+```
+```{r load_format_data}
+
+# infile <- "id_support/SNP.DP3g95p5maf05HM.HWE.recode.LDpruned.ID2.noissues_ID.csv"
+
+# KAC created a file of samples that are of special interest and not regenotypes
+infile <- "id_support/notregenos_notin809ID.csv"
 
 # Import cervus identity results ------------------------------------------
-idcsv <- read.csv(infile, stringsAsFactors = F)
+idcsv <- readr::read_csv(infile)
+# filtered <- readr::read_csv(filtered)
 
-# fix formatting
+# convert column names to lower case
 names(idcsv) <- stringr::str_to_lower(names(idcsv))
+# convert spaces in names to underscores
+names(idcsv) <- stringr::str_replace(names(idcsv), " ", "_")
 
-idcsv <- slice(idcsv, 1:10)
-
-# if necessary, strip IDs down to ligation id only
+# if necessary, strip ids down to ligation id only
 idcsv <- idcsv %>% 
-  mutate(first.id = ifelse(nchar(first.id) == 15, paste("APCL_", substr(first.id, 11, 15), sep = ""), ifelse(nchar(first.id) == 10, substr(first.id, 6, 10), first.id)), 
-    second.id = ifelse(nchar(second.id) == 15, paste("APCL_", substr(second.id, 11, 15), sep = ""), ifelse(nchar(second.id) == 10, substr(second.id, 6, 10), second.id)))
-  
-
-# Add metadata ------------------------------------------------------------
-
+  mutate(first_id = ifelse(nchar(first_id) == 15, paste("APCL_", substr(first_id, 11, 15), sep = ""), ifelse(nchar(first_id) == 10, substr(first_id, 6, 10), first_id)), 
+    second_id = ifelse(nchar(second_id) == 15, paste("APCL_", substr(second_id, 11, 15), sep = ""), ifelse(nchar(second_id) == 10, substr(second_id, 6, 10), second_id)))
+```  
+2. Add metadata  
+```{r metadata}
 # Connect to database -----------------------------------------------------
-
-suppressMessages(library(dplyr))
-labor <- src_mysql(dbname = "Laboratory", default.file = path.expand("~/myconfig.cnf"), port = 3306, create = F, host = NULL, user = NULL, password = NULL)
+lab <- read_db("Laboratory")
 
 # add Sample IDs
-suppressWarnings(c1 <- labor %>% tbl("extraction") %>% select(extraction_id, sample_id))
-suppressWarnings(c2 <- labor %>% tbl("digest") %>% select(digest_id, extraction_id))
-c3 <- left_join(c2, c1, by = "extraction_id")
-suppressWarnings(c4 <- labor %>% tbl("ligation") %>% select(ligation_id, digest_id))
-c5 <- left_join(c4, c3, by = "digest_id") %>% collect()
+lab1 <- idcsv %>% 
+  rename(ligation_id = first_id)
+lab1 <- samp_from_lig(lab1)
 
-### WAIT ###
+lab2 <- idcsv %>% 
+  rename(ligation_id = second_id)
+lab2 <- samp_from_lig(lab2)
 
-# for First.ids 
-lab1 <- c5
-names(lab1) <- paste("First.", names(lab1), sep = "")
+# change names to represent first fish
+names(lab1) <- paste("first_", names(lab1), sep = "")
+names(lab2) <- paste("second_", names(lab2), sep = "")
 
-idcsv <- left_join(idcsv, lab1, by = c("First.ID" = "First.ligation_id"))
-
-### WAIT ###
-
-# For Second.IDs
-lab2 <- c5
-names(lab2) <- paste("Second.", names(lab2), sep = "")
-
-idcsv <- left_join(idcsv, lab2, by = c("Second.ID" = "Second.ligation_id"))
-
-
+# add to full table
+idcsv <- left_join(idcsv, lab1, by = c("first_id" = "first_ligation_id"))
+idcsv <- left_join(idcsv, lab2, by = c("second_id" = "second_ligation_id"))
+```
+3. Check the proportion of mismatches.  In the past there was "a trail of smoke" that spread down to low numbers of loci and high mismatch proportion.  Make sure there is no "trail of smoke"
+```{r mismatches}
 # check proportion of matches/mismatches
-idcsv <- idcsv %>% mutate(mismatch_prop = Mismatching.loci/(Mismatching.loci+Matching.loci))
+idcsv <- idcsv %>% 
+  mutate(mismatch_prop = mismatching_loci/(mismatching_loci + matching_loci))
 
-plot(mismatch_prop ~ Matching.loci, idcsv, bty = "n", las = 1, xlim = c(600,1100), ylim = c(0,0.15))
+plot(mismatch_prop ~ matching_loci, idcsv, bty = "n", las = 1, xlim = c(600,1100), ylim = c(0,0.15))
+
 # bty "l" is this type, "n" is no box
 #las 1 is all labels horizontal, 2 is always perpendicular to axis, 3 is always vertical.
 
 # clean up
-rm(lab1, lab2, c1, c2, c3, c4, c5, i)
+rm(lab1, lab2)
+```
+4. Add field data
+```{r field_data}
+leyte <- read_db("Leyte")
 
-# Add field data ----------------------------------------------------------
-leyte <- src_mysql(dbname = "Leyte", default.file = path.expand("~/myconfig.cnf"), port = 3306, create = F, host = NULL, user = NULL, password = NULL)
+samp1 <- idcsv %>% 
+  select(first_sample_id)
 
-suppressWarnings(c1 <- leyte %>% tbl("diveinfo") %>% select(id, date, name))
-suppressWarnings(c2 <- leyte %>% tbl("anemones") %>% select(dive_table_id, anem_table_id, ObsTime))
-c3 <- left_join(c2, c1, by = c("dive_table_id" = "id"))
-suppressWarnings(c4 <- tbl(leyte, sql("SELECT fish_table_id, anem_table_id, sample_id, Size FROM clownfish where sample_id is not NULL")))
-first <- left_join(c4, c3, by = "anem_table_id") %>% collect()
+samp1 <- full_meta(samp1$first_sample_id, leyte) %>% 
+  select(-fish_table_id, -contains("notes"), -contains("collector"), -divers, -gps, -dive_num)
 
-### WAIT ###
+samp2 <- idcsv %>% 
+  select(second_sample_id)
 
-second <- first
+samp2 <- full_meta(samp2$second_sample_id, leyte) %>% 
+  select(-fish_table_id, -contains("notes"), -contains("collector"), -divers, -gps, -dive_num)
 
-names(first) <- paste("First.", names(first), sep = "")
-names(second) <- paste("Second.", names(second), sep = "")
-idcsv <- left_join(idcsv, first, by = c("First.sample_id" = "First.sample_id"))
-idcsv <- left_join(idcsv, second, by = c("Second.sample_id" = "Second.sample_id"))
+names(samp1) <- paste("first", names(samp1), sep = "_")
+names(samp2) <- paste("second", names(samp2), sep = "_")
 
-rm(first, second, labor, c1, c2, c3, c4)
+idcsv <- left_join(idcsv, samp1, by = "first_sample_id")
+idcsv <- left_join(idcsv, samp2, by = "second_sample_id")
 
-idcsv$First.lat <- NA
-idcsv$First.lon <- NA
-idcsv$Second.lat <- NA
-idcsv$Second.lon <- NA
+rm(samp1, samp2)
+```
 
-latlong <- leyte %>% tbl("GPX") %>% collect()
+Add lat long data to first set of individuals
+```{r}
+library(lubridate)
 
-### WAIT ###
+# convert obs_times to UTC
+gpx1 <- idcsv %>% 
+  select(first_sample_id, first_anem_obs_time, first_date, first_anem_id, first_dive_table_id) %>% 
+  mutate(obs_time = force_tz(ymd_hms(str_c(first_date, first_anem_obs_time, sep = " ")), tzone = "Asia/Manila"),
+    obs_time = with_tz(obs_time, tzone = "UTC"), 
+    gpx_date = date(obs_time),
+    hour = hour(obs_time),
+    minute = minute(obs_time),  
+    sec = second(obs_time))
 
-# Add lat long for first.id -----------------------------------------------
-for(i in 1:nrow(idcsv)){
-  #Get date and time information for the anemone
-  date <- as.character(idcsv$First.date[i])
-  datesplit <- strsplit(date,"-", fixed = T)[[1]]
-  year <- as.numeric(datesplit[1])
-  month <- as.numeric(datesplit[2])
-  day <- as.numeric(datesplit[3])
-  time <- as.character(idcsv$First.ObsTime[i])
-  timesplit <- strsplit(time, ":", fixed = T)[[1]]
-  hour <- as.numeric(timesplit[1])
-  min <- as.numeric(timesplit[2])
-  sec <- as.numeric(timesplit[3])
-  
-  # Convert time to GMT
-  hour <- hour - 8
-  if(!is.na(hour) & hour < 0){
-    day <- day - 1
-    hour <- hour + 24
-  }
+dive1 <- leyte %>%
+    tbl("diveinfo") %>%
+    filter(dive_table_id %in% gpx1$first_dive_table_id) %>%
+    select(dive_table_id, gps) %>%
+    collect()
+gpx1 <- left_join(gpx1, dive1, by = c("first_dive_table_id"  = "dive_table_id")) %>% 
+  rename(unit = gps, 
+    gpx_hour = hour) %>% 
+  mutate(gpx_date = as.character(gpx_date))
+rm(dive1)
 
-  # Find the location records that match the date/time stamp (to nearest second)
-  latlongindex <- which(latlong$year == year & latlong$month == month & latlong$day == day & latlong$hour == hour & latlong$min == min)
-  i2 <- which.min(abs(latlong$sec[latlongindex] - sec))
-  
-  # Calculate the lat/long for this time
-  if(length(i2)>0){
-    idcsv$First.lat[i] = latlong$lat[latlongindex][i2]
-    idcsv$First.lon[i] = latlong$long[latlongindex][i2]
-  }
-}
+lat1 <- leyte %>%
+  tbl("GPX")  %>% 
+  mutate(gpx_date = date(time)) %>%
+  filter(gpx_date %in% gpx1$gpx_date) %>% 
+  mutate(gpx_hour = hour(time), 
+    minute = minute(time), 
+    second = second(time)) %>%
+  select(-time, -second)%>%
+  collect() 
 
-### WAIT ###
+sum_lat1 <- lat1 %>%
+  group_by(unit, gpx_date, gpx_hour, minute) %>% 
+  summarise(lat = mean(as.numeric(lat)),
+    lon = mean(as.numeric(lon)))
 
-# Add lat long for second.id ----------------------------------------------
-for(i in 1:nrow(idcsv)){
-  #Get date and time information for the anemone
-  date <- as.character(idcsv$Second.date[i])
-  datesplit <- strsplit(date,"-", fixed = T)[[1]]
-  year <- as.numeric(datesplit[1])
-  month <- as.numeric(datesplit[2])
-  day <- as.numeric(datesplit[3])
-  time <- as.character(idcsv$Second.ObsTime[i])
-  timesplit <- strsplit(time, ":", fixed = T)[[1]]
-  hour <- as.numeric(timesplit[1])
-  min <- as.numeric(timesplit[2])
-  sec <- as.numeric(timesplit[3])
-  
-  # Convert time to GMT
-  hour <- hour - 8
-  if(!is.na(hour) & hour <0){
-    day <- day-1
-    hour <- hour + 24
-  }
-  
-  # Find the location records that match the date/time stamp (to nearest second)
-  latlongindex <- which(latlong$year == year & latlong$month == month & latlong$day == day & latlong$hour == hour & latlong$min == min)
-  i2 <- which.min(abs(latlong$sec[latlongindex] - sec))
-  
-  # Calculate the lat/long for this time
-  if(length(i2)>0){
-    idcsv$Second.lat[i] = latlong$lat[latlongindex][i2]
-    idcsv$Second.lon[i] = latlong$long[latlongindex][i2]
-  }
-}
+gpx1 <- left_join(gpx1, sum_lat1, by = c("unit", "gpx_date", "gpx_hour", "minute"))
 
-### WAIT ###
+gpx1 <- gpx1 %>% 
+  select(first_sample_id, lat, lon) %>% 
+  rename(first_lat = lat, 
+    first_lon = lon)
+```
+
+Add lat long to the second set of individuals
+```{r}
+library(lubridate)
+
+# convert obs_times to UTC
+gpx2 <- idcsv %>% 
+  select(second_sample_id, second_anem_obs_time, second_date, second_anem_id, second_dive_table_id) %>% 
+  mutate(obs_time = force_tz(ymd_hms(str_c(second_date, second_anem_obs_time, sep = " ")), tzone = "Asia/Manila"),
+    obs_time = with_tz(obs_time, tzone = "UTC"), 
+    gpx_date = date(obs_time),
+    hour = hour(obs_time),
+    minute = minute(obs_time),  
+    sec = second(obs_time))
+
+dive2 <- leyte %>%
+    tbl("diveinfo") %>%
+    filter(dive_table_id %in% gpx2$second_dive_table_id) %>%
+    select(dive_table_id, gps) %>%
+    collect()
+gpx2 <- left_join(gpx2, dive2, by = c("second_dive_table_id"  = "dive_table_id")) %>% 
+  rename(unit = gps, 
+    gpx_hour = hour) %>% 
+  mutate(gpx_date = as.character(gpx_date))
+rm(dive2)
+
+lat2 <- leyte %>%
+  tbl("GPX")  %>% 
+  mutate(gpx_date = date(time)) %>%
+  filter(gpx_date %in% gpx2$gpx_date) %>% 
+  mutate(gpx_hour = hour(time), 
+    minute = minute(time), 
+    second = second(time)) %>%
+  select(-time, -second)%>%
+  collect() 
+
+sum_lat2 <- lat2 %>%
+  group_by(unit, gpx_date, gpx_hour, minute) %>% 
+  summarise(lat = mean(as.numeric(lat)),
+    lon = mean(as.numeric(lon)))
+
+gpx2 <- left_join(gpx2, sum_lat2, by = c("unit", "gpx_date", "gpx_hour", "minute")) 
+
+gpx2 <- gpx2 %>% 
+  select(second_sample_id, lat, lon) %>% 
+  rename(second_lat = lat, 
+    second_lon = lon)
+```
+
+Add these lat longs back into the main idcsv file
+```{r}
+idcsv <- left_join(idcsv, gpx1, by = "first_sample_id") %>% 
+  distinct()
+
+idcsv <- left_join(idcsv, gpx2, by = "second_sample_id") %>% 
+  distinct()
 
 # cleanup
-rm(date, datesplit, day, hour , i , i2, latlongindex, min, month, sec, time, timesplit, year, latlong)
+rm(gpx1, gpx2, lat1, lat2, sum_lat1, sum_lat2)
+```
+** Now that the data has been compiled and the formatting has been fixed, we can begin quality analysis**
 
-# Flag matches with same date of capture ----------------------------------
-# idcsv$First.date <- as.Date(idcsv$First.date, "%m/%d/%Y")
-# idcsv$Second.date <- as.Date(idcsv$Second.date, "%m/%d/%Y")
+1. Look for matches with same date of capture - create a column called "date_eval" and any pair that were captured on the same date will have a "FAIL" value in that column
+```{r}
+idcsv <- idcsv %>% 
+  mutate(date_eval = ifelse(first_date == second_date, "FAIL", NA))
+```
 
-
-idcsv$date_eval <- NA
-for(i in 1:nrow(idcsv)){
-  a <- idcsv$First.date[i]
-  b <- idcsv$Second.date[i]
-  if (a == b & !is.na(a) & !is.na(b)){
-    idcsv$date_eval[i] <- "FAIL"
-  }
-}
-
-### WAIT ### - if you have to wait here, double check the number of obs, there may be a problem with the attachment of metadata
-
-# Flag matches that were caught more than 250m apart ----------------------
-
-
+Flag matches that were caught more than 250m apart
+```{r}
 # library(fields)
 # source('greatcircle_funcs.R') # alternative, probably faster
-alldists <- fields::rdist.earth(as.matrix(idcsv[,c('First.lon', 'First.lat')]), as.matrix(idcsv[,c('Second.lon', 'Second.lat')]), miles=FALSE, R=6371) # see http://www.r-bloggers.com/great-circle-distance-calculations-in-r/ # slow because it does ALL pairwise distances, instead of just in order
+alldists <- fields::rdist.earth(as.matrix(idcsv[,c('first_lon', 'first_lat')]), as.matrix(idcsv[,c('second_lon', 'second_lat')]), miles=FALSE, R=6371) # see http://www.r-bloggers.com/great-circle-distance-calculations-in-r/ # slow because it does ALL pairwise distances, instead of just in order
 idcsv$distkm <- diag(alldists)
 
-idcsv$disteval <- NA # placeholder
-for(i in 1:nrow(idcsv)){
-  if(!is.na(idcsv$distkm[i]) & 0.250 <= idcsv$distkm[i]){
-    idcsv$disteval[i] <- "FAIL"
-  }
-}
+idcsv <- idcsv %>% 
+  mutate(dist_eval = ifelse(distkm >= 0.250, "FAIL", NA))
 
+dist_fails <- idcsv %>% 
+  filter(dist_eval == "FAIL") %>% 
+  select(first_site, second_site, everything())
 
-# Flag idcsves where size decreases by more than 1.5cm --------------------
-
-idcsv$size_eval <- NA
-for (i in 1:nrow(idcsv)){
-  if(!is.na(idcsv$First.date[i]) & !is.na(idcsv$Second.date[i])  & idcsv$First.date[i] < idcsv$Second.date[i]) {
-    if(!is.na(idcsv$First.Size[i]) & !is.na(idcsv$Second.Size[i]) & (idcsv$First.Size[i] - 1.5) > idcsv$Second.Size[i]){
-      idcsv$size_eval[i] <- "FAIL"
-    }
-  }
-}
-  
-for (i in 1:nrow(idcsv)){
-  if(!is.na(idcsv$First.date[i]) & !is.na(idcsv$Second.date[i])  & idcsv$First.date[i] > idcsv$Second.date[i]) {
-    if(!is.na(idcsv$First.Size[i]) & (idcsv$First.Size[i] + 1.5) < idcsv$Second.Size[i]){
-      idcsv$size_eval[i] <- "FAIL"
-    }
-  }
-}
-
-
-# Write output ------------------------------------------------------------
-
-write.csv(idcsv, file = paste("data/", Sys.Date(), "_idanalyis.csv", sep = ""), row.names = F)
-
-# cleanup
-# rm(alldists, c5, first, lab1, lab2, latlong, second, a, b, c1, c2, c3, c4, date, datesplit, day, hour, i, i2, latlongindex, min, month, sec, time, timesplit, year)
-
-### EVERYTHING AFTER THIS POINT IS FOR REMOVING THE MATCHES FROM THE GENEPOP
-# SO IT CAN CONTINUE FOR PARENTAGE ANALYSIS.  FOR CONTINUED ID ANALYSIS, OPEN id_process.R ###
-
-# Open genepop ------------------------------------------------------------
-
-genfile <- "data/2016-12-20_noregeno.gen" # this should be the genepop you used as input for Cervus ID
-genedf <- readGenepop(genfile)
-
-### WAIT ###
-
-genedf$pop <- NULL # remove the pop column from the data file
-# TEST - make sure the first 2 columns are names and a contig and get number of rows
-names(genedf[,1:2]) # [1] "names" "dDocent_Contig_107_30"
-nrow(genedf) # 1824
-
-
-# Calculate the number of loci for analysis -------------------------------
-
-# convert 0000 to NA in the genepop data
-genedf[genedf == "0000"] = NA
-# TEST - make sure there are no "0000" left
-which(genedf == "0000") # should return integer(0)
-
-# count the number of loci per individual
-for(h in 1:nrow(genedf)){
-  genedf$numloci[h] <- sum(!is.na(genedf[h,]))
-}
-
-### WAIT ###
-
-# TEST - make sure all of the numloci were populated
-which(is.na(genedf$numloci)) # should return integer(0)
-
-genedf$drop <- NA
-
-# Run through id analysis and compare to determine which to remove --------
-for(i in 1:nrow(idcsv)){
-  # a & b are  the line numbers from genepop file that matches an the first and second ID in the match table
-  a <- which(genedf$names == idcsv$First.ID[i])
-  b <- which(genedf$names == idcsv$Second.ID[i])
-if (genedf$numloci[a] > genedf$numloci[b]){
-  genedf$drop[b] <- "DROP"
-} else{
-  genedf$drop[a] <- "DROP"
-}
-}
-
-# Make a dataframe of the samples that will be dropped
-drops <- genedf[!is.na(genedf$drop),]
-
-# Make a dataframe of the samples to keep for parentage analysis
-keep <- genedf[is.na(genedf$drop),]
-
-keep$numloci <- NULL
-keep$drop <- NULL
-
-# TODO -  Look for regenotypes again:
-
-# convert all the NA genotypes to 0000
-keep[is.na(keep)] = "0000"
-# TEST - make sure there are no NA's left
-which(is.na(keep)) # should return integer(0)
-
-# Write out genepop  ------------------------------------------------------
-
-# Build the genepop components
-msg <- c("This genepop file was generated using a script called identity_analysis.R written by Michelle Stuart with help from Malin Pinsky and Ryan Batt")
-
-loci <- paste(names(keep[,2:ncol(keep)]), collapse =",")
-
-gene <- vector()
-sample <- vector()
-for (i in 1:nrow(keep)){
-  gene[i] <- paste(keep[i,2:ncol(keep)], collapse = " ")
-  sample[i] <- paste(keep[i,1], gene[i], sep = ", ")
-}
-
-  ### WAIT ###
-
-out <- c(msg, loci, 'pop', sample)
-
-write.table(out, file = paste("data/",Sys.Date(), "_norecap.gen", sep = ""), row.names=FALSE, quote=FALSE, col.names=FALSE)
-
-
+kable(dist_fails, booktabs = T) %>% 
+  kable_styling(latex_options = "scale_down")
 
 ```
+
+Flag individuals where size decreases by more than 1.5cm.
+```{r}
+idcsv <- idcsv %>% 
+  mutate(size_eval = ifelse(first_date < second_date & (as.numeric(first_size)-1.5) > as.numeric(second_size), "FAIL", NA))
+
+idcsv <- idcsv %>% 
+  mutate(size_eval = ifelse(first_date > second_date & as.numeric(first_size) < (as.numeric(second_size)-1.5), "FAIL", size_eval))
+
+size_fails <- idcsv %>% 
+  filter(size_eval == "FAIL") %>% 
+  select(first_sample_id, first_size, second_sample_id, second_size, first_date, second_date, first_id, second_id)
+kable(size_fails, booktabs = T) %>% 
+  kable_styling(latex_options = "scale_down")
+
+```
+
+Check for site differences
+```{r}
+idcsv <- idcsv %>% 
+  mutate(site_eval = ifelse(first_site != second_site, "FAIL", NA))
+
+site_fails <- idcsv %>% 
+  filter(site_eval == "FAIL") %>% 
+  select(first_sample_id, second_sample_id, first_site, second_site, first_size, second_size, first_color, second_color, first_id, second_id)
+kable(site_fails, booktabs = T) %>% 
+  kable_styling(latex_options = "scale_down")
+```
+Check for samples that were captured in the same year but vary in size by more than 1.5cm
+```{r same_year_size}
+idcsv <- idcsv %>% 
+  mutate(year_size_eval = ifelse(year(first_date) == year(second_date) & first_size != second_size, "FAIL", NA))
+
+year_size_fails <- idcsv %>% 
+  filter(year_size_eval == "FAIL") %>% 
+  select(first_sample_id, second_sample_id, first_site, second_site, first_size, second_size, first_color, second_color, first_id, second_id, first_date, second_date)
+
+year_size_fails <- year_size_fails %>% 
+  filter(first_sample_id == "APCL14_500" | first_sample_id == "APCL12_191")
+
+kable(year_size_fails, booktabs = T) %>% 
+  kable_styling(latex_options = "scale_down")
+```
+
+2 of these "year_size_fails" are close enough in size to each other to be believeable, but 2 appear to be errors somewhere.
+
+
+At this point, I take the fails to evernote and check if we've noted these samples in red flag situations in the past.
+
+```{r generate_text_for_evernote, echo=FALSE}
+for(i in seq(nrow(site_fails))){
+print(paste(site_fails$first_sample_id[i], " was identified as ", site_fails$first_id[i], " captured in ", site_fails$first_site[i], " at ", site_fails$first_size[i], "cm with tail color ", site_fails$first_color[i], ".  It matched genetically to ", site_fails$second_sample_id[i], " identified as ", site_fails$second_id[i], " captured in ", site_fails$second_site[i], " at ", site_fails$second_size[i], "cm with tail color ", site_fails$second_color[i], ". This raised a red flag because the sites don't match", sep = ""))
+}
+
+```
+
+
+At this point I will get the work history for individual fish
+```{r bind_year_size_fails}
+# create a table of all info for the first fish
+firsts <- year_size_fails %>% 
+  select(contains("first"))
+# rename columns to remove "first_"
+names(firsts) <- str_replace(names(firsts), "first_", "")
+# create a table of all info for the second fish
+seconds <- year_size_fails %>% 
+  select(contains("second"))
+# rename columns to remove "second_"
+names(seconds) <- str_replace(names(seconds), "second_", "")
+
+# bind the 2 sets of fish together
+both <- rbind(firsts, seconds) %>% 
+  rename(ligation_id = id)
+```
+Double check the data sheets to make sure there are no type-os - found one type-o but the match is still suspicious because of size differences and site differences within the same year.
+
+Get the work history for these samples
+```{r get_work_history}
+hist <- work_history(both, "ligation_id")
+
+kable(hist)
+```
+
+L0969 is in my notes as a sample that failed sequencing.  Let's grab the sequencing results for these ligations
+```{r}
+seq <- lab %>%
+  tbl("ligation") %>% 
+  filter(ligation_id %in% hist$ligation_id) %>% 
+  select(ligation_id, total_reads, lack_rad_tag, low_quality, retained, plate, well) %>% 
+  collect()
+
+hist <- left_join(hist, seq, by = "ligation_id")
+
+hist <- left_join(hist, select(idcsv, loci_typed, first_id), by = c("ligation_id" = "first_id"))
+hist <- left_join(hist, select(idcsv, loci_typed.1, second_id), by = c("ligation_id" = "second_id"))
+
+hist <- hist %>% 
+  mutate(loci_typed = ifelse(is.na(loci_typed), loci_typed.1, loci_typed)) %>% 
+  select(-loci_typed.1)
+```
+Get plate maps for the ligations
+```{r}
+for (i in seq(nrow(hist))){
+  plate <- lab %>% 
+    tbl("ligation") %>% 
+    filter(plate == hist$plate[i]) %>% 
+    mutate(trouble = ifelse(ligation_id == hist$ligation_id[i], "YES", NA)) %>%
+    mutate(row = substr(well, 1, 1),
+      col = substr(well, 2, 3)) %>% 
+    select(row, col, contains("id"), trouble) %>%
+      collect()
+  
+  plate <- plate %>% 
+    mutate(
+      row = factor(row, levels = c("H", "G", "F", "E", "D", "C", "B", "A")), 
+      col = factor(col, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)))
+
+
+ plateheatmap <- ggplot(plate, mapping = aes(x = col, y = row, fill = trouble))+
+   scale_fill_brewer(palette = "Blues", na.value = "white")+
+    geom_tile(color = "black")
+  plateheatmap +
+    geom_text(aes(col, row, label = ligation_id), color = "black", size = 4)
+  ggsave(paste("plots/", hist$plate[i], ".pdf", sep = ""))
+  
+}
+```
+i
+
 
