@@ -6,9 +6,9 @@ output:
   html_document: default
 date: '`r Sys.Date()`'
 params:
-  first: APCL18_095
-  last: APCL18_188
-  num_samples: 96
+  first: APCL18_659
+  last: APCL18_732
+  num_samples: 76
 ---
 
 This is a script for adding samples that are not in the laboratory database and have not been extracted. This is set up to handle one plate at a time.
@@ -52,7 +52,8 @@ plate <- anti_join(plate, samples, by = c("row", "col"))
 
 samples <- cbind(samples, work)
 
-plate <- rbind(plate, samples)
+plate <- rbind(plate, samples) %>% 
+  arrange(col, row)
 ```
 
 ####Make a plate map of sample IDs (for knowing where to place fin clips) ####
@@ -67,7 +68,7 @@ knitr::kable(platemap, booktabs = T) %>%
 ```{r}
 lab <- read_db("Laboratory")
 extracted <- lab %>% tbl("extraction") %>% 
-  summarise(last = max(extraction_id)) %>% 
+  summarise(last = max(extraction_id, na.rm = T)) %>% 
   collect() %>% 
   mutate(last = substr(last, 2,5))
 
@@ -75,13 +76,12 @@ plate <- plate %>%
   mutate(well = 1:nrow(plate)) %>% 
   mutate(extraction_id = paste("E", well + as.numeric(extracted$last), sep = "")) %>% 
   mutate(well = paste(row, col, sep = "")) %>% 
-  mutate(notes = "lysed 2018-06-19", 
-    method = "DNeasy96", 
+  mutate(method = "DNeasy96", 
     final_vol = "200")
 
 plate_name <- plate %>% 
   summarise(first = min(extraction_id), 
-    last = max(extraction_id))
+    last = max(extraction_id, na.rm = T))
 ```
 ####Make a platemap with extraction ids
 ```{r}
@@ -100,7 +100,7 @@ plate <- plate %>%
 ```{r}
 rm(lab)
 lab <- write_db("Laboratory")
-# dbWriteTable(lab, "extraction", plate, row.names = F, overwrite = F, append = T)
+dbWriteTable(lab, "extraction", plate, row.names = F, overwrite = F, append = T)
 
 dbDisconnect(lab)
 rm(lab)
