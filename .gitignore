@@ -4,3 +4,7 @@
 .Ruserdata
 .DS_Store
 .gitignore
+methods.Rproj
+.httr-oauth
+*.icloud
+.httr-oauth-SUSPENDED
