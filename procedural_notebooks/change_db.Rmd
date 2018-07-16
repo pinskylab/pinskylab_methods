@@ -1,29 +1,39 @@
 ---
-title: "Calculate range of digest quantification"
+title: "Remove samples from plate where fin had degraded and there was no ethanol"
 output:
   pdf_document: default
   html_notebook: default
+params: 
+  type: "clownfish"
+  id: "fish_table_id"
+  db: "Leyte"
+  
 ---
 
 Access database.
 ```{r echo = F, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
-lab <- read_db("Laboratory")
+write <- write_db(params$db)
 library(knitr)
 ```
-Find the range of quantifications
+Find the range of rows to be changed
 ```{r}
 # pull in all table
-# extr <- lab %>% dbReadTable("extraction") %>% collect()
-digs <- lab %>% tbl("digest") %>% collect()
-# ligs <- lab %>% dbReadTable("ligation") %>% collect()
+dat <- dbReadTable(write, params$type)
 
-range <- digs %>% 
-  summarise(min = min(quant, na.rm = T), 
-    max = max(quant, na.rm = T)) %>% 
-  mutate(meas1 = min/200, 
-    meas2 = max/200)
+change <- dat %>% 
+  filter(anem_table_id >= 9030, anem_table_id <= 9034) %>% 
+  mutate(anem_table_id = 8100,
+    correction = "Y",
+    corr_message = "Changed anem_table_id to 8100 because the fish observations on the anemone table were deleted", 
+    corr_date = "2018-07-12",
+    corr_editor = "MRS")
 
-
-
+dat <- change_rows(dat, change, params$id)
 ```
+Write to database
+```{r}
+# dbWriteTable(write, params$type, dat, row.names = F, overwrite = T)
+# dbDisconnect(write)
+```
+
