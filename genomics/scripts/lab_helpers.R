@@ -384,9 +384,9 @@ heatmap <- function(plate_as_long_table, id){
       row = factor(row, levels = c("H", "G", "F", "E", "D", "C", "B", "A")), 
       col = substr(well, 2, 3),
            col = factor(col, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))) %>% 
-    select(row, col, contains("id"), filter)
+    select(row, col, contains("id"), pull)
   
-  plateheatmap <- ggplot(map, aes(x=col, y=row, fill= filter)) + 
+  plateheatmap <- ggplot(map, aes(x=col, y=row, fill= pull)) + 
     geom_tile()
   
   z <- plateheatmap + 
@@ -413,7 +413,7 @@ heatmap <- function(plate_as_long_table, id){
 #' history <- work_history(table,column)
  
 # check the work history of those sample_ids
-work_history <- function(table, id_column){
+work_history <- function(table, column){
   library(dplyr)
   lab <- read_db("Laboratory")
   if(column == "sample_id"){
@@ -439,6 +439,31 @@ work_history <- function(table, id_column){
     hist <- left_join(hist, lig, by = "digest_id")
     rm(lig)
     return(hist)
+  }
+    
+    if(column == "ligation_id"){
+      hist <- lig <- lab %>% 
+        tbl("ligation") %>% 
+        filter(ligation_id %in% table$ligation_id) %>% 
+        select(ligation_id, digest_id) %>% 
+        collect()
+      
+      dig <- lab %>% 
+        tbl("digest") %>% 
+        filter(digest_id %in% hist$digest_id) %>% 
+        select(extraction_id, digest_id) %>% 
+        collect()
+      hist <- left_join(hist, dig, by = "digest_id")
+      rm(dig)
+      
+      extr <- lab %>% 
+        tbl("extraction") %>% 
+        filter(extraction_id %in% hist$extraction_id) %>% 
+        select(extraction_id, sample_id) %>% 
+        collect()
+      hist <- left_join(hist, extr, by = "extraction_id")
+        rm(extr)
+      return(hist)
   }  
 }
 
