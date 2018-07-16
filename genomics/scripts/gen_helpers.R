@@ -250,6 +250,7 @@ anemid_latlong <- function(anem.table.id, latlondata) { #anem.table.id is one an
   
 }
 
+<<<<<<< HEAD
 # full_meta ####
 #' add field data for a sample 
 #' @export
@@ -289,3 +290,45 @@ full_meta <- function(sample_ids, db){
   rm(dive)
   return(samps)
 }
+||||||| merged common ancestors
+=======
+# full_meta ####
+#' add field data for a sample 
+#' @export
+#' @name full_meta
+#' @author Michelle Stuart
+#' @param x = a table that contains a column called sample_ids
+#' @examples 
+#' new <- samp_to_field_meta(lost$sample_id)
+
+full_meta <- function(sample_ids){
+  samps <- db %>% 
+    tbl("clownfish") %>% 
+    filter(sample_id %in% sample_ids) %>% 
+    select(fish_table_id, anem_table_id, size, sample_id, color, cap_id, recap, tag_id, fish_obs_time, collector, notes) %>% 
+    collect() %>% 
+    rename(fish_notes = notes, 
+      fish_collector = collector)
+  
+  anem <- db %>% 
+    tbl("anemones") %>% 
+    filter(anem_table_id %in% samps$anem_table_id) %>% 
+    select(anem_table_id, dive_table_id, obs_time, anem_id, anem_obs, collector, notes) %>% 
+    collect() %>% 
+    rename(anem_notes = notes, 
+      anem_obs_time = obs_time, 
+      anem_collector = collector)
+  
+  samps <- left_join(samps, anem, by = "anem_table_id")
+  rm(anem)
+  dive <- db %>% 
+    tbl("diveinfo") %>% 
+    filter(dive_table_id %in% samps$dive_table_id) %>% 
+    select(dive_table_id, dive_num, date, site, gps, divers) %>% 
+    collect()
+  
+  samps <- left_join(samps, dive, by = "dive_table_id")
+  rm(dive)
+  return(samps)
+}
+>>>>>>> 28e5d2d65d2156aa3c9240d8800a55a0da098442
