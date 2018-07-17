@@ -1,0 +1,68 @@
+---
+title: "Prep for quantification"
+params:
+  id: extraction_id
+  first_plate: E4551-E4646
+  last_plate: E5031-E5126
+  num_plates: 6
+  type: extraction
+output:
+  pdf_document: default
+  html_notebook: default
+  
+---
+
+```{r echo=FALSE, message=FALSE}
+library(knitr)
+library(stringr)
+library(tidyverse)
+library(kableExtra)
+source("../genomics/scripts/lab_helpers.R")
+```
+
+The manufacturers directions for this method describe preparing a solution that is 2mL in volume.  Our plates hold a leaky maximum of 400uL so the volumes must be adusted to fit.
+
+**Prepare the reagent**
+
+Make a 200 fold dilution of pico dye.  Keep this in the dark.
+ *Units for volume of 1x TE and units for volume of pico are uL*
+```{r}
+num_samples <- (96*params$num_plates)*1.1
+```
+###Prepare the samples and load the plates
+1. Calculate the amounts of reagents needed to do the quantification and make the pico dye mix.
+```{r echo=FALSE, results='asis'}
+final_vol_samp <- 200
+
+final_vol_pico <- 100*num_samples
+
+vol_1x_TE <- 0.995 * final_vol_pico
+
+vol_pico_conc <- final_vol_pico - vol_1x_TE
+
+pico <- data.frame(num_samples, vol_1x_TE, vol_pico_conc)
+
+kable(pico)
+```
+2. Make the standards
+2. Qubit the standards to make sure they are the quantities you expect them to be.
+3. Add 99uL 1xTE to all of the sample wells of the sample plates
+4. Add 100uL of standards to the standards plate
+5. Add 1uL of each sample to each sample well of sample plates
+6. Add 100ul pico dilution to every well that contains either a standard of a sample
+7. Incubate at room temperature for at least 5 minutes in the dark (MRS stacks the plates one on top of the other and then puts foil seal tape on the top plate)
+
+###Read the plates on the plate reader
+1. Turn on the plate reader
+2. Open the SoftMax Pro (v. 6.4) software
+2. Click open > Documents > Michelle > pico.sda
+3. Adjust the number of plates to match this batch including the standards plate (the last plate should be the standards plate)
+- For plates containing samples, select the plate, click on the template editor, highlight all of the wells, click Unknowns from the window pane on the right, click on the series button in the bottom pane, make sure "top to bottom" is selected, make sure it is 1 x by 1 y, and the dilution factor should be set to 200 / 1.  
+- The last plate should be the standards plate, the value of these standards is the qubit value divided by 2 (because you used 100ul of the standard and 100ul of the pico dye mix, diluting the standard in half.)
+- For any empty wells or wells you don't want to read, select "plate blank"  
+4. Click on the first plate (corresponding to your plate 1), and click read.
+- If "read" is not available, make sure the spectramax is connected to the software (left most button) and that you have selected the plate.
+5. Once the plate has been read and the drawer opens, put in the next plate, click on the corresponding plate number in the software, and click read.
+6. Once all of the plates have been read, click on the blue plate icon in the top left and click "save as" and save as the "date_full" to indicate that the report contains all of the plates for that day.  This is an sda file that can only be opened in the softmax pro software but is helpful for checking machine settings or recreating what you did.
+7. Click the blue plate icon again and select "export", check the "unknowns" box, and save as the same name as in step 6.  This is a text file that contains the data you will import into the database.
+
