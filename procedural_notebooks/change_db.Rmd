@@ -11,26 +11,26 @@ params:
 ---
 
 Access database.
-```{r echo = F, message=FALSE}
+```{r workspace, echo = F, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
 write <- write_db(params$db)
 library(knitr)
 ```
 Find the range of rows to be changed
-```{r}
+```{r change}
 # pull in all table
 dat <- dbReadTable(write, params$type)
 
 change <- dat %>% 
-  filter(extraction_id >= "E4743", 
-         extraction_id <= "E4934") %>% 
+  filter(extraction_id >= "E4647", 
+         extraction_id <= "E5126") %>% 
   mutate(date = "2018-07-16")
 
 
 dat <- change_rows(dat, change, params$id)
 ```
 Write to database
-```{r}
+```{r write}
 # dbWriteTable(write, params$type, dat, row.names = F, overwrite = T)
 # dbDisconnect(write)
 ```
