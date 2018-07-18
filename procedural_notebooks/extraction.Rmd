@@ -34,7 +34,7 @@ fish <- leyte %>% tbl("clownfish") %>%
 # make sure each sample_id is only represented once
 fish <- distinct(fish)
 ```
-####Select the range of samples in the plate
+**Select the range of samples in the plate**
 ```{r}
 work <- fish %>% 
   filter(sample_id >= params$first, sample_id <= params$last)
