@@ -15,6 +15,7 @@ source("../../laboratory/scripts/lab_helpers.R")
 library(knitr)
 library(kableExtra)
 library(ggplot2)
+library(RColorBrewer)
 lab <- read_db("Laboratory")
 ```
 
@@ -40,7 +41,7 @@ The extractions are going to go into the same wells they were in on the extracti
 extr <- extr %>% 
   mutate(extraction_id = ifelse(sample_id == "XXXX", "XXXX", extraction_id))
 ```
-**Generate a digest_id place holder**
+**Generate a digest_id**
 ```{r digest_id, echo = FALSE}
 dig_max <- lab %>% 
   tbl("digest") %>% 
@@ -62,7 +63,7 @@ extr <- extr %>%
   mutate(ng_in = 30 * quant)
 ```
 
-Name digest plates
+**Name digest plates**
 ```{r name_dig_plates, echo=FALSE}
 for_plates <- extr %>% 
   select(contains("id"), well, plate, -sample_id, ng_in) %>% 
@@ -88,71 +89,98 @@ for (i in 1:nrow(plates)){
 }
 ```
 **Make plate maps of destinations**
+*Maps are individual output files sent to the plots folder*
 
 ```{r dig_dest, echo = FALSE, message=FALSE}
-
 plates <- for_plates %>% 
   select(dig_plate) %>% 
   distinct() %>% 
   arrange(dig_plate)
-plate1 <- for_plates %>% 
-  filter(dig_plate == plates$dig_plate[1]) %>% 
+
+for (i in 1:nrow(plates)){
+  platex <- for_plates %>% 
+  filter(dig_plate == plates$dig_plate[i]) %>% 
   mutate(ng_in = ng_in/10) %>% 
   mutate(filter = 30) %>% 
   mutate(filter = ifelse(ng_in >= 5000 & ng_in <= 10000, 15, filter), 
-         filter = ifelse(ng_in > 10000, 7, filter))
+         filter = ifelse(ng_in > 10000, 7, filter), 
+         filter = as.factor(filter)) %>% 
+  select(well, dig_plate, digest_id, filter)
+  
+  # display.brewer.all(3)
+  x <- heatmap(platex) +
+  scale_fill_manual(values=brewer.pal(3, "Set2"), 
+                       name="Volume\nExtract",
+                       breaks=c("30", "15", "7"),
+                       labels=c("30uL", "15uL", "7uL"))
+  ggsave(paste("../procedural_notebooks/plots/", platex$dig_plate, ".pdf", sep = ""), device = "pdf", width = 11, height = 8.5)
 
-# want to make a heatmap here based on quant so I know which to put 15uL in
-
-x <- heatmap(plate1)
-ggsave(paste("../procedural_notebooks/plots/", plate1$dig_plate, ".pdf", sep = ), device = "pdf")
-
-
-
-
-dig_dest <- plate_from_db(for_plates, "digest_id")
-kable(platemap)
-```
-```{r echo = F, message=F}
-extr_dest <- plate_from_db(extr, "extraction_id")
-kable(platemap)
-```
-
-### Make plate maps of source plates
-```{r echo = F, fig.width=10, message=F}
-# define the source plates
-sources <- extr %>% 
-  select(plate) %>% 
-  filter(plate != "XXXX") %>% 
-  distinct() %>% 
-  arrange(plate)
-
-# create heat maps of the plates
-for (i in 1:nrow(sources)){
-  library(ggplot2)
-  source <- lab %>% 
-    tbl("extraction") %>% 
-    filter(plate == sources$plate[i]) %>% 
-    collect() %>% 
-    mutate(filter = ifelse(extraction_id %in% extr$extraction_id, "yes", "no"))
-  x <- heatmap(source, extraction_id)
-  print(x)
 }
 ```
+**Make heatmap of extract destinations **
+*Maps are individual output files sent to the plots folder*
+```{r extr_dest, echo = FALSE, message=FALSE}
+for (i in 1:nrow(plates)){
+  platex <- for_plates %>% 
+  filter(dig_plate == plates$dig_plate[i]) %>% 
+  mutate(ng_in = ng_in/10) %>% 
+  mutate(filter = 30) %>% 
+  mutate(filter = ifelse(ng_in >= 5000 & ng_in <= 10000, 15, filter), 
+         filter = ifelse(ng_in > 10000, 7, filter), 
+         filter = as.factor(filter)) %>% 
+  select(well, dig_plate, extraction_id, filter)
+  
+  # display.brewer.all(3)
+  x <- heatmap(platex) +
+  scale_fill_manual(values=brewer.pal(3, "Pastel2"), 
+                       name="Volume\nExtract",
+                       breaks=c("30", "15", "7"),
+                       labels=c("30uL", "15uL", "7uL"))
+  ggsave(paste("../procedural_notebooks/plots/", platex$dig_plate, "_extr_dest.pdf", sep = ""), device = "pdf", width = 11, height = 8.5)
+
+}
+```
+
+<!-- **Make plate maps of source plates**  -->
+<!-- We can skip that for this batch because our extr_dest and our extr_sources are exactly the same. -->
+<!-- ```{r echo = F, fig.width=10, message=F} -->
+<!-- # define the source plates -->
+<!-- sources <- extr %>%  -->
+<!--   select(plate) %>%  -->
+<!--   filter(plate != "XXXX") %>%  -->
+<!--   distinct() %>%  -->
+<!--   arrange(plate) -->
+
+<!-- # create heat maps of the plates -->
+<!-- for (i in 1:nrow(sources)){ -->
+<!--   library(ggplot2) -->
+<!--   source <- lab %>%  -->
+<!--     tbl("extraction") %>%  -->
+<!--     filter(plate == sources$plate[i]) %>%  -->
+<!--     collect() %>%  -->
+<!--     mutate(filter = ifelse(extraction_id %in% extr$extraction_id, "yes", "no")) -->
+<!--   x <- heatmap(source, extraction_id) -->
+<!--   print(x) -->
+<!-- } -->
+<!-- ``` -->
 
 
 ```{r echo=F, message=F}
 # write the data to the database
 w_lab <- write_db("Laboratory")
-dig <- extr %>% 
-  select(digest_id, extraction_id, ng_in, well)
+dig <- for_plates %>% 
+  select(-plate, -num) %>% 
+  rename(plate = dig_plate)
+  
 # dbWriteTable(w_lab, "digest", dig, append = T, row.names = F)
-
+dbDisconnect(w_lab, lab)
 ```
 
 
 
-### Prepare digest plate by adding 30µL of sample to each well according to the digest map prepared above.  If you are not continuing on to the digest step now, seal the plate with film, label it, and put it in the fridge.
+**Prepare digest plate by adding specified amount of sample to each well according to the digest maps prepared above.  If you are not continuing on to the digest step now, seal the plate with film, label it, and put it in the fridge.**
+
+The map files can be deleted from the plots folder once they have been saved in your lab notebook.
 
 
 
