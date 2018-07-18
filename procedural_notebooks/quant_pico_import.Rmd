@@ -1,213 +1,114 @@
 ---
-title: "Pico Platereader Quantification"
+title: '`r paste("Pico Platereader Quantification for ", params$first, "-", params$last, sep = "")`'
 params:
-  id: digest_id
-  plate: D5581-D5675
-  plate_num: 9
-  type: digest
-  file1: "~/Downloads/drive-download-20180615T221044Z-001/2018-06-15-plate9.txt"
-  firsts: "~/Downloads/drive-download-20180615T221044Z-001/2018-06-15-platefirsts.txt"
+  file: ~/Downloads/2018-07-17-full.txt
+  id: extraction_id
+  first_sample: E4551
+  last_sample: E5126
+  type: extraction
 output:
   pdf_document: default
-  html_notebook: default
-  
 ---
-```{r echo=FALSE, message=FALSE}
+```{r workspace, echo=FALSE, message=FALSE}
 library(knitr)
 library(stringr)
 library(tidyverse)
 library(kableExtra)
 source("../genomics/scripts/lab_helpers.R")
+
+# connect to database
+lab <- write_db("Laboratory")
 ```
 
-The manufacturers directions for this method describe preparing a solution that is 2mL in volume.  Our plates hold a leaky maximum of 400uL so the volumes must be adusted to fit.
+Once you have completed all of the steps in the quant_prep.pdf, it is time to import the data into the database and make a pdf note for your lab notebook
 
-**Prepare the reagent**
+**Read in quantification results**  
 
-Make a 200 fold dilution of pico dye.  Keep this in the dark.
- *Units for volume of 1x TE and units for volume of pico are uL*
-```{r}
-(plate <- params$plate)
-num_samples <- (96+8)*1.1
-```
+1. Open the plate reader results file and pull in the data  
 
-```{r echo=FALSE, results='asis'}
-final_vol_samp <- 200
-
-final_vol_pico <- 100*num_samples
-
-vol_1x_TE <- 0.995 * final_vol_pico
-
-vol_pico_conc <- final_vol_pico - vol_1x_TE
-
-pico <- data.frame(num_samples, vol_1x_TE, vol_pico_conc)
-
-kable(pico)
-```
-<!-- **Prepare a standard curve** -->
-<!-- **Units of final DNA concentration are ng/mL -->
-<!-- ```{r} -->
-<!-- STD_DNA_conc <- 2 -->
-<!-- vol_1x_TE <- c(0, 900, 990, 999, 1000) -->
-<!-- vol_STD_DNA <- c(1000, 100, 10, 1, 0) -->
-<!-- vol_pico <- c(rep(1000, 5)) -->
-<!-- STD <- data.frame(vol_1x_TE, vol_STD_DNA, vol_pico) -->
-<!-- STD <- STD %>%  -->
-<!--   mutate(final_DNA_conc = (STD_DNA_conc * vol_STD_DNA)/final_vol_samp) -->
-<!-- ``` -->
-
-Results:
-#####Read in quantification results ------------------------------------------
-```{r echo=FALSE, message=FALSE}
-# which plates?
-# range <- params$plate
-# range <- c("D4888-D4946", "D4947-D5028", "D5029-D5113", "D5114-D5161", "D5162-D5219", "D5309-D5404", "D5405-D5500", "D5501-D5580", "D5581-D5675")
-```
-```{r}
-# which files
-file <- params$file1
-# folder <- list.files("~/Downloads/drive-download-20180615T221044Z-001/", pattern = "2018-06-15")
-```
-Open the plate reader results file and pull in the data
 <!-- # tried to use readr here but it returns all NAs for the table -->
 <!-- # dat1 <- read_table(file, skip = 6, n_max = 88, col_names = c("Sample", 	"Wells", 	"RFU_Values", 	"Concentration", 	"Mean_Conc", 	"SD", 	"CV", 	"Dilution", 	"AdjConc"	)) -->
-```{r echo=FALSE, message=FALSE}
+```{r reader_results, echo=FALSE, message=FALSE}
 # determine number of lines to skip before data begins
-strs <- readLines(file, skipNul = T)
-linestoskip = (which(strs == "Group: Unknowns")) # the number of lines to skip
+strs <- readLines(params$file, skipNul = T)
+linestoskip <- which(strs == "Group: Unknowns") # the number of lines to skip
+num_lines <- as.numeric(substr(params$last_sample, 2, 5)) - as.numeric(substr(params$first_sample, 2, 5)) + 1
 
 # create a table that contains well locations and quantities
 # nrows = 88 because that is a full plate
-dat1 <- read.table(text=strs,  skip = linestoskip, sep = "\t", header = T, stringsAsFactors = F, nrows = 88) %>% 
-  rename(well = Wells)
-  # for some reason this is not including the row numbers in the Sample Column so everything is coming in shifted one column to the left - fixing here
-  # rename(well = Sample, 
-  #   RFU_Values = Wells, 
-  #   Concentration = RFU_Values, 
-  #   Mean_Conc = Concentration, 
-  #   SD = Mean_Conc, 
-  #   CV = SD, 
-  #   Dilution = CV, 
-  #   AdjConc = Dilution, 
-  #   Sample = AdjConc) %>% 
-  # mutate(Sample = 1:88)
-
-# read in names for the samples
-lab <- write_db("Laboratory")
-
-# all of the data in the db for this table (for example, "digest")
-dat <- dbReadTable(lab, params$type)
+dat <- read.table(text=strs,  skip = linestoskip, sep = "\t", header = T, fill = T, stringsAsFactors = F, nrows = num_lines) %>% 
+  rename(well = Wells) %>% 
+  mutate(Sample = as.numeric(Sample)) %>% 
+  arrange(Sample) %>% 
+  select(Sample, well, AdjConc)
 ```
-```{r}
-###############################################
-# Special fix ####
-fix <- dat %>%
-  filter(plate == params$plate) %>% 
-  mutate(quant = NA)
+2. Connect names of samples from database
+```{r sample_names, echo=FALSE}
+# pull in the full database table
+db_dat <- dbReadTable(lab, params$type)
 
-dat <- change_rows(dat, fix, params$id)
-############################################
+# select your samples
+if (params$type == "extraction"){
+  samp <- db_dat %>%
+    select(contains("id"), well, plate) %>% 
+    # narrow down the results to just this batch
+    filter(extraction_id >= params$first_sample, 
+           extraction_id <= params$last_sample) %>% 
+    # pull out col and row so that the samples can be sorted (not always in plates in id order)
+    mutate(row = substr(well, 1, 1), 
+           col = substr(well, 2, 3)) %>% 
+    # sort by plate, then col, then row
+    arrange(plate, col, row) 
+}
 
-```
-```{r}
-# select your desired plate
-plate <- dat %>%
-  select(contains("id"), well, plate) %>%
-  filter(plate == params$plate) %>%
-  collect()
+ # define the plates that are present in this group
+  plates <- samp %>% 
+    select(plate) %>% 
+    distinct() %>% 
+    arrange(plate)
+  
+  # attach these plates to the quant data
+  dat$plate <- NA
+  for (i in 1:nrow(plates)){
+    x = i*96
+    y = x - 95
+    dat <- dat %>% 
+  mutate(plate = ifelse(Sample >= y & Sample <= x, plates$plate[i], plate))
+  }
 
+  
+  samp <- samp %>% 
+    # get rid of extra columns
+    select(-row, -col)
 
-
-# join the quants to the  ids
-quant1 <- left_join(dat1, plate, by = "well")
-quant1 <- quant1 %>%
+# join the ids to the quantification data
+quant1 <- left_join(samp, dat, by = c("plate", "well")) %>%
   select(contains("id"), AdjConc) %>%
   # rename the quant column so it can be joined to the db
-  rename(quant = AdjConc)
+  rename(quant = AdjConc) %>% 
   # remove any empty wells
-quant1 <- quant1[!is.na(quant1[,1]), ]
-kable(quant1)
-# %>%
-#   kable_styling()
+  filter(!is.na(quant))
+kable(quant1, longtable = T) %>% 
+  kable_styling(latex_options = "repeat_header")
+
 
 # the entire table was pulled in as dat above
-change <- dat %>%
-  filter(plate == params$plate) %>%
-  select(-quant) # don't bring in the quant column, will add that here
+if (params$id == "extraction_id"){
+  change <- db_dat %>%
+    filter(extraction_id %in% quant1$extraction_id)  %>%
+    # don't bring in the quant column, will add that here
+    select(-quant) 
+}
 
 # add in the new quants
 ids <- change %>%
   select(contains("id"))
 change <- left_join(change, quant1, by = c(names(ids)))
 
-dat <- change_rows(dat, change, params$id)
+db_dat <- change_rows(db_dat, change, params$id)
 ```
 #####Write these changes into the database
 ```{r echo=FALSE, message=FALSE}
-dbWriteTable(lab, params$type, dat, row.names = F, overwrite = T)
+# dbWriteTable(lab, params$type, db_dat, row.names = F, overwrite = T)
 dbDisconnect(lab)
 ```
-#####Import the values for the firsts
-This is for the first column of each plate that was put onto a separate plate to make room for the standards
-```{r}
-firsts <- params$firsts
-```
-```{r echo=FALSE, message=FALSE}
-strs <- readLines(firsts, skipNul = T)
-linestoskip = (which(strs == "Group: Unknowns")) # the number of lines to skip
-
-dat2 <- read.table(text = strs,  skip = linestoskip, sep = "\t", fill = T, header = T, stringsAsFactors = F, nrows = 88) %>%
-  rename(well = Wells)
-
-adj <- as.character(params$plate_num+1)
-
-# pull first column samples from database
-firsts <- dat %>%
-  filter(plate == params$plate, is.na(quant)) %>%
-  # replace the 1 with whatever column of the firsts plate
-  mutate(well = str_replace(well, "1", adj)) %>%
-  select(digest_id, well)
-
-# read in names for the samples
-quant2 <- left_join(dat2, firsts, by = "well")
-quant2 <- quant2 %>%
-  select(contains("id"), AdjConc) %>%
-  # rename the quant column so it can be joined to the db
-  rename(quant = AdjConc)
-# remove any empty wells
-quant2 <- quant2[!is.na(quant2[ ,1]), ]
-  # filter(!is.na(quant2[,1])) %>% # NA's remain for some reason
-kable(quant2) %>%
-  kable_styling()
-
-# import into database
-lab <- write_db("Laboratory")
-dat <- dbReadTable(lab, params$type)
-
-# select the samples that will be changed
-if(params$id == "digest_id"){
-  change <- dat %>%
-  filter(digest_id %in% quant2$digest_id) %>%
-  select(-quant)
-}
-if(params$id == "extraction_id"){
-  change <- dat %>%
-  filter(extraction_id %in% quant2$extraction_id) %>%
-  select(-quant)
-}
-
-# add in the new quants
-change <- left_join(change, quant2, by = params$id)
-
-
-# dat <- change_rows(dat, change, "extraction_id")
-dat <- change_rows(dat, change, params$id)
-```
-##### write the group back to the database
-```{r echo=FALSE, message=FALSE}
-dbWriteTable(lab, params$type, dat, row.names = F, overwrite = T)
-dbDisconnect(lab)
-```
-
-
-
