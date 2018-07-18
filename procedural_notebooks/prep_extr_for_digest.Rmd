@@ -1,115 +1,47 @@
 ---
-title: "Loading digests"
+title: '`r paste("Digest plan for ", params$first, "-", params$last, sep = "")`'
+params:
+  id: digest_id
+  first_sample: E4551
+  last_sample: E5126
+  type: digest
 output:
   pdf_document: default
-  html_notebook: default
-  html_document: default
 ---
-<font size=6>
-
-## Knit to pdf before writing to database 
-
 This document is able to take a set of extracts and prepare them for digest by assigning digest_ids to them, mapping where they will go in the digest plate, and mapping where to find them in extraction plates. Currently this only fills one plate and puts the excess in tubes.  Adjust as needed.
 
-```{r echo = F, message=F}
+```{r workspace, echo = FALSE, message=FALSE}
 source("../../laboratory/scripts/lab_helpers.R")
 library(knitr)
-
+library(kableExtra)
+library(ggplot2)
+lab <- read_db("Laboratory")
 ```
 
-###Get a list of extracts to be digested, 
-in this case they are in a csv.  It is important to have extraction_id, well, plate, and quant.  
-```{r echo = F}
-infile = "../../laboratory/data/attempt_to_rescue_as_of_2018-05-22.csv"
-extr <- read.csv(infile, stringsAsFactors = F) 
-kable(extr)
+**Get a list of extracts to be digested, **
+It is important to have extraction_id, sample_id, well, plate, and quant.  
+```{r extracts, echo = FALSE}
+extr <- lab %>%
+  tbl("extraction") %>% 
+  filter(extraction_id >= params$first_sample, 
+         extraction_id <= params$last_sample) %>% 
+  select(sample_id, extraction_id, well, plate, quant) %>% 
+  collect()
 ```
 
-###How many plates will this fill?
+**How many plates will this fill?**
 
-```{r echo = F}
+```{r num_plates, echo = FALSE}
 nrow(extr)/96
 ```
-Put source extraction plates in order of the most samples needed
-```{r echo = F}
-plates <- extr %>% 
-  group_by(plate) %>% 
-  summarise(num_samples = n()) %>% 
-  arrange(desc(num_samples))
-kable(plates)
+
+The extractions are going to go into the same wells they were in on the extraction plate, except for the blanks.  Find the blanks on the extraction plates and replace those extraction ids.
+```{r}
+extr <- extr %>% 
+  mutate(extraction_id = ifelse(sample_id == "XXXX", "XXXX", extraction_id))
 ```
-
-###Loop through plates to assign as many samples to the same well they are currently in on their extraction plate
-```{r echo = F}
-# this makes a set of available wells
-avail <- data.frame(row = rep(LETTERS[1:8], 12), col = unlist(lapply(1:12, rep, 8))) %>%
-  mutate(well = paste(row, col, sep = ""))
-
-need_wells <- data.frame()
-for(i in seq(nrow(plates))){
-  have_wells <- extr %>% 
-    filter(plate == plates$plate[i]) %>% 
-    filter(well %in% avail$well)
-  
-  # are there any wells that are not available?
-  unavail <- extr %>% 
-    filter(plate == plates$plate[i]) %>% 
-    filter(!well %in% avail$well)
-  avail <- anti_join(avail, have_wells, by = "well")
-  if (nrow(unavail) > 0){
-    need_wells <- rbind(need_wells, unavail)
-  }
-}
-```
-
-###What is left over should fill in any gaps in the plate:
-```{r echo = F}
-# reorder the plates by number of samples left
-plates <- need_wells %>% 
-  group_by(plate) %>% 
-  summarise(num_samples = n()) %>% 
-  arrange(desc(num_samples))
-
-for (i in seq(nrow(plates))){
-  if(plates$num_samples[i] <= nrow(avail)){
-    avail <- arrange(avail, col, row)
-  used <- slice(avail, 1:plates$num_samples[i]) 
-  change <- need_wells %>% 
-    filter(plate == plates$plate[i]) %>% 
-    select(-well)
-  change <- cbind(change, "well"=used$well)
-  extr <- anti_join(extr, change, by = "extraction_id")
-  extr <- rbind(extr, change)
-  need_wells <- anti_join(need_wells, change, by = "extraction_id")
-  avail <- anti_join(avail, used, by = "well")
-  }
-}
-
-# put the rest of the samples in tubes
-in_tubes <- need_wells
-write.csv(in_tubes, file = paste("digest_in_tubes_as_of_", Sys.Date(), ".csv", sep =""))
-
-extr <- anti_join(extr, need_wells, by = "extraction_id")
-```
-Remove the 2 wells where blanks go and add them to the set of digests to be done in tubes
-```{r echo = F}
-blanks <- extr %>% 
-  filter(well == "D2" | well == "E8")
-
-in_tubes <- rbind(in_tubes, blanks)
-
-#remove them from the plate list
-extr <- anti_join(extr, blanks, by = "extraction_id")
-
-# create new blanks that will be assigned digest numbers to fill the plate
-new_blanks <- data.frame(sample_id = c("XXXX", "XXXX"), extraction_id = c("XXXX","XXXX"), quant = c(0,0), plate = c("XXXX","XXXX"), well = c("D2", "E8"))
-
-extr <- rbind(extr, new_blanks)
-```
-
-Generate a digest_id place holder
-```{r echo = F}
-lab <- read_db("Laboratory")
+**Generate a digest_id place holder**
+```{r digest_id, echo = FALSE}
 dig_max <- lab %>% 
   tbl("digest") %>% 
   select(digest_id) %>% 
@@ -118,20 +50,67 @@ dig_max <- lab %>%
   mutate(max = as.numeric(substr(max, 2, 5)))
 
 extr <- extr %>% 
+  # split out the row and column in order to put the wells in order
   mutate(col = as.numeric(substr(well, 2, 3)), 
     row = substr(well, 1,1)) %>% 
-  arrange(col, row) %>% 
+  arrange(plate, col, row) %>% 
+  # create digest ids
   mutate(digest_id = 1:nrow(extr)) %>% 
   mutate(digest_id = digest_id + dig_max$max) %>% 
   mutate(digest_id = paste("D", digest_id, sep = "")) %>% 
+  # calcuate the ng of DNA added to the digest
   mutate(ng_in = 30 * quant)
-
 ```
 
-###Make plate maps of destinations
+Name digest plates
+```{r name_dig_plates, echo=FALSE}
+for_plates <- extr %>% 
+  select(contains("id"), well, plate, -sample_id, ng_in) %>% 
+  mutate(num = 1:nrow(extr))
 
-```{r echo = F, message=FALSE}
-dig_dest <- plate_from_db(extr, "digest_id")
+plates <- for_plates %>% 
+  select(plate) %>% 
+  distinct() %>% 
+  arrange(plate)
+
+for_plates$dig_plate <- NA
+for (i in 1:nrow(plates)){
+  for_plates <- for_plates %>% 
+    mutate(dig_plate = ifelse(plate == plates$plate[i], paste("plate", i, sep = ""), dig_plate))
+  x <- for_plates %>% 
+    filter(plate == plates$plate[i])
+  first <- x %>% 
+    summarise(min(digest_id))
+  last <- x %>% 
+    summarise(max(digest_id))
+  for_plates <- for_plates %>% 
+    mutate(dig_plate = ifelse(plate == plates$plate[i], paste(first, "-", last, sep = ""), dig_plate))
+}
+```
+**Make plate maps of destinations**
+
+```{r dig_dest, echo = FALSE, message=FALSE}
+
+plates <- for_plates %>% 
+  select(dig_plate) %>% 
+  distinct() %>% 
+  arrange(dig_plate)
+plate1 <- for_plates %>% 
+  filter(dig_plate == plates$dig_plate[1]) %>% 
+  mutate(ng_in = ng_in/10) %>% 
+  mutate(filter = 30) %>% 
+  mutate(filter = ifelse(ng_in >= 5000 & ng_in <= 10000, 15, filter), 
+         filter = ifelse(ng_in > 10000, 7, filter))
+
+# want to make a heatmap here based on quant so I know which to put 15uL in
+
+x <- heatmap(plate1)
+ggsave(paste("../procedural_notebooks/plots/", plate1$dig_plate, ".pdf", sep = ), device = "pdf")
+
+
+
+
+dig_dest <- plate_from_db(for_plates, "digest_id")
 kable(platemap)
 ```
 ```{r echo = F, message=F}
@@ -175,8 +154,6 @@ dig <- extr %>%
 
 ### Prepare digest plate by adding 30µL of sample to each well according to the digest map prepared above.  If you are not continuing on to the digest step now, seal the plate with film, label it, and put it in the fridge.
 
-
-</font>
 
 
 
