@@ -1,11 +1,14 @@
 ---
-title: "Digest of"
-author: "D5581-D5675"
+title: '`r paste("Digest plan for ", params$first, "-", params$last, sep = "")`'
+author: "Michelle Stuart"
+date: '`r Sys.Date()`'
 output:
   pdf_document: 
     latex_engine: xelatex
-  html_notebook: default
-  html_document: default
+params:
+  first: D5676
+  last: D6251
+  num_samples: 576
 ---
 
 *This protocol assumes that you have read and understand the manufacturer’s instructions attached below.  Please read the full manufacturer’s instructions before using this abbreviated protocol.*
@@ -14,20 +17,17 @@ output:
 Digest recipe 50µL rxn - use digest sheet in PCR worksheet, double check math:
 (https://docs.google.com/spreadsheets/d/1LGt2WziwmGoJMluBcwmKfhZrGjZOlJLkVHf59-5cOV4/edit?usp=sharing) or the R code below
 
-Fill in the number of samples and the code will do the rest.
-```{r}
-plate <- "D5581-D5675"
-num_samples <- 93
 
-```
-```{r echo=FALSE, message=FALSE}
+```{r workspace, echo=FALSE, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
 library(knitr)
 library(kableExtra)
+```
+```{r create_tables, echo=FALSE, message=FALSE}
 setup <- data.frame(NA)
 setup <- setup %>% 
-  mutate(number_samples = num_samples, 
-    error = 1.1 * num_samples, 
+  mutate(number_samples = params$num_samples, 
+    error = 1.1 * number_samples, 
     reaction_size = 50, 
     enzyme1_conc = 100000, 
     enzyme2_conc = 10000, 
