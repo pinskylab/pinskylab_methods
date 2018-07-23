@@ -1,0 +1,78 @@
+---
+title: "Ali Extraction Method"
+params:
+  num_samples: 96
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+```{r workspace, echo=FALSE, message=FALSE}
+library(dplyr)
+library(knitr)
+library(kableExtra)
+```
+
+**Prepare a solution of Lifton's Buffer**
+```{r liftons, echo=FALSE}
+liftons <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
+mM_EDTA, NA, NA, 100, NA
+mM_Tris-HCl, NA, NA, 25, NA
+perc_SDS, NA, NA, 1, NA
+") %>% 
+  mutate(final_vol = 1200*1.1*params$num_samples)
+kable(liftons) %>%
+  kable_styling() %>%
+  add_header_above(c("Lifton's Buffer" = 5))
+```
+**Prepare enzyme solution**
+```{r enzyme, echo=FALSE}
+enzyme <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
+uL_Liftons, NA, 40, NA, NA
+mM_DTT, NA, NA, 75, NA
+mg/ml_ProteinaseK, NA, NA, 4.2, NA
+") %>% 
+  mutate(final_vol = 40*1.1*params$num_samples)
+kable(enzyme) %>%
+  kable_styling() %>%
+  add_header_above(c("Enzyme Solution" = 5))
+```
+**Prepare hybridization solution**
+```{r hybrid, echo=FALSE}
+hybrid <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
+M_NaCl, NA, NA, 2.5, NA
+perc_PEG_8000, NA, NA, 20, NA
+mM_DTT, NA, NA, 25, NA
+") %>% 
+  mutate(final_vol = 45*1.1*params$num_samples)
+kable(hybrid) %>%
+  kable_styling() %>%
+  add_header_above(c("Hybridization Buffer" = 5))
+```
+**Prepare low TE solution**
+```{r low_TE, echo=FALSE}
+low_te <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
+mM_Tris-HCl, NA, NA, 10, NA
+mM_EDTA, NA, NA, 0.1, NA") %>% 
+  mutate(final_vol = 100*1.1*params$num_samples)
+kable(low_te) %>%
+  kable_styling() %>%
+  add_header_above(c("Low TE buffer" = 5))
+```
+**Load samples for lysis**
+1. Add 80uL Lifton's buffer to each well of a 96 well plate.
+2. Add fin clips measuring 2-25mm^2 to each well.
+3. Add 40uL enzyme solution to each well, pipet up and down to mix.
+4. Seal plate and incubate at 55C overnight.
+
+**Extract DNA from lysate**
+1. To a new plate add 45uL hybridization buffer to each well.
+2. Add 15uL Agencourt Ampure beads.
+3. Add 45uL of the lysate and pipet up and down to mix.
+4. Incubate at room temperature for 5 minutes, then place on magnet and allow the wells to clear.
+5.  Remove supernatant.
+6. Remove from the magnet and use 150uL freshly prepared 80% EtOH to resuspend the beads.
+7. Wash with ethanol again
+8. wash with ethanol a 3rd time.
+9. Allow beads to air dry on the magnet 
+10. Add 100uL low TE to elute DNA from the beads
