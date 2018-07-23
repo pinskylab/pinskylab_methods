@@ -2,33 +2,36 @@
 title: "Samples that need sequencing as of `r Sys.Date()`"
 output: html_notebook
 ---
-
-# get work progress on all samples
-
+```{r workspace echo=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
 source("../genomics/scripts/gen_helpers.R")
-source("scripts/lab_helpers.R")
+source("../genomics/scripts/lab_helpers.R")
 leyte <- read_db("Leyte")
 lab <- read_db("Laboratory")
+```
 
-# Sequencing Success ####
-# get all of the samples that have passed the dDocent filters and are considered successfully sequenced
+**Samples that have successfully completed sequencing**
+These samples have passed Michelle's dDocent filters
+```{r success}
 # locate the genepop file and read as data frame
 genfile <- "../genomics/data/seq17_03g95maf2q30dp15.gen"
-
 genedf <- read_genepop(genfile)
 
-# strip any named samples down to pure ligation number ---- 
-# create a search term to search for ligation ids within a name
+# format the file-----------------------------
+
+# remove columns of loci
+genedf <- genedf %>% 
+  select(names) %>% 
+  rename(ligation_id=names)
+
+
+# Just in case some of the samples are named with APCL before the ligation_id, create a search term to search for ligation ids within a name
 ligid <- "(.+)(L\\d\\d\\d\\d)" 
 # change all of the names to ligation id only
-genedf$names <- genedf$names %>% str_replace(ligid,"\\2")
+genedf$ligation_id <- genedf$ligation_id %>% str_replace(ligid,"\\2")
 
-genedf <- genedf %>% 
-  select(names) %>% # remove columns of loci
-  rename(ligation_id=names) %>% 
-  mutate(seq = "yes")
-
-# get sample ids for these ligations
+# get sample ids for these ligations ----------------------------
 samples <- samp_from_lig(genedf)
 
 if (nrow(samples) != nrow(genedf)){
@@ -43,9 +46,70 @@ if (nrow(samples) != nrow(genedf)){
   print("All sequenced samples accounted for")
 }
 
-write.csv(samples, file = paste("data/samples_successfully_seq_as_of_", Sys.Date(), ".csv", sep = "" ))
+# write.csv(samples, file = paste("data/samples_successfully_seq_as_of_", Sys.Date(), ".csv", sep = "" ))
 
 rm(no_dups, no_sample, genedf)
+
+samples <- samples %>% 
+  arrange(sample_id)
+
+kable(samples, longtable=T) %>% 
+  kable_styling(latex_options = "repeat_header") %>%
+  add_header_above(c("Successfully sequenced" = 2))
+
+```
+
+**Of all the samples that have been collected, which are not on the successful sequence list?**
+
+```{r}
+fish <- leyte %>% 
+  tbl("clownfish") %>% 
+  collect() %>% 
+  filter(!sample_id %in% samples$sample_id) %>% 
+  select(sample_id) %>% 
+  arrange(sample_id)
+
+kable(fish, longtable=T) %>% 
+  kable_styling(latex_options = "repeat_header") %>%
+  add_header_above(c("Have not been sequenced"))
+
+fish <- fish %>% 
+  mutate(status = NA)
+```
+
+**For those sample that have not been sequenced, which are about to be sequenced (have a digest that has been processed since July 2017)?**
+
+```{r}
+# get all of the sample ids and extraction ids that have been extracted
+extr <- lab %>% 
+  tbl("extraction") %>% 
+  select(sample_id, extraction_id) %>% 
+  collect() %>% 
+  # don't need those that were successfully sequenced
+  filter(!sample_id %in% samples$sample_id)
+
+fish <- fish %>% 
+  mutate(status = ifelse(sample_id %in% extr$sample_id, "extracted", "unextracted"))
+
+fish %>% 
+  filter(status == "unextracted")
+
+  
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Unable to Extract ####
 
