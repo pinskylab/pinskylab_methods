@@ -11,9 +11,9 @@ params:
 
 This protocol is to clean `r params$num_samples` `r params$vol_samples`uL samples of DNA.
 
-2. Bring `r paste(params$vol_samples * params$num_samples * 1.5/1000, "mL", sep = " ")`  of AMPure to room temperature - takes about 5 minutes depending on temperature of lab.  
+1. Bring `r paste(params$vol_samples * params$num_samples * 1.5/1000, "mL", sep = " ")`  of AMPure to room temperature - takes about 5 minutes depending on temperature of lab.  
 
-3. Make a 50mL falcon tube of 70% EtOH (important that this is made fresh daily) by filling the tube to 35mL 100% EtOH and filling to the 50mL mark with distilled water.  
+2. Make a 50mL falcon tube of 70% EtOH (important that this is made fresh daily) by filling the tube to 35mL 100% EtOH and filling to the 50mL mark with distilled water.  
 
 3. Place ampure in a reagent resevoir.  
 

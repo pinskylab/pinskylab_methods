@@ -1,14 +1,14 @@
 ---
-title: "Prep for quantification"
+title: "Prep plates `r params$first_plate` through `r params$last_plate` for quantification"
 params:
   first_plate: E4551-E4646
-  id: extraction_id
   last_plate: E5031-E5126
+  id: extraction_id
   num_plates: 6
   type: extraction
 output:
-  github_document: default
   pdf_document: default
+  github_document: default
 ---
 
 ```{r echo=FALSE, message=FALSE}
@@ -19,33 +19,26 @@ library(kableExtra)
 source("../genomics/scripts/lab_helpers.R")
 ```
 
-The manufacturers directions for this method describe preparing a solution that is 2mL in volume.  Our plates hold a leaky maximum of 400uL so the volumes must be adusted to fit.
+**Prepare the first standard**
+Combine 750uL of 100ug/mL lambda DNA from the pico kit with 750uL 1X TE to create a 50ug/mL standard.  
+This is Standard 1 which will have a final concentration of 25 ug/mL
 
-**Prepare the reagent**
+**Prepare the 200 fold dilution of pico dye to be kept in the dark**  
 
-Make a 200 fold dilution of pico dye.  Keep this in the dark.
- *Units for volume of 1x TE and units for volume of pico are uL*
-```{r}
-num_samples <- (96*params$num_plates)*1.1
+```{r echo=FALSE}
+final_vol <- params$num_plates*96*1.1*200/2
 ```
-  
-**Prepare the samples and load the plates**
-1. Calculate the amounts of reagents needed to do the quantification and make the pico dye mix.
-```{r echo=FALSE, results='asis'}
-final_vol_samp <- 200
+ 
+Combine `r final_vol/200`uL pico concentrate with `r final_vol/1000`mL 1X TE.  
 
-final_vol_pico <- 100*num_samples
+**Prepare the rest of the standards**
+1. Combine 100uL of Standard 1 with 900uL 1X TE.  This is standard 2 with a final concentration of 2.5 ug/mL
+2. Combine 10uL of Standard 1 with 990uL 1X TE. This is standard 3 with a final concentration of 250 ng/mL
+3. Combine 1uL of Standard 1 with 999uL 1X TE. This is standard 4 with a final concentration of 25 ng/mL
+4. Add 1000uL 1X TE to a new tube. This is standard 5 with a concentration of 0 ug/mL
 
-vol_1x_TE <- 0.995 * final_vol_pico
 
-vol_pico_conc <- final_vol_pico - vol_1x_TE
-
-pico <- data.frame(num_samples, vol_1x_TE, vol_pico_conc)
-
-kable(pico)
-```
-2. Make the standards
-2. Qubit the standards to make sure they are the quantities you expect them to be.
+**Prepare the samples and load the plates**  
 3. Add 99uL 1xTE to all of the sample wells of the sample plates
 4. Add 100uL of standards to the standards plate
 5. Add 1uL of each sample to each sample well of sample plates
