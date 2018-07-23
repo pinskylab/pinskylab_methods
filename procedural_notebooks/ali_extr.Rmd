@@ -4,7 +4,6 @@ params:
   num_samples: 96
 output:
   pdf_document: default
-  html_notebook: default
 ---
 
 ```{r workspace, echo=FALSE, message=FALSE}
@@ -15,36 +14,51 @@ library(kableExtra)
 
 **Prepare a solution of Lifton's Buffer**
 ```{r liftons, echo=FALSE}
-liftons <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
-mM_EDTA, NA, NA, 100, NA
-mM_Tris-HCl, NA, NA, 25, NA
-perc_SDS, NA, NA, 1, NA
+liftons <- readr::read_csv("ingredient, initial_conc, initial_vol_mL, final_conc, final_vol_mL
+mM_EDTA, 500, NA, 100, NA
+mM_Tris-HCl, 1000, NA, 25, NA
+perc_SDS, 20, NA, 1, NA
+pH2O, NA, NA, NA, NA
 ") %>% 
-  mutate(final_vol = 1200*1.1*params$num_samples)
+  mutate(final_vol_mL = 1200*1.1*params$num_samples/1000, 
+         initial_vol_mL = final_conc* final_vol_mL/initial_conc,
+         initial_vol_mL = ifelse(ingredient == "pH2O",final_vol_mL - sum(initial_vol_mL, na.rm = T), initial_vol_mL))
+ 
+         
 kable(liftons) %>%
   kable_styling() %>%
   add_header_above(c("Lifton's Buffer" = 5))
 ```
-**Prepare enzyme solution**
+
+**Prepare Lifton's buffer with proteinase K**
 ```{r enzyme, echo=FALSE}
 enzyme <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
-uL_Liftons, NA, 40, NA, NA
-mM_DTT, NA, NA, 75, NA
-mg/ml_ProteinaseK, NA, NA, 4.2, NA
+mM_EDTA, 500, NA, 100, NA
+mM_Tris-HCl, 1000, NA, 25, NA
+perc_SDS, 20, NA, 1, NA
+mM_DTT, 1000, NA, 75, NA
+mg/ml_ProteinaseK, 20, NA, 4.2, NA
+pH2O, NA, NA, NA, NA
 ") %>% 
-  mutate(final_vol = 40*1.1*params$num_samples)
+  mutate(final_vol = 40*1.1*params$num_samples, 
+         initial_vol = final_conc*final_vol/initial_conc, 
+         initial_vol = ifelse(ingredient == "pH2O",final_vol - sum(initial_vol, na.rm = T), initial_vol))
 kable(enzyme) %>%
   kable_styling() %>%
-  add_header_above(c("Enzyme Solution" = 5))
+  add_header_above(c("Lifton's with Proteinase K" = 5))
 ```
 **Prepare hybridization solution**
 ```{r hybrid, echo=FALSE}
 hybrid <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
-M_NaCl, NA, NA, 2.5, NA
-perc_PEG_8000, NA, NA, 20, NA
-mM_DTT, NA, NA, 25, NA
+M_NaCl, 5, NA, 2.5, NA
+perc_PEG_8000, 50, NA, 20, NA
+mM_DTT, 1000, NA, 25, NA
+pH2O, NA, NA, NA, NA
 ") %>% 
-  mutate(final_vol = 45*1.1*params$num_samples)
+  mutate(final_vol = 45*1.1*params$num_samples,
+         initial_vol = final_conc*final_vol/initial_conc, 
+         initial_vol = ifelse(ingredient == "pH2O",final_vol - sum(initial_vol, na.rm = T), initial_vol))
+
 kable(hybrid) %>%
   kable_styling() %>%
   add_header_above(c("Hybridization Buffer" = 5))
@@ -52,9 +66,13 @@ kable(hybrid) %>%
 **Prepare low TE solution**
 ```{r low_TE, echo=FALSE}
 low_te <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
-mM_Tris-HCl, NA, NA, 10, NA
-mM_EDTA, NA, NA, 0.1, NA") %>% 
-  mutate(final_vol = 100*1.1*params$num_samples)
+mM_Tris-HCl, 1000, NA, 10, NA
+mM_EDTA, 500, NA, 0.1, NA
+pH2O, NA, NA, NA, NA") %>% 
+  mutate(final_vol = 100*1.1*params$num_samples, 
+         initial_vol= final_conc*final_vol/initial_conc, 
+         initial_vol = ifelse(ingredient == "pH2O",final_vol - sum(initial_vol, na.rm = T), initial_vol))
+
 kable(low_te) %>%
   kable_styling() %>%
   add_header_above(c("Low TE buffer" = 5))
