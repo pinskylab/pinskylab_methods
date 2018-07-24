@@ -3,7 +3,7 @@ Methods used by many of us in the lab
 
 ### field  
 
-This folder contains scripts used in the Philippines by the Leyte team to input and process data sheets.  It also contains data from the temperature loggers and GIS data.
+This folder contains scripts used in the Philippines by the Leyte team to input and process data sheets.  It also contains data from the temperature loggers and GPS data.
 
 ### genomics  
 
