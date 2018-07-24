@@ -2,6 +2,7 @@
 title: "Ali Extraction Method"
 params:
   num_samples: 96
+  mM_EDTA: 500 
 output:
   pdf_document: default
 ---
@@ -15,12 +16,12 @@ library(kableExtra)
 **Prepare a solution of Lifton's Buffer**
 ```{r liftons, echo=FALSE}
 liftons <- readr::read_csv("ingredient, initial_conc, initial_vol_mL, final_conc, final_vol_mL
-mM_EDTA, 500, NA, 100, NA
-mM_Tris-HCl, 1000, NA, 25, NA
+mM_EDTA, params$mM_EDTA, NA, 100, NA
+mM_Tris-HCl_pH7.5, 1000, NA, 25, NA
 perc_SDS, 20, NA, 1, NA
 pH2O, NA, NA, NA, NA
 ") %>% 
-  mutate(final_vol_mL = 1200*1.1*params$num_samples/1000, 
+  mutate(final_vol_mL = 250, 
          initial_vol_mL = final_conc* final_vol_mL/initial_conc,
          initial_vol_mL = ifelse(ingredient == "pH2O",final_vol_mL - sum(initial_vol_mL, na.rm = T), initial_vol_mL))
  
@@ -33,14 +34,14 @@ kable(liftons) %>%
 **Prepare Lifton's buffer with proteinase K**
 ```{r enzyme, echo=FALSE}
 enzyme <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
-mM_EDTA, 500, NA, 100, NA
-mM_Tris-HCl, 1000, NA, 25, NA
+mM_EDTA, params$mM_EDTA, NA, 100, NA
+mM_Tris-HCl_pH7.5, 1000, NA, 25, NA
 perc_SDS, 20, NA, 1, NA
 mM_DTT, 1000, NA, 75, NA
 mg/ml_ProteinaseK, 20, NA, 4.2, NA
 pH2O, NA, NA, NA, NA
 ") %>% 
-  mutate(final_vol = 40*1.1*params$num_samples, 
+  mutate(final_vol = 5000, 
          initial_vol = final_conc*final_vol/initial_conc, 
          initial_vol = ifelse(ingredient == "pH2O",final_vol - sum(initial_vol, na.rm = T), initial_vol))
 kable(enzyme) %>%
@@ -55,7 +56,7 @@ perc_PEG_8000, 50, NA, 20, NA
 mM_DTT, 1000, NA, 25, NA
 pH2O, NA, NA, NA, NA
 ") %>% 
-  mutate(final_vol = 45*1.1*params$num_samples,
+  mutate(final_vol = 5000,
          initial_vol = final_conc*final_vol/initial_conc, 
          initial_vol = ifelse(ingredient == "pH2O",final_vol - sum(initial_vol, na.rm = T), initial_vol))
 
@@ -66,10 +67,10 @@ kable(hybrid) %>%
 **Prepare low TE solution**
 ```{r low_TE, echo=FALSE}
 low_te <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
-mM_Tris-HCl, 1000, NA, 10, NA
-mM_EDTA, 500, NA, 0.1, NA
+mM_Tris-HCl_pH7.5, 1000, NA, 10, NA
+mM_EDTA, params$mM_EDTA, NA, 0.1, NA
 pH2O, NA, NA, NA, NA") %>% 
-  mutate(final_vol = 100*1.1*params$num_samples, 
+  mutate(final_vol = 15000, 
          initial_vol= final_conc*final_vol/initial_conc, 
          initial_vol = ifelse(ingredient == "pH2O",final_vol - sum(initial_vol, na.rm = T), initial_vol))
 
