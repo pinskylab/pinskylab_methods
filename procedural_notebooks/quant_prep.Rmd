@@ -72,3 +72,45 @@ Combine `r final_vol/200`uL pico concentrate with `r final_vol/1000`mL 1X TE.
 
 7. Click the blue plate icon again and select "export", check the "unknowns" box, and save as the same name as in step 6.  This is a text file that contains the data you will import into the database.
 
+Copy of protocol from plate reader:
+Quantitation of double-stranded DNA using Quant-iT PicoGreen Reagent
+Invitrogen (Molecular Probes)
+
+MATERIALS
+o     Quant-iT PicoGreen dsDNA Assay Kit, including lambda DNA standard (Invitrogen cat. #P7589 or  P11496)
+o     Black 96-well plate (Greiner Bio-One, cat. # 655096)
+o     Brown or amber (light-blocking) microcentrifuge tubes
+
+METHODS
+Set up the protocol:
+o     Select Wells to Read and Assay Plate Type by clicking on "Settings" and locating the options on the left side of the screen.
+o     Click the Template button to open a window where you can assign wells of the microplate to pre-set template groups using the drop-down menu to select the appropriate template group.  There are preconfigured template groups in the PicoGreen Fluorescence protocol including Standards, Unknowns, and Unknowns_NoDiln (for undiluted samples).  Assigning wells to pre-set template groups populates group tables in the protocol with the corresponding data acquired when the microplate is read.
+
+Prepare the assay
+The method for this assay follows the instructions in the product information sheet for Quant-iT PicoGreen dsDNA Reagent and Kits from Molecular Probes, except that the assay volume is proportionately reduced from 2.0 mL to 200 uL to fit a 96-well microplate format.
+
+o     Prepare 1X TE buffer (10 mM Tris-HCl, 1 mM EDTA, pH 7.5) by diluting the
+o     concentrated buffer from the kit 20-fold with distilled DNase-free water, as required by Molecular Probes.
+o     Prepare an aqueous working solution of Quant-iT PicoGreen reagent by making a 200-fold dilution of the concentrated DMSO solution in TE buffer (prepared above).  Preparation of the solution in a plastic container, rather than glass, is recommended, as the reagent may adsorb to glass surfaces.  Protect the solution from light by using amber or brown tubes, or by covering with foil.  This solution should be used within a few hours of its preparation.
+o     DNA standard curve: Prepare a 2 µg/mL stock solution of dsDNA in TE.  The lambda DNA standard provided with the kit can be diluted 50-fold in TE to make the 2 µg/mL solution.  Note: in some cases it may be preferable to make the standard curve using DNA similar to the type being assayed.
+o     A high-range standard curve may be prepared from 1 ng/mL to 1 µg/mL, or a low-range standard curve may be prepared from 25 pg/mL to 25 ng/mL.  For the high-range curve, follow the dilution scheme shown in the PicoGreen product insert; for the low-range curve, dilute the 2 µg/mL solution 40-fold to yield a 50 ng/mL solution, and refer to the alternative dilution scheme in the product insert.
+o     Pipet standards into a solid black 96-well microplate at 100 µL per well, preferably in triplicate.  Be sure to include a set of buffer blank wells containing TE only (no DNA).
+o     Add 100 µL of the aqueous working solution of Quant-iT PicoGreen reagent to each well.  Mix well by trituration or plate shaker and incubate for  2 to 5 minutes at room temperature, protected from light.
+
+Read the microplate
+"     Make sure the purple plate adapter is in the microplate reader drawer.  Place the microplate in the drawer.
+"     Click the Read button in the SoftMax Pro software. The instrument will read the plate and the relative fluorescence units will be displayed in the Plate section of the protocol.
+
+ 
+Analyze the data
+o     After the microplate has been read, the relative fluorescence units (RFUs) will be displayed in the Plate section.  The data will be analyzed in the Group Tables that were created when the template was set up.
+o     Standards assigned in the Template (and thus displayed in the Standards group table) will be automatically plotted in the Standard Curve section of the protocol.  A linear curve fit is applied by default, but a log-log fit may be used when plotting a standard curve over a wide dynamic range.  Curve fits are chosen from the drop-down Curve Fit menu in the graph section's tool bar.
+
+
+-----------------------------------------
+READER SUITABILITY:
+All SpectraMax readers with fluorescence capability.  
+
+PROTOCOL REVISION HISTORY:  
+v 1.1; Imported from SMP 5.4.2  April 2011 (CLO & ELM)
+v 1.2;  Emission wavelength changed from 540 nm to 525 nm. (CLO)
