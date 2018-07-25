@@ -51,7 +51,7 @@ kable(enzyme) %>%
 **Prepare hybridization solution**
 ```{r hybrid, echo=FALSE}
 hybrid <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
-M_NaCl, 5, NA, 2.5, NA
+M_NaCl, 4.45, NA, 2.5, NA
 perc_PEG_8000, 50, NA, 20, NA
 mM_DTT, 1000, NA, 25, NA
 pH2O, NA, NA, NA, NA
