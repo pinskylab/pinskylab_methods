@@ -1,0 +1,39 @@
+---
+title: "Add test samples to db"
+output:
+  pdf_document: default
+  html_notebook: default
+params: 
+  type: "extraction"
+  id: "extraction_id"
+  db: "Laboratory"
+  
+---
+
+Access database.
+```{r workspace, echo = F, message=FALSE}
+source("../genomics/scripts/lab_helpers.R")
+write <- write_db(params$db)
+library(knitr)
+```
+Find the range of rows to be changed
+```{r change}
+# pull in all table
+
+change <- readr::read_csv("extraction_id, sample_id, method, well, notes
+  E5299, APCL18_004, Ali, A12, Second half of fin clip used in test extraction
+  E5300, APCL18_008, Ali, B12, Second half of fin clip used in test extraction
+  E5301, APCL18_009, Ali, C12, Second half of fin clip used in test extraction
+  E5302, APCL18_021, Ali, D12, Second half of fin clip used in test extraction
+  E5303, APCL18_035, Ali, E12, Second half of fin clip used in test extraction
+  E5304, APCL18_053, Ali, F12, Second half of fin clip used in test extraction
+  E5305, APCL18_057, Ali, G12, Second half of fin clip used in test extraction
+  E5306, APCL18_060, Ali, H12, Second half of fin clip used in test extraction")
+
+```
+Write to database
+```{r write}
+# dbWriteTable(write, params$type, change, row.names = F, overwrite = F, append = T)
+# dbDisconnect(write)
+```
+
