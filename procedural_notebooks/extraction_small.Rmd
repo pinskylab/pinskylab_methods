@@ -6,12 +6,12 @@ output:
   html_document: default
 date: '`r Sys.Date()`'
 params:
-  first: APCL18_659
+  first: APCL18_649
   last: APCL18_732
-  num_samples: 76
 ---
 
-This is a script for adding samples that are not in the laboratory database and have not been extracted. This is set up to handle one plate at a time.
+This is a script for adding samples that are not in the laboratory database and have not been extracted. This small extraction script is for samples that will not fill 2 plates.  This script only can do one plate at a time so figure out the start and stop samples of a plate and go from there.
+
 ```{r echo=FALSE, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
 library(kableExtra)
@@ -36,32 +36,34 @@ fish <- distinct(fish)
 ```
 ####Select the range of samples in the plate
 ```{r}
+# get a list of the sample ids that need to be extracted
 work <- fish %>% 
   filter(sample_id >= params$first, sample_id <= params$last)
 
-# define wells
+# define wells and make plate as small as work (less than 96)
 plate <- data.frame(row = rep(LETTERS[1:8], 12), col = unlist(lapply(1:12, rep, 8))) %>% 
   mutate(sample_id = ifelse(row == "D" & col == 2, "XXXX", NA), 
-    sample_id = ifelse(row == "E" & col == 8, "XXXX", sample_id))
+    sample_id = ifelse(row == "E" & col == 8, "XXXX", sample_id)) %>% 
+  slice(1:(nrow(work)+2))
 
-samples <- plate %>% 
+sample_wells <- plate %>% 
   filter(is.na(sample_id)) %>% 
   select(-sample_id)
 
-plate <- anti_join(plate, samples, by = c("row", "col"))
+plate <- anti_join(plate, sample_wells, by = c("row", "col"))
 
-samples <- cbind(samples, work)
+sample_wells <- cbind(sample_wells, work)
 
-plate <- rbind(plate, samples) %>% 
+plate <- rbind(plate, sample_wells) %>% 
   arrange(col, row)
 ```
 
 ####Make a plate map of sample IDs (for knowing where to place fin clips) ####
 ```{r message=FALSE}
-platemap <- as.matrix(reshape2::acast(plate, plate[,1] ~ plate[,2]), value.var = plate[,3])
-knitr::kable(platemap, booktabs = T) %>% 
-  # use scale_down to get map to fit within the bounds of the pdf
-  kable_styling(latex_options = "scale_down")
+platemap <- as.matrix(reshape2::acast(plate, plate$row ~ plate$col), value.var = plate$sample_id)
+  knitr::kable(platemap, booktabs = T) %>% 
+    # use scale_down to get map to fit within the bounds of the pdf
+    kable_styling(latex_options = "scale_down")  
 ```
 ###ONLY DO THIS ONCE 
 ####Generate extract numbers for database
@@ -83,11 +85,12 @@ plate_name <- plate %>%
   summarise(first = min(extraction_id), 
     last = max(extraction_id, na.rm = T))
 ```
+
 ####Make a platemap with extraction ids
 ```{r}
 map <- plate %>% 
   select(row, col, extraction_id)
-  platemap <- as.matrix(reshape2::acast(map, map[,1] ~ map[,2]), value.var = map[,3])
+platemap <- as.matrix(reshape2::acast(map, map$row ~ map$col), value.var = map$extraction_id)
 knitr::kable(platemap, booktabs = T) %>% 
   kable_styling()
 
@@ -101,44 +104,8 @@ plate <- plate %>%
 rm(lab)
 lab <- write_db("Laboratory")
 dbWriteTable(lab, "extraction", plate, row.names = F, overwrite = F, append = T)
-
 dbDisconnect(lab)
 rm(lab)
 ```
-## Load fin clips
 
-**Calculate the amount of lysis buffer to make**
-```{r}
-num_samples <- params$num_samples
-
-w_error <- num_samples *1.1
-
-mix <- readr::read_csv("num_samples_w_error, ul_prot_k, ml_ATL_buff
-0,0,0") %>% 
-mutate(num_samples_w_error = w_error, 
-ul_prot_k = w_error * 20 * 0.001, 
-ml_ATL_buff = w_error * 180 * 0.001)
-
-kable(mix)
-```
-
-1. Set up tubes of fin clips into the plate formation on tube holder block according to plate map.
-
-2. Create the lysis mix in a 50mL falcon tube, **do not vortex (foamy)**, and pour into 50mL reservoir.
-
-3. Place an 8 well strip of collection tubes (H position labeled with the column number) onto the loading plate and fill with 200uL of lysis mix.
-
-4. Double check that the next column of tubes matches the plate map
-
-5. Place the fins in the collection tubes
-
-6. Cap the tubes
-
-7. When the entire plate is done, place in the incubator overnight.
-
-8. Allow the plate to cool and check the caps to make sure they are on securely.
-
-9. Follow the Qiagen protocol for plate extraction.
-
-#### Next follow the protocol for gel and pico_plate to check quality and quantity of extracts
 

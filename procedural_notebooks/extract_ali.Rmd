@@ -16,7 +16,7 @@ library(kableExtra)
 **Prepare a solution of Lifton's Buffer**
 ```{r liftons, echo=FALSE}
 liftons <- readr::read_csv("ingredient, initial_conc, initial_vol_mL, final_conc, final_vol_mL
-mM_EDTA, params$mM_EDTA, NA, 100, NA
+mM_EDTA, 500, NA, 100, NA
 mM_Tris-HCl_pH7.5, 1000, NA, 25, NA
 perc_SDS, 20, NA, 1, NA
 pH2O, NA, NA, NA, NA
@@ -34,7 +34,7 @@ kable(liftons) %>%
 **Prepare Lifton's buffer with proteinase K**
 ```{r enzyme, echo=FALSE}
 enzyme <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
-mM_EDTA, params$mM_EDTA, NA, 100, NA
+mM_EDTA, 500, NA, 100, NA
 mM_Tris-HCl_pH7.5, 1000, NA, 25, NA
 perc_SDS, 20, NA, 1, NA
 mM_DTT, 1000, NA, 75, NA
@@ -68,7 +68,7 @@ kable(hybrid) %>%
 ```{r low_TE, echo=FALSE}
 low_te <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
 mM_Tris-HCl_pH7.5, 1000, NA, 10, NA
-mM_EDTA, params$mM_EDTA, NA, 0.1, NA
+mM_EDTA, 500, NA, 0.1, NA
 pH2O, NA, NA, NA, NA") %>% 
   mutate(final_vol = 15000, 
          initial_vol= final_conc*final_vol/initial_conc, 
@@ -78,20 +78,23 @@ kable(low_te) %>%
   kable_styling() %>%
   add_header_above(c("Low TE buffer" = 5))
 ```
-**Load samples for lysis**
-1. Add 80uL Lifton's buffer to each well of a 96 well plate.
-2. Add fin clips measuring 2-25mm^2 to each well.
-3. Add 40uL enzyme solution to each well, pipet up and down to mix.
-4. Seal plate and incubate at 55C overnight.
+**Load samples for lysis**  
 
-**Extract DNA from lysate**
-1. To a new plate add 45uL hybridization buffer to each well.
-2. Add 15uL Agencourt Ampure beads.
-3. Add 45uL of the lysate and pipet up and down to mix.
-4. Incubate at room temperature for 5 minutes, then place on magnet and allow the wells to clear.
-5.  Remove supernatant.
-6. Remove from the magnet and use 150uL freshly prepared 80% EtOH to resuspend the beads.
-7. Wash with ethanol again
-8. wash with ethanol a 3rd time.
-9. Allow beads to air dry on the magnet 
-10. Add 100uL low TE to elute DNA from the beads
+1. Add 80uL Lifton's buffer to each well of a 96 well plate.  
+2. Add fin clips measuring 2-25mm^2 to each well.  
+3. Add 40uL enzyme solution to each well, pipet up and down to mix.  
+4. Seal plate and incubate at 55C overnight.  
+  
+  
+**Extract DNA from lysate**  
+1. To a new plate add 45uL hybridization buffer to each well.  
+2. Add 15uL Agencourt Ampure beads.  
+3. Add 45uL of the lysate and pipet up and down to mix.  
+4. Incubate at room temperature for 5 minutes, then place on magnet and allow the wells to clear.  
+5.  Remove supernatant.  
+6. Remove from the magnet and use 150uL freshly prepared 80% EtOH to resuspend the beads.  
+7. Wash with ethanol again  
+8. wash with ethanol a 3rd time.  
+9. Allow beads to air dry on the magnet   
+10. Add 100uL low TE to elute DNA from the beads  
+
