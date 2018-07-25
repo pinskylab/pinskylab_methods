@@ -1,14 +1,16 @@
 ---
 title: "Import qubit quantification data"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 
-```{r workspace, echo=FALSE}
+```{r workspace, echo=FALSE, message=FALSE}
 # import qubit results to db
 
 source("../genomics/scripts/lab_helpers.R")
-
+library(knitr)
 lab <- read_db("Laboratory")
 
 infile <- "/Volumes/USB DISK/2018 7/QUBIT_2018-07-25_3-03-PM.csv"
@@ -16,85 +18,41 @@ infile <- "/Volumes/USB DISK/2018 7/QUBIT_2018-07-25_3-03-PM.csv"
 
 Open the qubit file with a text editor and change any special character micro symbols to "u" so that R can process the file.  Also delete any rows that are not from your current data session while you're in there.
 
-```{r}
+```{r echo=FALSE, warning=FALSE}
 qubit <- read.csv(infile, header = T, stringsAsFactors = F) %>% 
   arrange(Name)
 ### you get an error because there is a special symbol in the header row, change micro symbol to u ####
 
+# create a table of the samples that were measured
+samples <- tibble(sample = c("STD1", "STD2", "STD3", "STD4", "STD5", "Q4", "A4", "Q8", "A8", "Q9", "A9", "Q21", "A21", "Q35", "A35", "Q53", "A53", "Q57", "A57", "Q60", "A60"))
 
-
-# eliminate unwanted data by date
-qubit <- qubit %>% 
-  filter(grepl("5-15", Date.Time)) %>% 
-  select(Date.Time, Assay.Conc., Name) %>% 
-  arrange(Name)
-
-qubit <- qubit %>% 
-  filter(grepl("2:05", Date.Time)| grepl("2:06", Date.Time)) %>% 
-  slice(2:nrow(qubit))
-
-# create a table of samples that were measured
-samples <- lab %>%
-  tbl("extraction") %>%
-  filter(plate == "E4478-E4550" & is.na(quant)) %>%
-  collect() %>%
-  arrange(extraction_id) %>%
-  select(extraction_id)
-
-# samples <- lab %>%
-#   tbl("digest") %>%
-#   filter(plate == "D5220-D5308") %>%
-#   collect() %>%
-#   arrange(digest_id) %>%
-#   select(digest_id)
-
-# attach to qubit results
-qubit <- cbind(qubit, samples)
-
-# calculate ng/ul
-qubit <- qubit %>% 
-  # mutate(quant = as.numeric(Assay.Conc.) * 0.2) %>% # for high sensitivity
-  mutate(quant = as.numeric(Assay.Conc.) * 200) %>% # for broad range 
-  select(extraction_id, quant)
-
-extr <- lab %>%
-  tbl("extraction") %>%
-  collect()
-
-change <- extr %>%
-  filter(extraction_id %in% qubit$extraction_id) %>% 
-  select(-quant)
-
-
-change <- left_join(change, qubit, by = "extraction_id") 
-
-extr <- change_rows(extr, change, "extraction_id")
-
-# lab <- write_db("Laboratory")
-# dbWriteTable(lab, "extraction", extr, row.names = F, overwrite = T)
-# rm(lab, infile, change, extr, qubit, samples)
-
-# dig <- lab %>%
-#   tbl("digest") %>%
-#   collect()
-# 
-# change <- dig %>%
-#   filter(digest_id %in% qubit$digest_id) %>%
-#   mutate(quant = qubit$new_quant, 
-#     date = "2018-05-10",
-#     final_vol = 40, 
-#     notes = NA)
-# 
-# 
-# dig <- change_rows(dig, change, "digest_id")
-
-# lab <- write_db("Laboratory")
-# dbWriteTable(lab, "digest", dig, row.names = F, overwrite = T)
-# rm(lab, infile, change, dig, qubit, samples)
-
-
-# compare <- left_join(select(change, extraction_id, quant), select(qubit, extraction_id, new_quant))
-
+qubit <- cbind(samples, qubit) %>% 
+  rename(date_time = Date.Time, 
+    conc = Assay.Conc.) %>% 
+  select(sample, date_time, conc) %>% 
+  mutate(quant = as.numeric(conc) * 0.200)
+rm(samples)
 ```
 
+Because this is a special experiment, want to graph the results of the Q and A samples
+```{r echo=FALSE, fig.align='left'}
+library(ggplot2)
+
+test <- qubit %>% 
+  mutate(method = ifelse(grepl("Q", sample), "qiagen", NA)) %>% 
+  mutate(method = ifelse(grepl("A", sample), "ali", method)) %>% 
+  filter(!is.na(method)) %>% 
+  mutate(sample = as.numeric(substr(sample, 2, 3)))
+
+ggplot(test, aes(sample, quant, colour = method))+
+  geom_line()+
+  geom_point()
+```
+
+In the following image, the top row is the Ali method and the bottom row is the Qiagen method.
+
+```{r fig.height=4}
+img_path <- "images/IMG_1220.JPG"
+include_graphics(img_path)
+```
 
