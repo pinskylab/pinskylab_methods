@@ -16,7 +16,7 @@ lab <- read_db("Laboratory")
 infile <- "/Volumes/USB DISK/2018 7/QUBIT_2018-07-25_3-03-PM.csv"
 ```
 
-Open the qubit file with a text editor and change any special character micro symbols to "u" so that R can process the file.  Also delete any rows that are not from your current data session while you're in there.
+
 
 ```{r echo=FALSE, warning=FALSE}
 qubit <- read.csv(infile, header = T, stringsAsFactors = F) %>% 
@@ -34,7 +34,13 @@ qubit <- cbind(samples, qubit) %>%
 rm(samples)
 ```
 
-Because this is a special experiment, want to graph the results of the Q and A samples
+The Qiagen method uses all of the DNA in one round of extraction.
+
+The Ali method uses less than half of the lysate to complete the extraction, so more DNA is available if needed.  Also, in this round, MRS eluted into 75uL and could have eluted into 45uL, making a more concentrated result than what is shown here.
+
+A graph of the quantifications of the same fin clips extracted using the Ali method compared to the Qiagen method.
+
+
 ```{r echo=FALSE, fig.align='left'}
 library(ggplot2)
 
@@ -49,9 +55,9 @@ ggplot(test, aes(sample, quant, colour = method))+
   geom_point()
 ```
 
-In the following image, the top row is the Ali method and the bottom row is the Qiagen method.
+In the following image, the top row is the Ali method and the bottom row is the Qiagen method.  **Conclusion**: the Ali method is as effective as the Qiagen method for our purposes.
 
-```{r fig.height=4}
+```{r echo=FALSE}
 img_path <- "images/IMG_1220.JPG"
 include_graphics(img_path)
 ```
