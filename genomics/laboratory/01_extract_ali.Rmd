@@ -9,6 +9,7 @@ params:
 output:
   pdf_document: default
 ---
+**This is a document that combines code with lab work to complete the procedure.  It is best viewed as a pdf output from R, however it can be read on the Github website without the benefit of the output tables.**
 ```{r workspace, echo=FALSE, message=FALSE}
 library(knitr)
 library(kableExtra)
