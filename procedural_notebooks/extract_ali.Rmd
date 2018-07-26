@@ -1,16 +1,116 @@
 ---
-title: "Ali Extraction Method"
+title: '`r paste("Extraction plan for ", params$first, "-", params$last, sep =
+  "")`'
+date: '`r Sys.Date()`'
 params:
-  num_samples: 96
-  mM_EDTA: 500 
+  first: APCL18_659
+  last: APCL18_732
+  num_samples: 76
 output:
   pdf_document: default
 ---
-
 ```{r workspace, echo=FALSE, message=FALSE}
-library(dplyr)
 library(knitr)
 library(kableExtra)
+source("../genomics/scripts/lab_helpers.R")
+leyte <- read_db("Leyte")
+lab <- read_db("Laboratory")
+```
+
+Organize samples into plate format: 
+
+```{r data, echo=FALSE}
+# this code gets all sample_ids within the range stated in the params above.
+
+# connect to clownfish table in the db
+work <- leyte %>% tbl("clownfish") %>%
+  # choose only the sample_id column
+  select(sample_id) %>% 
+  # choose only the rows that meet our requirements
+  filter(sample_id >= params$first, 
+    sample_id <= params$last, 
+    !is.na(sample_id)) %>% 
+  # make sure there aren't any duplicates
+  distinct(sample_id) %>% 
+  # pull the data into R
+  collect()
+
+# define wells
+plate <- data.frame(row = rep(LETTERS[1:8], 12), col = unlist(lapply(1:12, rep, 8))) %>% 
+  mutate(sample_id = ifelse(row == "D" & col == 2, "XXXX", NA), 
+    sample_id = ifelse(row == "E" & col == 8, "XXXX", sample_id))
+
+# if the plate is not full
+x <- nrow(work) + 2
+if (x < 96) {
+  plate <- plate %>% 
+    slice(1:x)
+}
+
+# move all of the non-blank wells into their own table
+samples <- plate %>% 
+  filter(is.na(sample_id)) %>% 
+  select(-sample_id)
+
+# remove the non-blank wells from the plate table
+plate <- anti_join(plate, samples, by = c("row", "col"))
+
+# join the work sample_ids to the sample table well definitions
+samples <- cbind(samples, work)
+
+# rejoin the samples into the plate with the blanks, resulting in a plate of defined wells for samples and blanks.
+plate <- rbind(plate, samples) %>% 
+  arrange(col, row)
+
+```
+1. Sample_id plate locations
+```{r sample_map, echo=FALSE, message=FALSE}
+platemap <- as.matrix(reshape2::acast(plate, plate$row ~ plate$col), value.var = plate$sample_id)
+knitr::kable(platemap, booktabs = T) %>% 
+  # use scale_down to get map to fit within the bounds of the pdf
+  kable_styling(latex_options = "scale_down")
+```
+```{r extr_ids, echo=FALSE}
+### ONLY DO THIS ONCE ###
+extracted <- lab %>% tbl("extraction") %>% 
+  summarise(last = max(extraction_id, na.rm = T)) %>% 
+  collect() %>% 
+  mutate(last = substr(last, 2,5))
+
+plate <- plate %>% 
+  mutate(well = 1:nrow(plate)) %>% 
+  mutate(extraction_id = paste("E", well + as.numeric(extracted$last), sep = "")) %>% 
+  mutate(well = paste(row, col, sep = "")) %>% 
+  mutate(method = "Ali", 
+    final_vol = "45")
+
+plate_name <- plate %>% 
+  summarise(first = min(extraction_id), 
+    last = max(extraction_id, na.rm = T))
+
+plate <- plate %>% 
+  mutate(plate = paste(plate_name$first, plate_name$last, sep = "-"))
+```
+2. Extraction_id plate locations
+```{r extr_map, echo=FALSE, message=FALSE}
+# created map table of only 3 columns becaues acast is having trouble parsing out which columns to use
+map <- plate %>%
+  select(row, col, extraction_id)
+platemap <- as.matrix(reshape2::acast(map, map$row ~ map$col), value.var = map$extraction_id)
+
+# remove row and col from plate
+plate <- select(plate, -row, -col)
+
+knitr::kable(platemap, booktabs = T) %>% 
+  kable_styling()
+
+```
+Write the newly assigned extraction_ids to the database
+```{r write}
+lab <- write_db("Laboratory")
+# dbWriteTable(lab, "extraction", plate, row.names = F, overwrite = F, append = T)
+dbDisconnect(lab)
+rm(lab)
 ```
 
 **Prepare a solution of Lifton's Buffer**
@@ -33,17 +133,15 @@ kable(liftons) %>%
 
 **Prepare Lifton's buffer with proteinase K**
 ```{r enzyme, echo=FALSE}
-enzyme <- readr::read_csv("ingredient, initial_conc, initial_vol, final_conc, final_vol
-mM_EDTA, 500, NA, 100, NA
-mM_Tris-HCl_pH7.5, 1000, NA, 25, NA
-perc_SDS, 20, NA, 1, NA
+enzyme <- readr::read_csv("ingredient, initial_conc, initial_vol_uL, final_conc, final_vol_uL
 mM_DTT, 1000, NA, 75, NA
 mg/ml_ProteinaseK, 20, NA, 4.2, NA
-pH2O, NA, NA, NA, NA
+Liftons, NA, NA, NA, NA
 ") %>% 
-  mutate(final_vol = 5000, 
-         initial_vol = final_conc*final_vol/initial_conc, 
-         initial_vol = ifelse(ingredient == "pH2O",final_vol - sum(initial_vol, na.rm = T), initial_vol))
+  mutate(final_vol_uL = 3500, 
+         initial_vol_uL = final_conc*as.numeric(final_vol_uL)/initial_conc, 
+         initial_vol_uL = ifelse(ingredient == "Liftons",as.numeric(final_vol_uL) - sum(initial_vol_uL, na.rm = T), initial_vol_uL))
+
 kable(enzyme) %>%
   kable_styling() %>%
   add_header_above(c("Lifton's with Proteinase K" = 5))
