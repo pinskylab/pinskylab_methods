@@ -195,5 +195,5 @@ kable(low_te) %>%
 7. Wash with ethanol again  
 8. wash with ethanol a 3rd time.  
 9. Allow beads to air dry on the magnet   
-10. Add 100uL low TE to elute DNA from the beads  
+10. Add 45uL low TE to elute DNA from the beads  
 
