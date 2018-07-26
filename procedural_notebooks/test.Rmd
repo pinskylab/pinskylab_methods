@@ -1,0 +1,75 @@
+---
+title: "A history of samples `r tiss_lim$min` - `r tiss_lim$max`"
+output: html_notebook
+params:
+  dive_num: 1
+  dive_year: 2018
+---
+**Under construction and testing**
+
+This notebook serves as the record for everything a sample has undergone from collection through analysis.
+
+```{r meta, echo=FALSE}
+# gather all of the field data for this dive
+leyte <- read_db("Leyte")
+
+dive <- leyte %>% 
+  tbl("diveinfo") %>% 
+  collect() %>% 
+  filter(grepl(params$dive_year, date) & dive_num == params$dive_num)
+
+anem <- leyte %>% 
+  tbl("anemones") %>% 
+  filter(dive_table_id %in% dive$dive_table_id) %>% 
+  collect()
+
+fish <- leyte %>% 
+  tbl("clownfish") %>% 
+  filter(anem_table_id %in% anem$anem_table_id) %>% 
+  collect()
+
+fish <- left_join(fish, anem, by = "anem_table_id") 
+fish <- fish %>% 
+  select(sample_id, tag_id, recap, size, color, anem_id) %>% 
+  filter(!is.na(sample_id) | !is.na(tag_id)) %>% 
+  distinct()
+
+recap <- fish %>% 
+  filter(recap == "Y")
+
+tissue <- fish %>% 
+  filter(!is.na(sample_id))
+
+tiss_lim <- tissue %>% 
+  summarize(max = max(sample_id), 
+    min = min(sample_id))
+```
+
+
+
+Dive number `r params$dive_num` of the `r params$dive_year` season took place on `r dive$date[1]` at `r dive$site[1]`.  `r nrow(dive)` GPS units were used by `r dive$divers`.  The weather was `r dive$weather[1]`.  Notes made about the dive include " `r dive$notes[1]`"
+
+`r nrow(fish) ` fish were observed.  `r nrow(recap)` were recaptures.  `r nrow(tissue)` tissue samples were collected.
+```{r}
+kable(fish) %>% 
+  kableExtra::kable_styling()
+```
+
+```{r echo=FALSE}
+lab <- read_db("Laboratory")
+
+extr <- lab %>%
+  tbl("extraction") %>% 
+  filter(sample_id %in% fish$sample_id) %>% 
+  collect()
+
+extr_plate <- extr %>% 
+  select(plate) %>% 
+  distinct()
+```
+
+For the tissue samples, they ended up on extraction plate `r extr_plate$plate`.
+
+
+
+
