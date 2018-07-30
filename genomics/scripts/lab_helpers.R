@@ -191,7 +191,7 @@ remove_rows <- function(table_name, how_many_wells){
 lig_ng <- function(dig, regeno) {
   out <- data.frame() # make a blank data frame to write to
   y <- nrow(dig) # get the number of beginning rows
-  for(i in c(50, 75, 100, 150, 200)){
+  for(i in c(200, 150, 100, 75, 50)){
     if (nrow(out) < y){ # if we haven't placed all of the candidates yet
       # define the samples that can be ligated at the current ng
       ng <- dig %>%
@@ -199,23 +199,38 @@ lig_ng <- function(dig, regeno) {
         filter(uL_in < 22.2 & uL_in > 0.5) %>%
         mutate(water = round(22.2-uL_in, 1), 
           DNA = i)
+      
       # define regenos that can be licated at the current ng
       reg <- regeno %>%
         mutate(uL_in = round(i/quant, 1)) %>% # round to 1 decimal point
         filter(uL_in < 22.2 & uL_in > 0.5) %>%
         mutate(water = round(22.2-uL_in, 1), 
           DNA = i)
+      # end regenos section
+      
       # pull out  pools
+      # 47 samples from this pool are new, the 48th is a regenotype, that is why this number is 47.  You can change the number to whatever your pool size is, as long as you also change the slice row.
       while (nrow(ng) >= 47){
         while(nrow(reg) >= 1){
         pool <- ng %>% 
           slice(1:47)
-        re <- reg %>%
+       # add in regeno sample
+         re <- reg %>%
           slice(1)
+         #to make a total pool size of 48
+         
+         # remove the assigned pool from the ng table
         ng <- anti_join(ng, pool, by ="digest_id")
+        
+        # remove the assigned regenos from the regeno table
         reg <- anti_join(reg, re, by = "digest_id")
+        
+        # save the assigned samples to the out file
         out <- rbind(out, pool, re)
+        
+        # remove the assigned samples from the dig table
         dig <- anti_join(dig, ng, by = "digest_id")
+        # remove the assigned samples from the regeno table
         regeno <- anti_join(regeno, ng, by = "digest_id")
       }
       }
