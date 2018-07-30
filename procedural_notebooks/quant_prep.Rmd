@@ -1,14 +1,15 @@
 ---
 title: "Prep plates `r params$first_plate` through `r params$last_plate` for quantification"
 params:
-  first_plate: D5676-D5771
-  last_plate: D6156-D6251
+  first_plate: X
+  last_plate: Y
   id: digest_id
-  num_plates: 6
-  type: extraction
+  num_plates: 15
+  type: digest
 output:
   pdf_document: default
-  github_document: default
+
+  
 ---
 
 ```{r echo=FALSE, message=FALSE}
@@ -20,8 +21,8 @@ source("../genomics/scripts/lab_helpers.R")
 ```
 
 **Prepare the first standard**
-Combine 750uL of 100ug/mL lambda DNA from the pico kit with 750uL 1X TE to create a 50ug/mL standard.  
-This is Standard 1 which will have a final concentration of 25 ug/mL
+Combine 20uL of 100ug/mL lambda DNA from the pico kit with 980uL 1X TE to create a 2ug/mL standard.  
+This is Standard 1 which will have a final concentration of 1 ug/mL
 
 **Prepare the 200 fold dilution of pico dye to be kept in the dark**  
 
@@ -33,13 +34,13 @@ Combine `r final_vol/200`uL pico concentrate with `r final_vol/1000`mL 1X TE.
 
 **Prepare the rest of the standards**  
 
-1. Combine 100uL of Standard 1 with 900uL 1X TE.  This is standard 2 with a final concentration of 2.5 ug/mL.  
+1. Combine 10uL of Standard 1 with 990uL 1X TE.  This is standard 2 with a final concentration of 0.1 ug/mL.  
 
-2. Combine 10uL of Standard 1 with 990uL 1X TE. This is standard 3 with a final concentration of 250 ng/mL.  
+2. Combine 1uL of Standard 1 with 999uL 1X TE. This is standard 3 with a final concentration of 0.01 ng/mL.  
 
-3. Combine 1uL of Standard 1 with 999uL 1X TE. This is standard 4 with a final concentration of 25 ng/mL.  
+<!-- 3. Combine 1uL of Standard 1 with 999uL 1X TE. This is standard 4 with a final concentration of 25 ng/mL.   -->
 
-4. Add 1000uL 1X TE to a new tube. This is standard 5 with a concentration of 0 ug/mL.  
+4. Add 1000uL 1X TE to a new tube. This is standard 4 with a concentration of 0 ug/mL.  
 **Prep a standards plate **
 Place 100uL of each standard in separate wells on a separate plate for standards only.
 

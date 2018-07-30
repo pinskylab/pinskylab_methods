@@ -1,5 +1,5 @@
 ---
-title: "Compare quants"
+title: "Change dates for extractions"
 output:
   pdf_document: default
   html_notebook: default
@@ -15,24 +15,25 @@ Access database.
 source("../genomics/scripts/lab_helpers.R")
 write <- write_db(params$db)
 library(knitr)
-```
-Find the range of rows to be changed
-```{r change}
+
 # pull in entire db table
 db <- read_db(params$db)
 dat <- db %>% tbl(params$type) %>% collect()
-
-samples <- c("APCL18_004", "APCL18_008", "APCL18_009", "APCL18_021", "APCL18_035", "APCL18_053", "APCL18_057", "APCL18_060")
-
-change <- dat %>% 
-  filter(sample_id %in% samples) %>% 
-  select(sample_id, quant)
-
+```
+Find the range of rows to be changed
+```{r change}
+# change plate names
+change <- dat %>%
+  filter(plate == "E5223-E5306" | 
+         plate == "E5127-E5222") %>% 
+  mutate(date = "2018-07-27")
+  
 dat <- change_rows(dat, change, params$id)
+
 ```
 Write to database
 ```{r write}
-# dbWriteTable(write, params$type, dat, row.names = F, overwrite = F, append = T)
+# dbWriteTable(write, params$type, dat, row.names = F, overwrite = T, append = F)
 # dbDisconnect(write)
 ```
 

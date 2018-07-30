@@ -2,8 +2,8 @@
 title: '`r paste("Digest plan for ", params$first, "-", params$last, sep = "")`'
 params:
   id: digest_id
-  first_sample: E4551
-  last_sample: E5126
+  first_sample: E5127
+  last_sample: E5306
   type: digest
 output:
   pdf_document: default
@@ -101,18 +101,24 @@ for (i in 1:nrow(plates)){
   platex <- for_plates %>% 
   filter(dig_plate == plates$dig_plate[i]) %>% 
   mutate(ng_in = ng_in/10) %>% 
-  mutate(filter = 30) %>% 
-  mutate(filter = ifelse(ng_in >= 5000 & ng_in <= 10000, 15, filter), 
-         filter = ifelse(ng_in > 10000, 7, filter), 
-         filter = as.factor(filter)) %>% 
+  mutate(filter = 40) %>% 
+  # mutate(filter = ifelse(ng_in >= 5000 & ng_in <= 10000, 15, filter), 
+  #        filter = ifelse(ng_in > 10000, 7, filter), 
+  #        filter = as.factor(filter)) %>% 
   select(well, dig_plate, digest_id, filter)
   
   # display.brewer.all(3)
-  x <- heatmap(platex) +
-  scale_fill_manual(values=brewer.pal(3, "Set2"), 
-                       name="Volume\nExtract",
-                       breaks=c("30", "15", "7"),
-                       labels=c("30uL", "15uL", "7uL"))
+  # x <- 
+    
+    heatmap(platex)
+  
+  # +
+  # scale_fill_manual(values=brewer.pal(3, "Set2"), 
+  #                      name="Volume\nExtract"
+                    # ,
+                    #    breaks=c("30", "15", "7"),
+                    #    labels=c("30uL", "15uL", "7uL")
+                    )
   ggsave(paste("../procedural_notebooks/plots/", platex$dig_plate, ".pdf", sep = ""), device = "pdf", width = 11, height = 8.5)
 
 }

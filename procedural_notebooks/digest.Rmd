@@ -6,9 +6,9 @@ output:
   pdf_document: 
     latex_engine: xelatex
 params:
-  first: D5676
-  last: D6251
-  num_samples: 576
+  first: D6251
+  last: D
+  num_samples: 192
 ---
 
 *This protocol assumes that you have read and understand the manufacturer’s instructions attached below.  Please read the full manufacturer’s instructions before using this abbreviated protocol.*
