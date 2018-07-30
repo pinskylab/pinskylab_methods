@@ -1,5 +1,5 @@
 ---
-title: "Update extracted samples"
+title: "Compare quants"
 output:
   pdf_document: default
   html_notebook: default
@@ -18,20 +18,21 @@ library(knitr)
 ```
 Find the range of rows to be changed
 ```{r change}
-# pull in all table
-dat <- dbReadTable(write, params$type)
+# pull in entire db table
+db <- read_db(params$db)
+dat <- db %>% tbl(params$type) %>% collect()
+
+samples <- c("APCL18_004", "APCL18_008", "APCL18_009", "APCL18_021", "APCL18_035", "APCL18_053", "APCL18_057", "APCL18_060")
 
 change <- dat %>% 
-  filter(extraction_id >= "E4647", 
-         extraction_id <= "E5126") %>% 
-  mutate(date = "2018-07-16")
-
+  filter(sample_id %in% samples) %>% 
+  select(sample_id, quant)
 
 dat <- change_rows(dat, change, params$id)
 ```
 Write to database
 ```{r write}
-# dbWriteTable(write, params$type, dat, row.names = F, overwrite = T)
+# dbWriteTable(write, params$type, dat, row.names = F, overwrite = F, append = T)
 # dbDisconnect(write)
 ```
 
