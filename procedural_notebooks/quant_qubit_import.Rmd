@@ -1,0 +1,71 @@
+---
+title: "Import qubit quantification data"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+
+```{r workspace, echo=FALSE, message=FALSE}
+# import qubit results to db
+
+source("../genomics/scripts/lab_helpers.R")
+library(knitr)
+lab <- read_db("Laboratory")
+
+infile <- "/Volumes/USB DISK/2018 7/QUBIT_2018-07-25_3-03-PM.csv"
+```
+
+
+
+```{r echo=FALSE, warning=FALSE}
+qubit <- read.csv(infile, header = T, stringsAsFactors = F) %>% 
+  arrange(Name)
+### you get an error because there is a special symbol in the header row, change micro symbol to u ####
+
+# create a table of the samples that were measured
+samples <- tibble(sample = c("STD1", "STD2", "STD3", "STD4", "STD5", "Q4", "A4", "Q8", "A8", "Q9", "A9", "Q21", "A21", "Q35", "A35", "Q53", "A53", "Q57", "A57", "Q60", "A60"))
+
+qubit <- cbind(samples, qubit) %>% 
+  rename(date_time = Date.Time, 
+    conc = Assay.Conc.) %>% 
+  select(sample, date_time, conc) %>% 
+  mutate(quant = as.numeric(conc) * 0.200)
+rm(samples)
+
+qiagen <- qubit %>% 
+  filter(grepl("Q", sample)) %>% 
+  rename(quantq = quant)
+qiagen <- cbind(qiagen, change) 
+qiagen <- qiagen %>% 
+  mutate(adjust = quant/30)
+```
+
+The Qiagen method uses all of the DNA in one round of extraction.
+
+The Ali method uses less than half of the lysate to complete the extraction, so more DNA is available if needed.  Also, in this round, MRS eluted into 75uL and could have eluted into 45uL, making a more concentrated result than what is shown here.
+
+A graph of the quantifications of the same fin clips extracted using the Ali method compared to the Qiagen method.
+
+
+```{r echo=FALSE, fig.align='left'}
+library(ggplot2)
+
+test <- qubit %>% 
+  mutate(method = ifelse(grepl("Q", sample), "qiagen", NA)) %>% 
+  mutate(method = ifelse(grepl("A", sample), "ali", method)) %>% 
+  filter(!is.na(method)) %>% 
+  mutate(sample = as.numeric(substr(sample, 2, 3)))
+
+ggplot(test, aes(sample, quant, colour = method))+
+  geom_line()+
+  geom_point()
+```
+
+In the following image, the top row is the Ali method and the bottom row is the Qiagen method.  **Conclusion**: the Ali method is as effective as the Qiagen method for our purposes.
+
+```{r echo=FALSE}
+img_path <- "images/IMG_1220.JPG"
+include_graphics(img_path)
+```
+
