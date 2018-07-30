@@ -33,12 +33,6 @@ qubit <- cbind(samples, qubit) %>%
   mutate(quant = as.numeric(conc) * 0.200)
 rm(samples)
 
-qiagen <- qubit %>% 
-  filter(grepl("Q", sample)) %>% 
-  rename(quantq = quant)
-qiagen <- cbind(qiagen, change) 
-qiagen <- qiagen %>% 
-  mutate(adjust = quant/30)
 ```
 
 The Qiagen method uses all of the DNA in one round of extraction.
