@@ -154,6 +154,7 @@ perc_PEG_8000, 50, NA, 20, NA
 mM_DTT, 1000, NA, 25, NA
 pH2O, NA, NA, NA, NA
 ") %>% 
+
   mutate(final_vol = 15000,
          initial_vol = final_conc*final_vol/initial_conc, 
          initial_vol = ifelse(ingredient == "pH2O",final_vol - sum(initial_vol, na.rm = T), initial_vol))
