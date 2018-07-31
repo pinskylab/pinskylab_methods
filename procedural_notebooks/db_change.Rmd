@@ -1,12 +1,14 @@
 ---
-title: "Change dates for extractions"
+title: "update dates, enzyme, vol_in, final_vol for `r params$first` - `r params$last`"
 output:
   pdf_document: default
   html_notebook: default
 params: 
-  type: "extraction"
-  id: "extraction_id"
+  type: "digest"
+  id: "digest_id"
   db: "Laboratory"
+  first: D6252
+  last: D6431
   
 ---
 
@@ -24,9 +26,12 @@ Find the range of rows to be changed
 ```{r change}
 # change plate names
 change <- dat %>%
-  filter(plate == "E5223-E5306" | 
-         plate == "E5127-E5222") %>% 
-  mutate(date = "2018-07-27")
+  filter(digest_id >= params$first, digest_id <= params$last) %>% 
+  mutate(date = "2018-07-30", 
+         vol_in = 40, 
+         ng_in = NA, 
+         enzymes = "PstI-MluCI", 
+         final_vol = 40)
   
 dat <- change_rows(dat, change, params$id)
 
