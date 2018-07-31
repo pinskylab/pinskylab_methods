@@ -179,7 +179,7 @@ dig <- for_plates %>%
   rename(plate = dig_plate)
   
 # dbWriteTable(w_lab, "digest", dig, append = T, row.names = F)
-dbDisconnect(w_lab, lab)
+# dbDisconnect(w_lab, lab)
 ```
 
 
