@@ -1,11 +1,11 @@
 ---
 title: '`r paste("Pico Platereader Quantification for ", params$first, "-", params$last, sep = "")`'
 params:
-  file: ~/Downloads/2018-07-17-full.txt
-  id: extraction_id
-  first_sample: E4551
-  last_sample: E5126
-  type: extraction
+  file: ~/Downloads/2018-07-31-full.txt
+  id: digest_id
+  first_sample: D5676
+  last_sample: D6431
+  type: digest
 output:
   pdf_document: default
 ---
@@ -31,16 +31,26 @@ Once you have completed all of the steps in the quant_prep.pdf, it is time to im
 ```{r reader_results, echo=FALSE, message=FALSE}
 # determine number of lines to skip before data begins
 strs <- readLines(params$file, skipNul = T)
-linestoskip <- which(strs == "Group: Unknowns") # the number of lines to skip
+# add the \t's for this round only, excel added them in
+linestoskip <- which(strs == "Group: Unknowns\t\t\t\t\t\t\t\t") # the number of lines to skip
 num_lines <- as.numeric(substr(params$last_sample, 2, 5)) - as.numeric(substr(params$first_sample, 2, 5)) + 1
 
+# for this round only
+num_lines <- 740
+```
+For this round only opening the txt file in excel and changing the names of the samples that are in sample numbers higher than the test samples in the standards plate.  
+
+```{r, echo=FALSE, message=FALSE}
 # create a table that contains well locations and quantities
-# nrows = 88 because that is a full plate
 dat <- read.table(text=strs,  skip = linestoskip, sep = "\t", header = T, fill = T, stringsAsFactors = F, nrows = num_lines) %>% 
   rename(well = Wells) %>% 
-  mutate(Sample = as.numeric(Sample)) %>% 
+  mutate(Sample = as.numeric(Sample)) %>%
   arrange(Sample) %>% 
   select(Sample, well, AdjConc)
+
+# for this round only 
+dat <- dat %>% 
+  filter(!is.na(AdjConc))
 ```
 2. Connect names of samples from database
 ```{r sample_names, echo=FALSE}
@@ -61,18 +71,31 @@ if (params$type == "extraction"){
     arrange(plate, col, row) 
 }
 
+if (params$type == "digest"){
+  samp <- db_dat %>%
+    select(contains("id"), well, plate) %>% 
+    # narrow down the results to just this batch
+    filter(digest_id >= params$first_sample, 
+           digest_id <= params$last_sample) %>% 
+    # pull out col and row so that the samples can be sorted (not always in plates in id order)
+    mutate(row = substr(well, 1, 1), 
+           col = substr(well, 2, 3)) %>% 
+    # sort by plate, then col, then row
+    arrange(plate, col, row) 
+}
+
  # define the plates that are present in this group
-  plates <- samp %>% 
-    select(plate) %>% 
-    distinct() %>% 
+  plates <- samp %>%
+    select(plate) %>%
+    distinct() %>%
     arrange(plate)
-  
+
   # attach these plates to the quant data
   dat$plate <- NA
   for (i in 1:nrow(plates)){
     x = i*96
     y = x - 95
-    dat <- dat %>% 
+    dat <- dat %>%
   mutate(plate = ifelse(Sample >= y & Sample <= x, plates$plate[i], plate))
   }
 
@@ -99,6 +122,12 @@ if (params$id == "extraction_id"){
     # don't bring in the quant column, will add that here
     select(-quant) 
 }
+if (params$id == "digest_id"){
+  change <- db_dat %>%
+    filter(digest_id %in% quant1$digest_id)  %>%
+    # don't bring in the quant column, will add that here
+    select(-quant) 
+}
 
 # add in the new quants
 ids <- change %>%
@@ -107,8 +136,24 @@ change <- left_join(change, quant1, by = c(names(ids)))
 
 db_dat <- change_rows(db_dat, change, params$id)
 ```
+Double check that the number of rows for each plate is what is expected
+
+```{r}
+check <- dat %>%
+  group_by(plate) %>% 
+  summarise(rows = n())
+kable(check) %>% 
+  kable_styling()
+```
+Some of the rows from D6252-D6347 have been assigned to D6348-D6431.  Why?
+```{r message=FALSE}
+dat <- dat %>% 
+  mutate(plate = ifelse(Sample >= 673 & Sample <= 677, "D6252-D6347", plate))
+```
+Rerun the block above that gets the data into the db table with the plate assignment commented out.  Look over the table to make sure things look correct.
+
 #####Write these changes into the database
 ```{r echo=FALSE, message=FALSE}
 # dbWriteTable(lab, params$type, db_dat, row.names = F, overwrite = T)
-dbDisconnect(lab)
+# dbDisconnect(lab)
 ```
