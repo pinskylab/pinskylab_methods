@@ -1,8 +1,13 @@
 ---
-title: "Import qubit quantification data"
+title: "Import qubit quantification data for `r params$first` - `r params$last`"
 output:
   pdf_document: default
   html_notebook: default
+params:
+  first: D6407
+  last: D6431
+  type: digest
+  id: digest_id
 ---
 
 
@@ -13,7 +18,7 @@ source("../genomics/scripts/lab_helpers.R")
 library(knitr)
 lab <- read_db("Laboratory")
 
-infile <- "/Volumes/USB DISK/2018 7/QUBIT_2018-07-25_3-03-PM.csv"
+infile <- "/Volumes/USB DISK/2018 7/QUBIT_2018-07-31_4-43-PM.csv"
 ```
 
 
@@ -24,7 +29,8 @@ qubit <- read.csv(infile, header = T, stringsAsFactors = F) %>%
 ### you get an error because there is a special symbol in the header row, change micro symbol to u ####
 
 # create a table of the samples that were measured
-samples <- tibble(sample = c("STD1", "STD2", "STD3", "STD4", "STD5", "Q4", "A4", "Q8", "A8", "Q9", "A9", "Q21", "A21", "Q35", "A35", "Q53", "A53", "Q57", "A57", "Q60", "A60"))
+samples <- tibble(sample = c(6407:6419, 6424:6431, 6411)) %>% 
+  mutate(sample = paste("D", sample, sep = ""))
 
 qubit <- cbind(samples, qubit) %>% 
   rename(date_time = Date.Time, 
@@ -33,33 +39,47 @@ qubit <- cbind(samples, qubit) %>%
   mutate(quant = as.numeric(conc) * 0.200)
 rm(samples)
 
+kable(qubit) %>% 
+  kableExtra::kable_styling()
+
 ```
 
-The Qiagen method uses all of the DNA in one round of extraction.
-
-The Ali method uses less than half of the lysate to complete the extraction, so more DNA is available if needed.  Also, in this round, MRS eluted into 75uL and could have eluted into 45uL, making a more concentrated result than what is shown here.
-
-A graph of the quantifications of the same fin clips extracted using the Ali method compared to the Qiagen method.
-
-
-```{r echo=FALSE, fig.align='left'}
-library(ggplot2)
-
-test <- qubit %>% 
-  mutate(method = ifelse(grepl("Q", sample), "qiagen", NA)) %>% 
-  mutate(method = ifelse(grepl("A", sample), "ali", method)) %>% 
-  filter(!is.na(method)) %>% 
-  mutate(sample = as.numeric(substr(sample, 2, 3)))
-
-ggplot(test, aes(sample, quant, colour = method))+
-  geom_line()+
-  geom_point()
+For this round, D6411 was too high to read with the HS kit, and so it was re-read with the BR kit.  Remove the >600 reading from the table of results so that there is only one result for D6411. Also, the BR kit has different math to calculate the concentration, so adjust the quant of this sample by multiplying by 1000.
+```{r echo=FALSE, message=FALSE}
+qubit <- qubit %>% 
+  filter(conc != ">600") %>% 
+  mutate(quant = ifelse(sample == "D6411", quant * 1000, quant))
+kable(qubit) %>% 
+  kableExtra::kable_styling()
 ```
 
-In the following image, the top row is the Ali method and the bottom row is the Qiagen method.  **Conclusion**: the Ali method is as effective as the Qiagen method for our purposes.
-
+Import the results into the database
 ```{r echo=FALSE}
-img_path <- "images/IMG_1220.JPG"
-include_graphics(img_path)
+
+# connect to the database
+db <- write_db("Laboratory")
+
+# pull in the entire table
+dat_db <- db %>% 
+  tbl(params$type) %>% 
+  collect()
+
+if (params$type == "digest"){
+  qubit <- qubit %>% 
+    select(sample, quant) %>% 
+    rename(digest_id = sample)
+  change <- dat_db %>% 
+    filter(digest_id %in% qubit$digest_id) %>% 
+    select(-quant)
+  
+}
+
+change <- left_join(change, qubit, by = params$id)
+dat_db <- change_rows(dat_db, change, params$id)
+
+# dbWriteTable(db, params$type, dat_db, row.names = F, overwrite = T)
+# dbDisconnect(db)
+
+
 ```
 
