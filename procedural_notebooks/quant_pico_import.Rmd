@@ -34,9 +34,6 @@ strs <- readLines(params$file, skipNul = T)
 # add the \t's for this round only, excel added them in
 linestoskip <- which(strs == "Group: Unknowns\t\t\t\t\t\t\t\t") # the number of lines to skip
 num_lines <- as.numeric(substr(params$last_sample, 2, 5)) - as.numeric(substr(params$first_sample, 2, 5)) + 1
-
-# for this round only
-num_lines <- 740
 ```
 For this round only opening the txt file in excel and changing the names of the samples that are in sample numbers higher than the test samples in the standards plate.  
 
@@ -47,10 +44,6 @@ dat <- read.table(text=strs,  skip = linestoskip, sep = "\t", header = T, fill =
   mutate(Sample = as.numeric(Sample)) %>%
   arrange(Sample) %>% 
   select(Sample, well, AdjConc)
-
-# for this round only 
-dat <- dat %>% 
-  filter(!is.na(AdjConc))
 ```
 2. Connect names of samples from database
 ```{r sample_names, echo=FALSE}
@@ -138,21 +131,14 @@ db_dat <- change_rows(db_dat, change, params$id)
 ```
 Double check that the number of rows for each plate is what is expected
 
-```{r}
+```{r echo=FALSE, message=FALSE}
 check <- dat %>%
   group_by(plate) %>% 
   summarise(rows = n())
 kable(check) %>% 
   kable_styling()
 ```
-Some of the rows from D6252-D6347 have been assigned to D6348-D6431.  Why?
-```{r message=FALSE}
-dat <- dat %>% 
-  mutate(plate = ifelse(Sample >= 673 & Sample <= 677, "D6252-D6347", plate))
-```
-Rerun the block above that gets the data into the db table with the plate assignment commented out.  Look over the table to make sure things look correct.
-
-#####Write these changes into the database
+Write these changes into the database
 ```{r echo=FALSE, message=FALSE}
 # dbWriteTable(lab, params$type, db_dat, row.names = F, overwrite = T)
 # dbDisconnect(lab)
