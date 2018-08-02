@@ -1,8 +1,10 @@
 ---
 title: "Samples that need sequencing as of `r Sys.Date()`"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
-```{r workspace echo=FALSE, message=FALSE}
+```{r workspace, echo=FALSE, message=FALSE}
 library(knitr)
 library(kableExtra)
 source("../genomics/scripts/gen_helpers.R")
@@ -13,7 +15,7 @@ lab <- read_db("Laboratory")
 
 **Samples that have successfully completed sequencing**
 These samples have passed Michelle's dDocent filters
-```{r success}
+```{r success, echo=FALSE, message=FALSE}
 # locate the genepop file and read as data frame
 genfile <- "../genomics/data/seq17_03g95maf2q30dp15.gen"
 genedf <- read_genepop(genfile)
@@ -53,8 +55,53 @@ rm(no_dups, no_sample, genedf)
 samples <- samples %>% 
   arrange(sample_id)
 
-kable(samples, longtable=T) %>% 
-  kable_styling(latex_options = "repeat_header") %>%
-  add_header_above(c("Successfully sequenced" = 2))
+saveRDS(samples, file = "success_seq_samples.Rdata")
+```
+`r nrow(samples)` samples have been successfully sequenced.
+A list of these samples has been saved as an Rdata file.
 
+**Which samples have been digested since the beginning of 2017?**
+```{r echo=FALSE, message=FALSE}
+digs <- lab %>% 
+  tbl("digest") %>% 
+  filter(date >= "2017-01-01") %>% 
+  collect()
+
+# remove blanks
+digs <- digs %>% 
+  filter(extraction_id != "XXXX")
+```
+`r nrow(digs)` samples have been digested 
+
+**How many of those samples have been successfully sequenced?**
+```{r echo=FALSE, message=FALSE}
+extr <- lab %>% 
+  tbl("extraction") %>% 
+  filter(extraction_id %in% digs$extraction_id) %>% 
+  select(extraction_id, sample_id) %>% 
+  collect()
+
+digs <- left_join(digs, extr, by = "extraction_id")
+rm(extr)
+
+dig_suc <- digs %>% 
+  filter(sample_id %in% samples$sample_id)
+
+# remove successfully sequenced digests from the digs table
+digs <- anti_join(digs, dig_suc, by = "digest_id")
+```
+`r nrow(dig_suc)` samples have been successfully sequenced and are being removed from the list of samples to sequence. 
+
+**Are there any repeat sample_ids in the list?**
+```{r echo=FALSE, message=FALSE}
+repeats <- digs %>% 
+  group_by(sample_id) %>% 
+  summarise(count = n()) %>% 
+  filter(count > 1)
+```
+`r nrow(repeats)` samples are repeated, but they are all the 2018 test samples for the Ali method so we are going to move forward with those to see if there is a difference in sequencing result.
+
+Saving an Rdata file of the digests that need to be sequenced so they can be prepped for the robot.
+```{r echo=FALSE, message=FALSE}
+saveRDS(digs, file = "digs_need_seq.Rdata")
 ```
