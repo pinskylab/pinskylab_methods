@@ -449,18 +449,43 @@ work_history <- function(table, column){
     lig <- lab %>% 
       tbl("ligation") %>% 
       filter(digest_id %in% hist$digest_id) %>% 
-      select(ligation_id, digest_id) %>% 
+      select(ligation_id, digest_id, pool) %>% 
       collect()
     hist <- left_join(hist, lig, by = "digest_id")
     rm(lig)
     return(hist)
   }
+  if(column == "extraction_id"){
+    hist <- lab %>% 
+      tbl("extraction") %>% 
+      filter(extraction_id %in% table$extraction_id) %>% 
+      select(sample_id, extraction_id) %>% 
+      collect()
     
+    dig <- lab %>% 
+      tbl("digest") %>% 
+      filter(extraction_id %in% hist$extraction_id) %>% 
+      select(extraction_id, digest_id) %>% 
+      collect()
+    hist <- left_join(hist, dig, by = "extraction_id")
+    rm(dig)
+    
+    lig <- lab %>% 
+      tbl("ligation") %>% 
+      filter(digest_id %in% hist$digest_id) %>% 
+      select(ligation_id, digest_id, pool) %>% 
+      collect()
+    hist <- left_join(hist, lig, by = "digest_id")
+    rm(lig)
+    return(hist)
+  }
+  
+  
     if(column == "ligation_id"){
       hist <- lig <- lab %>% 
         tbl("ligation") %>% 
         filter(ligation_id %in% table$ligation_id) %>% 
-        select(ligation_id, digest_id) %>% 
+        select(ligation_id, digest_id, pool) %>% 
         collect()
       
       dig <- lab %>% 
