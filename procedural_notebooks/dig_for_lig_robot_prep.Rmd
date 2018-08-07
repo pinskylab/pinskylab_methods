@@ -9,6 +9,8 @@ params:
 output:
   pdf_document: default
 ---
+<!-- TODO: read up on ggplot2 to make a multipanel graph that is a representation of all of the plates and locations on the robot bench the way that you normally draw them...for example 1st plot in multipanel would just be  "D4588/P5" in the center of the graph space following the formula plan$source_plate / plan$source_loc -->
+
 
 ```{r setup, echo=FALSE, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
