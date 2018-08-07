@@ -1,0 +1,84 @@
+---
+title: "Post-robot quality control `r Sys.Date()`"
+params:
+  date_of_work: '2018-08-06'
+  max_lig: 5186
+  pool: P127
+  infile: "/Volumes/USB DISK/robot files/2018-08-0322_a.csv"
+  infile2: "/Volumes/USB DISK/robot files/2018-08-0322_b.csv"
+  infile3: "/Volumes/USB DISK/robot files/2018-08-0322_c.csv"
+  infile4: "/Volumes/USB DISK/robot files/2018-08-0322_d.csv"
+output:
+  pdf_document: default
+---
+<!-- TODO: read up on ggplot2 to make a multipanel graph that is a representation of all of the plates and locations on the robot bench the way that you normally draw them...for example 1st plot in multipanel would just be  "D4588/P5" in the center of the graph space following the formula plan$source_plate / plan$source_loc -->
+*For the plates that were put together on the robot on 8/3/2018 and 8/6/2018, the script to generate the robot plans was run several times in order to accomodate software glitches with the robot (it didn't want to go to some destination plate locations, sometimes P12, sometimes P9).  Because of this, all of the rows that had been added to the database had to be removed and resent to the database based on the csv's that the robot actually used.*
+
+
+* Spin the plate down and examine the wells:  
+
+**Other than A1 and A12, everything looks good**
+ 
+  
+* Pull up the csv in excel (from the actual drive you used on the robot with any real time changes made) and pare down the columns to the ones that will go into the database.
+* Generate plate maps
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.align='left'}
+library(tidyverse)
+source("../genomics/scripts/lab_helpers.R")
+
+pool_csv <- read_csv(params$infile) 
+# if there is a second file
+another <- read_csv(params$infile2)
+pool_csv <- rbind(pool_csv, another)
+rm(another)
+# if there is a third file
+another <- read_csv(params$infile3)
+pool_csv <- rbind(pool_csv, another)
+rm(another)
+# if there is a fourth file
+another <- read_csv(params$infile4)
+pool_csv <- rbind(pool_csv, another)
+rm(another)
+
+pool_csv <- pool_csv %>% 
+  select(digest_id, dest_well, uL_in, water, DNA, pool) %>% 
+  rename(well = dest_well, 
+         vol_in = uL_in) %>% 
+  mutate(pool = paste("P", formatC(as.numeric(substr(pool, 2, 6)), width = 3, format = "d", flag = 0), sep = ""), 
+         date = params$date_of_work)
+
+lig1 <- params$max_lig+1
+lig2 <- params$max_lig+nrow(pool_csv)
+
+pool_csv <- pool_csv %>% 
+  mutate(ligation_id = paste("L", lig1:lig2, sep = ""))
+
+map <- pool_csv %>% 
+  select(well, ligation_id, pool) %>% 
+  mutate(row = substr(well, 1, 1),
+      row = factor(row, levels = c("H", "G", "F", "E", "D", "C", "B", "A")), 
+      col = substr(well, 2, 3),
+           col = factor(col, levels = c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)))
+
+
+
+regenomap <-  ggplot(map, aes(x = col, y= row, fill = pool, colour = "blue")) +
+      geom_tile(colour = "black") # makes black lines between cells
+    
+    regenomap + 
+      geom_text(aes(col, row, label = ligation_id), color = "black", size = 3) 
+    # ggsave(paste("plots/", name$pool[1], "_map.pdf", sep = ""))
+  
+```
+
+
+* Look at the notes made on the iPad:  
+"room for error when using the robot: make sure to change both "transfer from file" csv's to the next round of csv's."
+ 
+* Write the lines to the database
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+lab <- write_db("Laboratory")
+dbWriteTable(lab, "ligation", pool_csv, row.names=F, append = T)
+dbDisconnect(lab)
+```
+

@@ -14,8 +14,12 @@ source("../genomics/scripts/lab_helpers.R")
 lab <- read_db("Laboratory")
 
 # get a list of the pools
+<<<<<<< HEAD
 non_clown_pools <-c("P028", "P029",  "P034", "P035", "P036", "P037", "P038", "P043", "P044",
                     "P045", "P046", "P047", "P048", "P049", "P050", "P051", "P052") 
+=======
+non_clown_pools <-c("P028", "P029",  "P034", "P035", "P036", "P037", "P038", "P043", "P044", "P045", "P046", "P047", "P048", "P049", "P050", "P051", "P052") 
+>>>>>>> 99e7784d74c4998edfbe558b0ffb056cc66ce049
 
 pool_list <- lab %>% 
   tbl("ligation") %>% 
@@ -39,11 +43,20 @@ blank$well <- paste(blank$row, blank$col, sep = "")
 
 for (i in 1:nrow(pool_list)){
   # separate out 1 plate from digs
+<<<<<<< HEAD
+=======
+  lab <- read_db("Laboratory")
+>>>>>>> 99e7784d74c4998edfbe558b0ffb056cc66ce049
   current <- lab %>% 
     tbl("ligation") %>% 
     filter(pool == pool_list$pool[i]) %>% 
     select(ligation_id, well, pool) %>% 
     collect()
+<<<<<<< HEAD
+=======
+  rm(lab)
+  
+>>>>>>> 99e7784d74c4998edfbe558b0ffb056cc66ce049
   
   full <- left_join(blank, current, by = "well") %>% 
     select(row, col, ligation_id)
@@ -52,7 +65,11 @@ for (i in 1:nrow(pool_list)){
   platemap <<- as.matrix(reshape2::acast(full, full$row ~ full$col))
   
   # which samples have successfully passed through dDocent?
+<<<<<<< HEAD
   success <- readRDS("data/passed_ligs.Rdata")
+=======
+  success <- readRDS("success_seq_samples.Rdata")
+>>>>>>> 99e7784d74c4998edfbe558b0ffb056cc66ce049
   
   current <- current %>%
     mutate(pass = ifelse(ligation_id %in% success$ligation_id, NA, "fail"), 
@@ -123,6 +140,10 @@ for (i in 1:nrow(pool_list)){
            extr_well = well,
            extr_plate = plate, 
            extr_notes = notes)
+<<<<<<< HEAD
+=======
+  rm(lab)
+>>>>>>> 99e7784d74c4998edfbe558b0ffb056cc66ce049
   
   info <- left_join(info, temp, by = "extraction_id")
   
@@ -154,6 +175,7 @@ for (i in 1:nrow(pool_list)){
     }
     
 }
+<<<<<<< HEAD
 
   
   
@@ -162,5 +184,7 @@ for (i in 1:nrow(pool_list)){
 
 
 
+=======
+>>>>>>> 99e7784d74c4998edfbe558b0ffb056cc66ce049
 ```
 
