@@ -1,135 +1,195 @@
 ---
-title: "R Notebook"
-params:
-  first_plate: null
-    last_plate: null
+title: "Prepping `r params$first` - `r params$last"
+params: 
+  first: D3340
+  last: D6431
+  infile: digs_need_seq.Rdata
+  regeno_first: D4588
+  regeno_last: D4612
 output:
   pdf_document: default
-  html_notebook: default
 ---
 
-# prep samples for ligation 
-
-# SETUP ####
-source("scripts/lab_helpers.R")
-
-# define samples to be ligated (if known)
-dig_min <- "D3340"
-dig_max <- "D4587"
-
-# define regenotype pool (if known)
-regeno_min <- "D4588"
-regeno_max <- "D4613"
+```{r setup, echo=FALSE, message=FALSE}
+source("../genomics/scripts/lab_helpers.R")
 
 # connect to the db
 lab <- write_db("Laboratory")
 
-# pull digest info from db
-dig <- dbReadTable(lab, "digest") %>% 
-  filter(digest_id >= dig_min & digest_id <= dig_max & extraction_id != "XXXX") %>%
-  select(digest_id, quant, well, plate) %>% 
-  arrange(digest_id)
+# define samples to be ligated (if known)
+dig_min <- params$first
+dig_max <- params$last
 
-regeno <- dbReadTable(lab, "digest") %>% 
+# define digests that have been digested for the sole purpose of serving as regenotypes (if known)
+regeno_min <- params$regeno_first
+regeno_max <- params$regeno_last
+```
+
+Pull digest info from db - not doing this, using the data from the infile instead.
+```{r get_data, echo=FALSE, message=FALSE}
+dig <- readRDS(params$infile) %>% 
+  
+# dig <- dbReadTable(lab, "digest") %>% 
+#   filter(digest_id >= dig_min & digest_id <= dig_max & extraction_id != "XXXX") %>%
+  select(digest_id, quant, well, plate) %>%
+  arrange(digest_id) %>% 
+  filter(quant >= 2.25) # anything below this amount cannot be ligated at 50ng or higher
+
+
+regeno <- dbReadTable(lab, "digest") %>%
   filter(digest_id >= regeno_min & digest_id <= regeno_max & extraction_id != "XXXX") %>%
-  select(digest_id, quant, well, plate) %>% 
+  select(digest_id, quant, well, plate) %>%
   arrange(quant)
 
-# use the lig_ng function to assign ligation amounts to samples
-# debugonce(lig_ng)
-# out <- lig_ng(dig, regeno)
+dig <- dig %>% 
+  filter(!digest_id %in% regeno$digest_id)
+```
+Create a list of pool names based on the last pool used in the database
+```{r pools, echo=FALSE, message=FALSE}
+# get a list (in table form) of all of the numbers used as pools so far
+all <- lab %>% 
+  tbl("ligation") %>% 
+  select(pool) %>% 
+  distinct() %>% 
+  collect() %>% 
+  filter(grepl("P", pool)) %>% 
+  mutate(pool = as.numeric(substr(pool, 2, 4)))
+
+non_clown_pools <- tibble(pool = c("P028", "P029",  "P034", "P035", "P036", "P037", "P038", "P043", "P044", "P045", "P046", "P047", "P048", "P049", "P050", "P051", "P052") ) %>% 
+  mutate(pool = as.numeric(substr(pool, 2, 4)))
+
+clown <- anti_join(all, non_clown_pools, by = "pool")
+
+# what are the lowest and highest numbers used?
+lims <- all %>% 
+  summarise(max = max(pool), 
+    min = min(pool))
+
+
+# are there any missing numbers that are useable?
+pool_names <- tibble(pool = lims$min:lims$max) %>% 
+  filter(!pool %in% all$pool)
+
+# how many more pool names do we need?
+need <- tibble(pool = 85:(85+floor((nrow(dig)/47) - nrow(pool_names))))
+
+pool_names <- rbind(pool_names, need) %>% 
+  mutate(pool = paste("P", pool, sep = "")) %>% 
+  rename(new_pool = pool)
+
+rm(need, lims, all)  
+```
+
+
+Use the lig_ng method to assign ligation amounts to samples and to create pools of 47 samples, leaving room for 1 regenotype sample in each pool.  Not all pools are getting a regenotype.
+```{r lig_ng, echo=FALSE, message=FALSE}
+
 out <- data.frame() # make a blank data frame to write to
-y <- nrow(dig) # get the number of beginning rows
-for(i in c(50, 75, 100, 150, 200)){
-  if (nrow(out) < y){ # if we haven't placed all of the candidates yet
-    # define the samples that can be ligated at the current ng
-    ng <- dig %>%
-      mutate(uL_in = round(i/quant, 1)) %>% # round to 1 decimal point
-      filter(uL_in < 22.2 & uL_in > 0.5) %>%
-      mutate(water = round(22.2-uL_in, 1), 
-        DNA = i) %>% 
-      arrange(plate)
-    # define regenos that can be ligated at the current ng
-    reg <- regeno %>%
-      mutate(uL_in = round(i/quant, 1)) %>% # round to 1 decimal point
-      filter(uL_in < 22.2 & uL_in > 0.5) %>%
-      mutate(water = round(22.2-uL_in, 1), 
-        DNA = i) %>% 
-      arrange(quant)
-    # pull out  pools
-      for (j in seq(nrow(reg))){
-        if(nrow(ng) >=47){
-        pool <- ng %>% 
-          slice(1:47) %>% 
-          mutate(pool = paste("pool", i, j, sep = "_"))
-        re <- reg %>%
-          slice(1) %>% 
-          mutate(pool = paste("pool", i, j, sep = "_"))
-      ng <- anti_join(ng, pool, by ="digest_id")
-      reg <- anti_join(reg, re, by = "digest_id")
-      out <- rbind(out, pool, re)
-      
-    }
-    }
-    dig <- anti_join(dig, out, by = "digest_id")
-    regeno <- anti_join(regeno, out, by = "digest_id")
-  }
+for(i in c(200, 150, 100, 75, 50)){
+  # get all possible regeno for this ligation amount
+  x <- regeno %>%
+    mutate(uL_in = round(i/quant, 1)) %>% # round to 1 decimal point
+    filter(uL_in < 22.2 & uL_in > 0.5) %>%
+    mutate(water = round(22.2-uL_in, 1), 
+           DNA = i)
   
+  # get all possible originals for this ligation amount
+  y <- dig %>%
+    mutate(uL_in = round(i/quant, 1)) %>% # round to 1 decimal point
+    filter(uL_in < 22.2 & uL_in > 0.5) %>%
+    mutate(water = round(22.2-uL_in, 1), 
+           DNA = i)
+  
+  # the following few lines (through 108) are to remove the lines that aren't going to make it into pools and are the lowest volumes so that we can sort by plate and it won't matter that low volumes are mixed with high.
+  # how many rows aren't going to fit into pools? Calculate the remainder left after dividing by 48
+  left <- nrow(y)%%48
+  # what is the last row that can be put into a pool (this is slightly more because we are going to replace some of these with regenos)
+  end <- nrow(y) - left
+  y <- y %>% 
+    slice(1:end)
+
+   
+   # if there are any regenos left
+   if (nrow(x) > 0){
+     # then we need at least 47 originals to complete the pool
+     if (nrow(y)/47 >= 1){ 
+       for(j in 1:nrow(x)){
+         pool_a <- x %>% 
+           arrange(desc(uL_in)) %>% 
+           slice(1)
+         x <- anti_join(x, pool_a, by = "digest_id")
+         pool_b <- y %>%
+           arrange(plate) %>% # sort by plate to keep the lowest number of plates in a robot round
+           slice(1:47)
+         pool <- rbind(pool_a, pool_b) %>% 
+           mutate(pool = paste("pool", i, j, sep = "_"))
+         out <- rbind(out, pool)
+         y <- anti_join(y, out, by = "digest_id")
+       }
+       if (nrow(y) >= 48){
+         for(j in 1:(nrow(y)/48)){
+           pool <- y %>%
+             arrange(plate) %>% # keep the largest pipet volumes
+             slice(1:48) %>% 
+             mutate(pool = paste("pool_b", i, j, sep = "_"))
+           out <- rbind(out, pool)
+         y <- anti_join(y, out, by = "digest_id")
+         }
+       }
+     dig <- anti_join(dig, out, by = "digest_id")
+     regeno <- anti_join(regeno, out, by = "digest_id")
+   }
+   }else{
+  if (nrow(y) >= 48){
+         for(j in 1:(nrow(y)/48)){
+           pool <- y %>%
+             arrange(plate) %>% # keep the largest pipet volumes
+             slice(1:48) %>% 
+             mutate(pool = paste("pool_c", i, j, sep = "_"))
+           out <- rbind(out, pool)
+         y <- anti_join(y, out, by = "digest_id")
+         }
+       }
+     dig <- anti_join(dig, out, by = "digest_id")
+   }
 }
 
-out <- out %>% 
-  rename(source_well = well, 
-    source_plate = plate) %>% 
+# test how many samples are in each pool?
+test <- out %>% 
+  group_by(pool) %>% 
+  summarise(count = n())
+
+num_pools <- nrow(test)
+pool_names <- pool_names %>% 
+  slice(1:num_pools)
+rm(clown, non_clown_pools, pool, pool_a, pool_b, regeno, test, x, y)
+```
+
+Define destination and source plates
+```{r plates, echo=FALSE, message=FALSE}
+out <- out %>%
+  rename(source_well = well,
+    source_plate = plate) %>%
   mutate(source_loc = NA)
-
-
-
-## testing
-## what is left over - quantities that don't fit into a pool
-# left <- anti_join(dig, out, by = "digest_id")
-## Do any pools have less than 48 samples?
-# test <- out %>%
-  # group_by(pool) %>% 
-  # summarise(num_samples = n()) %>% 
-  # filter(num_samples != 48)
-
-rm(dig, ng, reg, regeno, pool, re, i, j, y)
-
-# # This section is if you are searching for regeno candidates ####
-# # pull db info for regenotype samples - these should be samples that passed dDocent and haven't been regenotyped # regeno <- readRDS("data/passed_ligs.Rdata")
-# 
-# # OPEN WORK HISTORY SCRIPT to find sample info
-# # which samples are only represented once?
-# once <- info %>% 
-#   group_by(sample_id) %>% 
-#   summarise(num_geno = n()) %>% 
-#   filter(num_geno == 1)
-# 
-# candidates <- info %>% 
-#   filter(sample_id == once$sample_id[3] | sample_id == once$sample_id[4])
-# 
-# # need to redigest the candidates before this information can be filled in
-# # current candidates are E1687 and E1688 - one has to ligate at 10ng and one at 50
-#   
-# out[95, ] <- c("digest_id", "quant", "well", "plate", "uL_in", "water", "DNA")
-# out[96, ] <- c("digest_id", "quant", "well", "plate", "uL_in", "water", "DNA")
-
-
-
-# define destination and source plates ####
 # how many plates are there?
 nplates <- nrow(out)/96
 # what are the pool names
 pool_list <- distinct(out, pool)
+# attach pool names
+pool_names <- cbind(pool_names, pool_list) %>% 
+  rename()
 # set up the plate
 plate <- data_frame()
 # define wells
 well <- data.frame("well" = 1:(96*nplates))
 
+
 for (i in seq(nplates)){
+  # define first pool of the i plate
   pool1 <- out %>% 
     filter(pool == pool_list$pool[1]) %>% 
     select(digest_id)
+  # define second pool of the i plate
   pool2 <- out %>% 
     filter(pool == pool_list$pool[2]) %>% 
     select(digest_id)
@@ -164,34 +224,57 @@ ligations <- left_join(plate, out, by = "digest_id") %>%
   select(-well, -row, -col)
 
 
+# rename pools
+ligations <- left_join(ligations, pool_names, by = "pool") %>% 
+  select(-pool) %>% 
+  rename(pool = new_pool)
+
 # create source plates for each of the destination plates ####
 plate_list <- distinct(ligations, round)
 
+```
+```{r}
 # for each round, define which source plates are present and assign source locations
-for (i in seq(nrow(plate_list))){
+for (i in seq(plate_list$round)){
+# for (i in 6){
   # narrow the info down to only the round in question
   dest_plate <- ligations %>% filter(round == plate_list$round[i])
-  # which plates are source plates
-  sources <- distinct(dest_plate, source_plate)
-  # define possible source locations
+  # Make a table of source plates
+  sources <- distinct(dest_plate, source_plate) 
+  # Determine how many rounds of source plates it will take to complete the destination plate
+  num_rounds <- ceiling(nrow(sources)/5)
+  reps <- ceiling(nrow(sources)/num_rounds)
+  # Define possible source locations and adjust to fit the number of source plates
   #P8 is tips, P11 is water, P12 is destination
-  positions <- c("P5", "P6", "P7", "P9", "P10") 
-  #assign sources to positions
+  positions <- tibble(loc = rep(c("P5", "P6", "P7", "P9", "P10"),num_rounds )) %>% 
+    slice(1:nrow(sources))
+  rounds <- tibble(round = rep(letters[1:num_rounds], reps)) %>% 
+    slice(1:nrow(sources)) %>% 
+    arrange(round)
+# Create a table of plates, round designation, and position
+  sources <- cbind(sources, rounds, positions)
+
+  # match the source table to the ligation table
   for (j in seq(nrow(sources))){
     ligations <- ligations %>% 
-      mutate(source_loc = ifelse(source_plate == sources$source_plate[j], 
-        positions[1], source_loc))
-    # remove position from list
-    positions <- positions[2:length(positions)]
+      mutate(source_loc = ifelse(digest_id %in% dest_plate$digest_id & source_plate == sources$source_plate[j], 
+                                 sources$loc[j], source_loc), 
+             round = ifelse(digest_id %in% dest_plate$digest_id & source_plate == sources$source_plate[j],paste(round, sources$round[j], sep = "_"), round))
   }
+  
   # separate the rounds into csv files
   temp <- ligations %>% 
     filter(digest_id %in% dest_plate$digest_id)
-  write.csv(temp, file = paste("data/", Sys.Date(), "robot_round", i, ".csv", sep = ""))
+  rounds <- distinct(rounds)
+  for(b in seq(rounds$round)){
+    temp1 <- temp %>% 
+      filter(grepl(rounds$round[b], round))
+    write.csv(temp1, file = paste("data/", Sys.Date(), temp1$round[1], ".csv", sep = "_"))
+  }
 }
-rm(dest_plate, out, plate, plate_list, sources, temp, well, i, j, nplates, positions)
+```
 
-
+```{r}
 # add ligations to database ####
 
 # fetch last used ligation_id
@@ -199,37 +282,42 @@ lig_max <- dbReadTable(lab, "ligation") %>%
   summarise(lig_id = max(ligation_id)) %>% 
   mutate(lig_id = as.numeric(substr(lig_id, 2, 5)))
 
-pool_max <- dbReadTable(lab, "ligation") %>% 
-  summarise(pool = max(pool)) %>% 
-  mutate(pool = as.numeric(substr(pool, 2, 5)))
+# pool_max <- dbReadTable(lab, "ligation") %>% 
+#   summarise(pool = max(pool)) %>% 
+#   mutate(pool = as.numeric(substr(pool, 2, 5)))
 
 ligations <- ligations %>% 
   mutate(ligation_id = (1+lig_max$lig_id):(nrow(ligations) + lig_max$lig_id), 
-    ligation_id = paste("L", ligation_id, sep = ""),
-    pool = substr(pool, 6, 11), 
-    pool = ifelse(substr(pool, 1, 2) == 75, 25, pool), 
-    pool = ifelse(substr(pool, 1, 2) == 50, substr(pool, 4, 5), pool), 
-    pool = ifelse(substr(pool, 1, 3) == 100, 26, pool),
-    pool = as.numeric(pool) + pool_max$pool,
-    pool = paste("P", formatC(pool, width = 3, format = "d", flag = 0),sep = "" ), 
-    date = NA,
-    barcode_num = NA,
-    plate = NA, 
-    notes = NA, 
-    regeno = NA,
-    total_reads = NA,
-    lack_rad_tag = NA,
-    low_quality = NA,
-    retained = NA,
-    correction = NA,
-    corr_message = NA,
-    corr_editor = NA,
-    corr_date = NA) %>% 
+    ligation_id = paste("L", ligation_id, sep = "")) %>% 
+  mutate(pool = paste("P", formatC(as.numeric(substr(pool, 2, 6)), width = 3, format = "d", flag = 0), sep = "")) %>% 
   rename(vol_in = uL_in, 
-    well = dest_well) %>% 
-  select(ligation_id, digest_id, date, DNA, vol_in, water, barcode_num, pool, well, plate, notes, regeno,  everything(), -contains("loc"), -contains("source"), -water_well, -round, -quant)
+         well = dest_well) %>% 
+  select(ligation_id, digest_id, well, vol_in, DNA, water, pool)
+
+
 
 ## add to db
 # dbWriteTable(lab, "ligation", ligations, append = T, row.names = F)
 # dbDisconnect(lab)
 # rm(lab)
+```
+
+
+
+Make note of the digests that are too low to ligate at 50ng or higher
+```{r low, echo=FALSE, message=FALSE}
+dat_db <- lab %>% 
+  tbl("digest") %>% 
+  collect()
+
+change <- readRDS(params$infile) %>% 
+  filter(quant < 2.25) %>% 
+  select(-sample_id) %>% 
+  mutate(notes = ifelse(is.na(notes), "not enough DNA to ligate at 50ng or higher", paste(notes, ", not enough DNA to ligate at 50ng or higher", sep = "")))
+
+dat_db <- change_rows(dat_db, change, "digest_id")
+
+# dbWriteTable(lab, "digest", dat_db, row.names=F, overwrite=T )
+# dbDisconnect(lab)
+```
+
