@@ -1,17 +1,20 @@
 ---
-title: "Prepping `r params$first` - `r params$last"
-params: 
+title: "Prepping `r params$first` - `r params$last`"
+params:
   first: D3340
-  last: D6431
   infile: digs_need_seq.Rdata
+  last: D6431
   regeno_first: D4588
   regeno_last: D4612
 output:
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, echo=FALSE, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
+library(knitr)
+library(kableExtra)
 
 # connect to the db
 lab <- write_db("Laboratory")
@@ -212,11 +215,12 @@ for (i in seq(nplates)){
 }
 
 plate <- plate %>% 
-  mutate(dest_loc = "P12", 
+  mutate(dest_loc = "P9", 
     dest_well = paste(row, col, sep = ""), 
     water_loc = "P11", 
     water_well = "A1", 
-    tip_loc = "P8")
+    tip1_loc = "P8", 
+    tip2_loc = "P10")
 
 rm(pool_list, pool1, pool2, temp, temp2, a,b,c,d, i)
 
@@ -233,7 +237,7 @@ ligations <- left_join(ligations, pool_names, by = "pool") %>%
 plate_list <- distinct(ligations, round)
 
 ```
-```{r}
+```{r write_positions, echo=FALSE, message=FALSE, results='asis'}
 # for each round, define which source plates are present and assign source locations
 for (i in seq(plate_list$round)){
 # for (i in 6){
@@ -242,11 +246,11 @@ for (i in seq(plate_list$round)){
   # Make a table of source plates
   sources <- distinct(dest_plate, source_plate) 
   # Determine how many rounds of source plates it will take to complete the destination plate
-  num_rounds <- ceiling(nrow(sources)/5)
+  num_rounds <- ceiling(nrow(sources)/5) # because 5 possible positions
   reps <- ceiling(nrow(sources)/num_rounds)
   # Define possible source locations and adjust to fit the number of source plates
   #P8 is tips, P11 is water, P12 is destination
-  positions <- tibble(loc = rep(c("P5", "P6", "P7", "P9", "P10"),num_rounds )) %>% 
+  positions <- tibble(loc = rep(c("P5", "P6", "P7", "P12", "P13"),num_rounds )) %>% 
     slice(1:nrow(sources))
   rounds <- tibble(round = rep(letters[1:num_rounds], reps)) %>% 
     slice(1:nrow(sources)) %>% 
@@ -269,55 +273,58 @@ for (i in seq(plate_list$round)){
   for(b in seq(rounds$round)){
     temp1 <- temp %>% 
       filter(grepl(rounds$round[b], round))
-    write.csv(temp1, file = paste("data/", Sys.Date(), temp1$round[1], ".csv", sep = "_"))
+    write.csv(temp1, file = paste("data/", Sys.Date(), temp1$round[1], ".csv", sep = ""))
+   # print(kable(temp1, "latex", longtable = T, booktabs = T, caption = temp1$round[1]) %>% 
+   #    kable_styling(latex_options = c("repeat_header")))
   }
 }
+
 ```
 
-```{r}
-# add ligations to database ####
+# ```{r echo=FALSE, message=FALSE}
+# # add ligations to database ####
+# 
+# # fetch last used ligation_id
+# lig_max <- dbReadTable(lab, "ligation") %>% 
+#   summarise(lig_id = max(ligation_id)) %>% 
+#   mutate(lig_id = as.numeric(substr(lig_id, 2, 5)))
+# 
+# # pool_max <- dbReadTable(lab, "ligation") %>% 
+# #   summarise(pool = max(pool)) %>% 
+# #   mutate(pool = as.numeric(substr(pool, 2, 5)))
+# 
+# ligations <- ligations %>% 
+#   mutate(ligation_id = (1+lig_max$lig_id):(nrow(ligations) + lig_max$lig_id), 
+#     ligation_id = paste("L", ligation_id, sep = "")) %>% 
+#   mutate(pool = paste("P", formatC(as.numeric(substr(pool, 2, 6)), width = 3, format = "d", flag = 0), sep = "")) %>% 
+#   rename(vol_in = uL_in, 
+#          well = dest_well) %>% 
+#   select(ligation_id, digest_id, well, vol_in, DNA, water, pool)
+# 
+# 
+# 
+# ## add to db
+# # dbWriteTable(lab, "ligation", ligations, append = T, row.names = F)
+# # dbDisconnect(lab)
+# # rm(lab)
+# ```
 
-# fetch last used ligation_id
-lig_max <- dbReadTable(lab, "ligation") %>% 
-  summarise(lig_id = max(ligation_id)) %>% 
-  mutate(lig_id = as.numeric(substr(lig_id, 2, 5)))
-
-# pool_max <- dbReadTable(lab, "ligation") %>% 
-#   summarise(pool = max(pool)) %>% 
-#   mutate(pool = as.numeric(substr(pool, 2, 5)))
-
-ligations <- ligations %>% 
-  mutate(ligation_id = (1+lig_max$lig_id):(nrow(ligations) + lig_max$lig_id), 
-    ligation_id = paste("L", ligation_id, sep = "")) %>% 
-  mutate(pool = paste("P", formatC(as.numeric(substr(pool, 2, 6)), width = 3, format = "d", flag = 0), sep = "")) %>% 
-  rename(vol_in = uL_in, 
-         well = dest_well) %>% 
-  select(ligation_id, digest_id, well, vol_in, DNA, water, pool)
 
 
+<!-- Make note of the digests that are too low to ligate at 50ng or higher -->
+<!-- ```{r low, echo=FALSE, message=FALSE} -->
+<!-- dat_db <- lab %>%  -->
+<!--   tbl("digest") %>%  -->
+<!--   collect() -->
 
-## add to db
-# dbWriteTable(lab, "ligation", ligations, append = T, row.names = F)
-# dbDisconnect(lab)
-# rm(lab)
-```
+<!-- change <- readRDS(params$infile) %>%  -->
+<!--   filter(quant < 2.25) %>%  -->
+<!--   select(-sample_id) %>%  -->
+<!--   mutate(notes = ifelse(is.na(notes), "not enough DNA to ligate at 50ng or higher", paste(notes, ", not enough DNA to ligate at 50ng or higher", sep = ""))) -->
 
+<!-- dat_db <- change_rows(dat_db, change, "digest_id") -->
 
-
-Make note of the digests that are too low to ligate at 50ng or higher
-```{r low, echo=FALSE, message=FALSE}
-dat_db <- lab %>% 
-  tbl("digest") %>% 
-  collect()
-
-change <- readRDS(params$infile) %>% 
-  filter(quant < 2.25) %>% 
-  select(-sample_id) %>% 
-  mutate(notes = ifelse(is.na(notes), "not enough DNA to ligate at 50ng or higher", paste(notes, ", not enough DNA to ligate at 50ng or higher", sep = "")))
-
-dat_db <- change_rows(dat_db, change, "digest_id")
-
-# dbWriteTable(lab, "digest", dat_db, row.names=F, overwrite=T )
-# dbDisconnect(lab)
-```
+<!-- # dbWriteTable(lab, "digest", dat_db, row.names=F, overwrite=T ) -->
+<!-- # dbDisconnect(lab) -->
+<!-- ``` -->
 
