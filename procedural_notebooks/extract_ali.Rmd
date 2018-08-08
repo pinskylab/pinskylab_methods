@@ -1,13 +1,14 @@
 ---
-title: '`r paste("Extraction plan for ", params$first, "-", params$last, sep =
-  "")`'
-date: '`r Sys.Date()`'
+title: "Extraction plan for `r params$first` - `r params$last`"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+date: "`r Sys.Date()`"
 params:
   first: APCL18_659
   last: APCL18_732
   num_samples: 76
-output:
-  pdf_document: default
 ---
 ```{r workspace, echo=FALSE, message=FALSE}
 library(knitr)
