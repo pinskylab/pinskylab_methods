@@ -1,0 +1,40 @@
+---
+title: "Ligation on `r Sys.Date()`"
+params:
+  num_samples: 96
+output:
+  pdf_document: default
+  html_notebook: default
+---
+```{r echo=FALSE, message=FALSE}
+source("../genomics/scripts/lab_helpers.R")
+library(tidyverse)
+library(kableExtra)
+
+print(params)
+```
+
+
+
+# Make a master mix
+```{r mix, echo=FALSE}
+mix <- readr::read_csv("ingredient, vol
+P2_adapter, NA
+uL_10x_buffer, NA
+uL_ligase, NA
+total, NA
+") %>% 
+  # multiply number of samples by 1.1 for pipetting error
+  mutate(
+    vol = ifelse(ingredient == "P2_adapter", 2 * ceiling(params$num_samples * 1.1), vol),
+    vol = ifelse(ingredient == "uL_10x_buffer", 3 * ceiling(params$num_samples * 1.1), vol),
+    vol = ifelse(ingredient == "uL_ligase", 0.8 * (params$num_samples * 1.1), vol), 
+    vol = ifelse(ingredient == "total", sum(as.numeric(vol[1:3])), vol)
+    )
+ 
+kable(mix) %>%
+  kable_styling(latex_options = c("striped"), font_size = 14) %>%
+  add_header_above(c("Ligation Master Mix" = 2))
+```
+
+# Add master mix to plates, spin down, and allow reaction to occur at room temperature for 1.5 hours, then heat kill using the thermocycler.
