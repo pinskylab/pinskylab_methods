@@ -1,10 +1,9 @@
 ---
 title: "Ligation on `r Sys.Date()`"
 params:
-  num_samples: 96
+  num_samples: 552
 output:
   pdf_document: default
-  html_notebook: default
 ---
 ```{r echo=FALSE, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
@@ -12,6 +11,8 @@ library(tidyverse)
 library(kableExtra)
 
 print(params)
+
+# √
 ```
 
 
@@ -36,5 +37,8 @@ kable(mix) %>%
   kable_styling(latex_options = c("striped"), font_size = 14) %>%
   add_header_above(c("Ligation Master Mix" = 2))
 ```
+# Add 2uL P1 adapter to each well.  
 
-# Add master mix to plates, spin down, and allow reaction to occur at room temperature for 1.5 hours, then heat kill using the thermocycler.
+# Add 5.8 uL master mix to plates, spin down, and allow reaction to occur at room temperature for 1.5 hours.  
+
+# Heat kill using the thermocycler.
