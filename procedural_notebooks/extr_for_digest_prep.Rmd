@@ -2,8 +2,8 @@
 title: '`r paste("Digest plan for ", params$first, "-", params$last, sep = "")`'
 params:
   id: digest_id
-  first_sample: digest$extraction_id[1]
-  last_sample: digest$extraction_id[91
+  first_sample: D6432
+  last_sample: D6496
   type: digest
 output:
   pdf_document: default
@@ -75,6 +75,7 @@ Need to generate a new plate map
     d <- 96*i-85 # 11
     e <- 96*i-84 # 12 negative control well
     f <- 96*i-83 # 13
+    l <- 96*i-37 # 59
     g <- 96*i-36 # 60
     h <- 96*i-35 # 61 negative control well
     j <- 96*i-34 # 62
@@ -113,12 +114,7 @@ extr <- rbind(extr, b1, b2)
 
 **Generate a digest_id**
 ```{r digest_id, echo = FALSE}
-dig_max <- lab %>% 
-  tbl("digest") %>% 
-  select(digest_id) %>% 
-  summarise(max = max(digest_id)) %>% 
-  collect() %>% 
-  mutate(max = as.numeric(substr(max, 2, 5)))
+dig_max <- tibble(max = 6431)
 
 extr <- extr %>% 
   arrange(col, row) %>% 
@@ -132,8 +128,8 @@ extr <- extr %>%
 **Name digest plates**
 ```{r name_dig_plates, echo=FALSE}
 dig_lim <- extr %>% 
-  summarise(max = max(digest_id), 
-            min = min(digest_id))
+  mutate(max = "D6496", 
+         min = "D6432")
 
 extr <- extr %>% 
   mutate(dig_plate = paste(dig_lim$min, dig_lim$max, sep = "-"), 
@@ -166,11 +162,11 @@ extr <- extr %>%
                     # )
   ggsave(paste("../procedural_notebooks/plots/", platex$dig_plate, ".pdf", sep = ""), device = "pdf", width = 11, height = 8.5)
 
-}
+
 ```
 **Make heatmap of extract destinations **
 *Maps are individual output files sent to the plots folder*
-```{r extr_dest, echo = FALSE, message=FALSE}
+```{r extr_dest, echo = FALSE, message=FALSE, fig.cap="Extraction Destinations"}
   platex <- extr %>% 
   mutate(ng_in = ng_in/10) %>% 
   mutate(filter = 30) %>% 
@@ -180,17 +176,18 @@ extr <- extr %>%
   select(well, dig_plate, extraction_id, filter)
   
   # display.brewer.all(3)
-  x <- heatmap(platex, platex$extraction_id) +
+heatmap(platex, platex$extraction_id) +
   scale_fill_manual(values=brewer.pal(3, "Pastel2"), 
                        name="Volume\nExtract",
                        breaks=c("30", "15", "7"),
                        labels=c("30uL", "15uL", "7uL"))
   ggsave(paste("../procedural_notebooks/plots/", platex$dig_plate, "_extr_dest.pdf", sep = ""), device = "pdf", width = 11, height = 8.5)
 
-}
+
 ```
 
-**Make plate maps of source plates**
+**Make plate maps of source plates**  
+
 ```{r echo = F, fig.width=10, message=F}
 # define the source plates
 sources <- extr %>%
