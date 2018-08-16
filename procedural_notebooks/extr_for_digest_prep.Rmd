@@ -2,8 +2,8 @@
 title: '`r paste("Digest plan for ", params$first, "-", params$last, sep = "")`'
 params:
   id: digest_id
-  first_sample: E5127
-  last_sample: E5306
+  first_sample: digest$extraction_id[1]
+  last_sample: digest$extraction_id[91
   type: digest
 output:
   pdf_document: default
@@ -17,16 +17,28 @@ library(kableExtra)
 library(ggplot2)
 library(RColorBrewer)
 lab <- read_db("Laboratory")
+digest <- readRDS("samples_need_digest.Rdata")
 ```
 
 **Get a list of extracts to be digested, **
 It is important to have extraction_id, sample_id, well, plate, and quant.  
 ```{r extracts, echo = FALSE}
+digest <- digest %>% 
+  arrange(extraction_id)
+
 extr <- lab %>%
   tbl("extraction") %>% 
-  filter(extraction_id >= params$first_sample, 
-         extraction_id <= params$last_sample) %>% 
+  filter(extraction_id %in% digest$extraction_id) %>% 
   select(sample_id, extraction_id, well, plate, quant) %>% 
+  collect()
+```
+
+Double check that these samples are high enough quality to be digested again.  Look at the following table for multiple digests of the same extract all with quantities lower than 2.5.  Add these extracts to the volumes rem_e extract list.
+```{r}
+dig <- lab %>%
+  tbl("digest") %>% 
+  filter(extraction_id %in% extr$extraction_id) %>% 
+  select(digest_id, extraction_id, quant, notes) %>% 
   collect()
 ```
 
@@ -36,11 +48,69 @@ extr <- lab %>%
 nrow(extr)/96
 ```
 
-The extractions are going to go into the same wells they were in on the extraction plate, except for the blanks.  Find the blanks on the extraction plates and replace those extraction ids.
+The extractions are **not** going to go into the same wells they were in on the extraction plate.
+
+Need to generate a new plate map
+
 ```{r}
-extr <- extr %>% 
-  mutate(extraction_id = ifelse(sample_id == "XXXX", "XXXX", extraction_id))
+  # make a dataframe of the list_of_ids
+  ids <- extr %>% 
+  select(extraction_id) %>% 
+  arrange(extraction_id)
+ 
+  # how many rows are in the table (how many samples)?
+  y <- nrow(ids)
+
+  # how many plates would these make, 94 samples plus 2 blanks per plate
+  (nplates <- floor(y/94)) # extra parenthesis are to print
+
+  # define wells
+
+  well <- 1:63
+  
+  # insert the negative controls and set up the plate
+  plate <- data.frame() # blank data frame to build upon
+  i <- 1
+    c <- 96*i-95 # well 1 on a plate
+    d <- 96*i-85 # 11
+    e <- 96*i-84 # 12 negative control well
+    f <- 96*i-83 # 13
+    g <- 96*i-36 # 60
+    h <- 96*i-35 # 61 negative control well
+    j <- 96*i-34 # 62
+    k <- 96*i-33  # 65
+    str1 <- as.data.frame(cbind(well[c:d], ids[c:d,])) # 1:11
+    names(str1) <- c("well", "extraction_id")
+    str2 <- as.data.frame(cbind(well[e], "XXXX")) # because the first blank is in the 12th position
+    names(str2) <- c("well", "extraction_id")
+    str3 <- as.data.frame(cbind(well[f:g], ids[e:l,])) #13:60 in plate, 12:59 in list
+    names(str3) <- c("well", "extraction_id")
+    str4 <- as.data.frame(cbind(well[h], "XXXX")) # because the 2nd blank is in the 61st position
+    names(str4) <- c("well", "extraction_id")
+    str5 <- as.data.frame(cbind(well[j:k], ids[g:k,]))# 62:96 in plate, 60:94 in list
+    names(str5) <- c("well", "extraction_id")
+    
+    # and stick all of the rows together
+    temp <- data.frame(rbind(str1, str2, str3, str4, str5))
+    temp <- temp %>% 
+      mutate(row = c("A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A", "B", "C", "D", "E", "F", "G", "H", "A"), 
+             col = c(1,  1,  1,  1,  1,  1,  1,  1,  2,  2,  2,  2,  2,  2,  2,  2,  3,  3,  3,  3,  3,  3,  3,  3,  4,  4,  4,  4,  4,  4,  4,  4,  5,  5,  5,  5,  5,  5,  5,  5,  6,  6,  6,  6,  6,  6,  6,  6,  7,  7,  7,  7,  7,  7,  7,  7,  8,  8,  8,  8,  8,  8,  8,  8,  9)) %>% 
+      select(-well)
+    
+    
+
+  
+  # put the samples in order of id (with negative controls inserted)
+extr <- left_join(extr, temp, by = "extraction_id")
+b1 <- c(NA, "XXXX", "D2", NA, NA, "D", 2)
+b2 <- c(NA,"XXXX", "E8", NA, NA, "E", 8)
+extr <- rbind(extr, b1, b2)
+  
 ```
+
+
+
+
 **Generate a digest_id**
 ```{r digest_id, echo = FALSE}
 dig_max <- lab %>% 
@@ -51,66 +121,41 @@ dig_max <- lab %>%
   mutate(max = as.numeric(substr(max, 2, 5)))
 
 extr <- extr %>% 
-  # split out the row and column in order to put the wells in order
-  mutate(col = as.numeric(substr(well, 2, 3)), 
-    row = substr(well, 1,1)) %>% 
-  arrange(plate, col, row) %>% 
+  arrange(col, row) %>% 
   # create digest ids
   mutate(digest_id = 1:nrow(extr)) %>% 
   mutate(digest_id = digest_id + dig_max$max) %>% 
   mutate(digest_id = paste("D", digest_id, sep = "")) %>% 
-  # calcuate the ng of DNA added to the digest
-  mutate(ng_in = 30 * quant)
+  mutate(ng_in = 30*as.numeric(quant))
 ```
 
 **Name digest plates**
 ```{r name_dig_plates, echo=FALSE}
-for_plates <- extr %>% 
-  select(contains("id"), well, plate, -sample_id, ng_in) %>% 
-  mutate(num = 1:nrow(extr))
+dig_lim <- extr %>% 
+  summarise(max = max(digest_id), 
+            min = min(digest_id))
 
-plates <- for_plates %>% 
-  select(plate) %>% 
-  distinct() %>% 
-  arrange(plate)
+extr <- extr %>% 
+  mutate(dig_plate = paste(dig_lim$min, dig_lim$max, sep = "-"), 
+         well = paste0(row, col))
 
-for_plates$dig_plate <- NA
-for (i in 1:nrow(plates)){
-  for_plates <- for_plates %>% 
-    mutate(dig_plate = ifelse(plate == plates$plate[i], paste("plate", i, sep = ""), dig_plate))
-  x <- for_plates %>% 
-    filter(plate == plates$plate[i])
-  first <- x %>% 
-    summarise(min(digest_id))
-  last <- x %>% 
-    summarise(max(digest_id))
-  for_plates <- for_plates %>% 
-    mutate(dig_plate = ifelse(plate == plates$plate[i], paste(first, "-", last, sep = ""), dig_plate))
-}
 ```
 **Make plate maps of destinations**
 *Maps are individual output files sent to the plots folder*
 
 ```{r dig_dest, echo = FALSE, message=FALSE}
-plates <- for_plates %>% 
-  select(dig_plate) %>% 
-  distinct() %>% 
-  arrange(dig_plate)
-
-for (i in 1:nrow(plates)){
-  platex <- for_plates %>% 
-  filter(dig_plate == plates$dig_plate[i]) %>% 
+  platex <- extr %>% 
   mutate(ng_in = ng_in/10) %>% 
-  mutate(filter = 40) %>% 
-  # mutate(filter = ifelse(ng_in >= 5000 & ng_in <= 10000, 15, filter), 
-  #        filter = ifelse(ng_in > 10000, 7, filter), 
-  #        filter = as.factor(filter)) %>% 
+  mutate(filter = 30) %>%
+  mutate(filter = ifelse(ng_in >= 5000 & ng_in <= 10000, 15, filter),
+         filter = ifelse(ng_in > 10000, 7, filter),
+         filter = as.factor(filter)) %>%
   select(well, dig_plate, digest_id, filter)
   
   # display.brewer.all(3)
   # x <- 
-    
-    heatmap(platex)
+    # debugonce(heatmap)
+    heatmap(platex, platex$digest_id)
   
   # +
   # scale_fill_manual(values=brewer.pal(3, "Set2"), 
@@ -118,7 +163,7 @@ for (i in 1:nrow(plates)){
                     # ,
                     #    breaks=c("30", "15", "7"),
                     #    labels=c("30uL", "15uL", "7uL")
-                    )
+                    # )
   ggsave(paste("../procedural_notebooks/plots/", platex$dig_plate, ".pdf", sep = ""), device = "pdf", width = 11, height = 8.5)
 
 }
@@ -126,9 +171,7 @@ for (i in 1:nrow(plates)){
 **Make heatmap of extract destinations **
 *Maps are individual output files sent to the plots folder*
 ```{r extr_dest, echo = FALSE, message=FALSE}
-for (i in 1:nrow(plates)){
-  platex <- for_plates %>% 
-  filter(dig_plate == plates$dig_plate[i]) %>% 
+  platex <- extr %>% 
   mutate(ng_in = ng_in/10) %>% 
   mutate(filter = 30) %>% 
   mutate(filter = ifelse(ng_in >= 5000 & ng_in <= 10000, 15, filter), 
@@ -137,7 +180,7 @@ for (i in 1:nrow(plates)){
   select(well, dig_plate, extraction_id, filter)
   
   # display.brewer.all(3)
-  x <- heatmap(platex) +
+  x <- heatmap(platex, platex$extraction_id) +
   scale_fill_manual(values=brewer.pal(3, "Pastel2"), 
                        name="Volume\nExtract",
                        breaks=c("30", "15", "7"),
@@ -147,35 +190,33 @@ for (i in 1:nrow(plates)){
 }
 ```
 
-<!-- **Make plate maps of source plates**  -->
-<!-- We can skip that for this batch because our extr_dest and our extr_sources are exactly the same. -->
-<!-- ```{r echo = F, fig.width=10, message=F} -->
-<!-- # define the source plates -->
-<!-- sources <- extr %>%  -->
-<!--   select(plate) %>%  -->
-<!--   filter(plate != "XXXX") %>%  -->
-<!--   distinct() %>%  -->
-<!--   arrange(plate) -->
+**Make plate maps of source plates**
+```{r echo = F, fig.width=10, message=F}
+# define the source plates
+sources <- extr %>%
+  select(plate) %>%
+  filter(plate != "XXXX") %>%
+  distinct() %>%
+  arrange(plate)
 
-<!-- # create heat maps of the plates -->
-<!-- for (i in 1:nrow(sources)){ -->
-<!--   library(ggplot2) -->
-<!--   source <- lab %>%  -->
-<!--     tbl("extraction") %>%  -->
-<!--     filter(plate == sources$plate[i]) %>%  -->
-<!--     collect() %>%  -->
-<!--     mutate(filter = ifelse(extraction_id %in% extr$extraction_id, "yes", "no")) -->
-<!--   x <- heatmap(source, extraction_id) -->
-<!--   print(x) -->
-<!-- } -->
-<!-- ``` -->
+# create heat maps of the plates
+for (i in 1:nrow(sources)){
+  source <- lab %>%
+    tbl("extraction") %>%
+    filter(plate == sources$plate[i]) %>%
+    collect() %>%
+    mutate(filter = ifelse(extraction_id %in% extr$extraction_id, "yes", "no"))
+  x <- heatmap(source, source$extraction_id)
+  print(x)
+}
+```
 
 
 ```{r echo=F, message=F}
 # write the data to the database
 w_lab <- write_db("Laboratory")
-dig <- for_plates %>% 
-  select(-plate, -num) %>% 
+dig <- extr %>% 
+  select(-plate, -row, -col, -sample_id) %>% 
   rename(plate = dig_plate)
   
 # dbWriteTable(w_lab, "digest", dig, append = T, row.names = F)
