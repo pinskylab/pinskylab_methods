@@ -1,10 +1,10 @@
 ---
 title: "Prep plates `r params$first_plate` through `r params$last_plate` for quantification"
 params:
-  first_plate: D5676-D5771
-  last_plate: D6348-D6431
+  first_plate: D6432-D6496
+  last_plate: D6432-D6496
   id: digest_id
-  num_plates: 9
+  num_plates: 1
   type: digest
 output:
   pdf_document: default

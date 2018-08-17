@@ -1,11 +1,12 @@
 ---
 title: "Prepping `r params$first` - `r params$last`"
 params:
-  first: D3340
-  infile: digs_need_seq.Rdata
-  last: D6431
-  regeno_first: D4588
-  regeno_last: D4612
+  first: D3479
+  infile: data/samples_to_ligate.Rdata
+  last: D6496
+  regeno_first: NA
+  regeno_last: NA
+  rxn_size: 15
 output:
   pdf_document: default
   html_document: default
@@ -32,13 +33,16 @@ regeno_max <- params$regeno_last
 
 Pull digest info from db - not doing this, using the data from the infile instead.
 ```{r get_data, echo=FALSE, message=FALSE}
-dig <- readRDS(params$infile) %>% 
+digs <- readRDS(params$infile)
   
-# dig <- dbReadTable(lab, "digest") %>% 
-#   filter(digest_id >= dig_min & digest_id <= dig_max & extraction_id != "XXXX") %>%
+dig <- dbReadTable(lab, "digest") %>%
+  filter(digest_id %in% digs$digest_id) %>%
   select(digest_id, quant, well, plate) %>%
   arrange(digest_id) %>% 
   filter(quant >= 2.25) # anything below this amount cannot be ligated at 50ng or higher
+
+# There are fewer digests from the db than the infile, why? Because the quants are too low.
+# missing <- anti_join(digs, dig, by = "digest_id")
 
 
 regeno <- dbReadTable(lab, "digest") %>%
@@ -94,15 +98,15 @@ for(i in c(200, 150, 100, 75, 50)){
   # get all possible regeno for this ligation amount
   x <- regeno %>%
     mutate(uL_in = round(i/quant, 1)) %>% # round to 1 decimal point
-    filter(uL_in < 22.2 & uL_in > 0.5) %>%
-    mutate(water = round(22.2-uL_in, 1), 
+    filter(uL_in < (params$rxn_size/1.35) & uL_in > 0.5) %>%
+    mutate(water = round((params$rxn_size/1.35)-uL_in, 1), 
            DNA = i)
   
   # get all possible originals for this ligation amount
   y <- dig %>%
     mutate(uL_in = round(i/quant, 1)) %>% # round to 1 decimal point
-    filter(uL_in < 22.2 & uL_in > 0.5) %>%
-    mutate(water = round(22.2-uL_in, 1), 
+    filter(uL_in < (params$rxn_size/1.35) & uL_in > 0.5) %>%
+    mutate(water = round((params$rxn_size/1.35)-uL_in, 1), 
            DNA = i)
   
   # the following few lines (through 108) are to remove the lines that aren't going to make it into pools and are the lowest volumes so that we can sort by plate and it won't matter that low volumes are mixed with high.
@@ -217,7 +221,7 @@ for (i in seq(nplates)){
 }
 
 plate <- plate %>% 
-  mutate(dest_loc = "P9", 
+  mutate(dest_loc = "P12", 
     dest_well = paste(row, col, sep = ""), 
     water_loc = "P11", 
     water_well = "A1", 
@@ -252,7 +256,7 @@ for (i in seq(plate_list$round)){
   reps <- ceiling(nrow(sources)/num_rounds)
   # Define possible source locations and adjust to fit the number of source plates
   #P8 is tips, P11 is water, P12 is destination
-  positions <- tibble(loc = rep(c("P5", "P6", "P7", "P12", "P13"),num_rounds )) %>% 
+  positions <- tibble(loc = rep(c("P5", "P6", "P7", "P9", "P13"),num_rounds )) %>% 
     slice(1:nrow(sources))
   rounds <- tibble(round = rep(letters[1:num_rounds], reps)) %>% 
     slice(1:nrow(sources)) %>% 
@@ -275,7 +279,7 @@ for (i in seq(plate_list$round)){
   for(b in seq(rounds$round)){
     temp1 <- temp %>% 
       filter(grepl(rounds$round[b], round))
-    write.csv(temp1, file = paste("data/", Sys.Date(), temp1$round[1], ".csv", sep = ""))
+    write.csv(temp1, file = paste("data/", Sys.Date(), "_", temp1$round[1], ".csv", sep = ""))
    # print(kable(temp1, "latex", longtable = T, booktabs = T, caption = temp1$round[1]) %>% 
    #    kable_styling(latex_options = c("repeat_header")))
   }

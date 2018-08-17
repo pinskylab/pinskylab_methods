@@ -60,48 +60,71 @@ saveRDS(samples, file = "success_seq_samples.Rdata")
 `r nrow(samples)` samples have been successfully sequenced.
 A list of these samples has been saved as an Rdata file.
 
-**Which samples have been digested since the beginning of 2017?**
+The following invisible code is identifying samples by extraction_id that have been digested multiple times and never had enough DNA to be sequenced:
 ```{r echo=FALSE, message=FALSE}
-digs <- lab %>% 
-  tbl("digest") %>% 
-  filter(date >= "2017-01-01") %>% 
+rem_e <- c("E0266", "E1699", "E0501", "E0525", "E0526", "E0536", "E0540", "E0569", "E0683", "E0686", "E0687", "E0703", "E0713", "E2292", "E0554", "E0741", "E0745", "E0763", "E0795", "E0797", "E0851", "E0885", "E0888", "E0891", "E0964", "E0965", "E0979", "E0980", "E0981", "E1011", "E1036", "E1338", "E1339", "E1347", "E1370", "E2759", "E2775", "E2799", "E2773", "E2763", "E2569", "E2642", "E2738", "E2707", "E2736", "E2753", "E2734", "E2735", "E2737", "E0404", "E0533", "E0555", "E0572", "E0677", "E0725", "E0793", "E1304", "E1306", "E1309", "E1311", "E1313", "E1315", "E1316", "E1319", "E1320", "E1321", "E1322", "E1323", "E1326", "E1327", "E1328", "E1329", "E1332", "E1333", "E1336", "E2690", "E2737", "E0248", "E0267", "E0301", "E0310", "E0314", "E0315", "E0321", "E0322", "E0324", "E0336", "E0340", "E0358", "E0424", "E0462", "E0463", "E0470", "E0476", "E0480", "E0487", "E0490", "E0506", "E0508", "E0512", "E0516", "E0521", "E0532", "E0565", "E2602", "E2607", "E2808")
+# sort(rem_e)
+```
+
+
+Out of all of the samples ever collected, which have not been set up for ligation or sequenced?
+```{r echo=FALSE, message=FALSE}
+full_samp <- leyte %>% 
+  tbl("clownfish") %>% 
+  select(sample_id) %>% 
   collect()
 
-# remove blanks
-digs <- digs %>% 
-  filter(extraction_id != "XXXX")
-```
-`r nrow(digs)` samples have been digested 
+# which haven't been successfully sequenced?
+unseq <- full_samp %>% 
+  filter(!sample_id %in% samples$sample_id)
 
-**How many of those samples have been successfully sequenced?**
-```{r echo=FALSE, message=FALSE}
+
+# what is the work history
+unseq <- work_history(unseq, "sample_id")
+
+# which of these samples are not currently set up for ligation/sequencing
+need <- unseq %>% 
+  filter(pool < "P073" | is.na(pool))
+
+unseq <- anti_join(unseq, need)
+
+# are any of these digested since 2017?
+dig <- lab %>% 
+  tbl("digest") %>% 
+  filter(digest_id %in% need$digest_id) %>% 
+  select(digest_id, date, notes) %>% 
+  collect()
+need <- left_join(need, dig, by = "digest_id") %>% 
+  rename(dig_notes = notes, dig_date = date)
+
+# make sure none of these sample ids are already set up 
+need <- need %>% 
+  filter(!sample_id %in% unseq$sample_id)
+  
+# have these samples ever been digested since 2017?
+need <- work_history(need, "sample_id")
+
+# are any of the extracts empty?
 extr <- lab %>% 
   tbl("extraction") %>% 
-  filter(extraction_id %in% digs$extraction_id) %>% 
-  select(extraction_id, sample_id) %>% 
+  filter(extraction_id %in% need$extraction_id) %>% 
+  select(extraction_id, notes) %>% 
   collect()
+need <- left_join(need, extr, by = "extraction_id") %>% 
+  filter(!grepl("empty", notes))
 
-digs <- left_join(digs, extr, by = "extraction_id")
-rm(extr)
+# do any of them lack DNA?
+need <- need %>% 
+  filter(!grepl("no band", notes)) %>% 
+  filter(!grepl("No band", notes))
 
-dig_suc <- digs %>% 
-  filter(sample_id %in% samples$sample_id)
-
-# remove successfully sequenced digests from the digs table
-digs <- anti_join(digs, dig_suc, by = "digest_id")
+# remove the extraction_ids above that were digested multiple times but always failed
+need <- need %>% 
+  filter(!extraction_id %in% rem_e)
 ```
-`r nrow(dig_suc)` samples have been successfully sequenced and are being removed from the list of samples to sequence. 
-
-**Are there any repeat sample_ids in the list?**
+Save the samples that need to be set up for sequencing/ligation/robot as digs_need_seq.Rdata
 ```{r echo=FALSE, message=FALSE}
-repeats <- digs %>% 
-  group_by(sample_id) %>% 
-  summarise(count = n()) %>% 
-  filter(count > 1)
-```
-`r nrow(repeats)` samples are repeated, but they are all the 2018 test samples for the Ali method so we are going to move forward with those to see if there is a difference in sequencing result.
+save(need, file = "digs_need_seq.Rdata")
 
-Saving an Rdata file of the digests that need to be sequenced so they can be prepped for the robot.
-```{r echo=FALSE, message=FALSE}
-saveRDS(digs, file = "digs_need_seq.Rdata")
 ```
+

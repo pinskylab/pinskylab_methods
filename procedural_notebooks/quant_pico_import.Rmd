@@ -1,10 +1,10 @@
 ---
 title: '`r paste("Pico Platereader Quantification for ", params$first, "-", params$last, sep = "")`'
 params:
-  file: ~/Downloads/2018-07-31-full.txt
+  file: ~/Downloads/2018-08-17-full.txt
   id: digest_id
-  first_sample: D5676
-  last_sample: D6431
+  first_sample: D6432
+  last_sample: D6496
   type: digest
 output:
   pdf_document: default
@@ -32,7 +32,7 @@ Once you have completed all of the steps in the quant_prep.pdf, it is time to im
 # determine number of lines to skip before data begins
 strs <- readLines(params$file, skipNul = T)
 # add the \t's for this round only, excel added them in
-linestoskip <- which(strs == "Group: Unknowns\t\t\t\t\t\t\t\t") # the number of lines to skip
+linestoskip <- which(strs == "Group: Unknowns") # the number of lines to skip
 num_lines <- as.numeric(substr(params$last_sample, 2, 5)) - as.numeric(substr(params$first_sample, 2, 5)) + 1
 ```
 For this round only opening the txt file in excel and changing the names of the samples that are in sample numbers higher than the test samples in the standards plate.  

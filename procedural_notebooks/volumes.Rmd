@@ -76,15 +76,16 @@ need <- need %>%
 ```
 Some digests have been ligated too many times to have enough volume left to try to ligate again:
 ```{r}
-rem_e <- c("E0266", "E1699", "E0501", "E0525", "E0526", "E0536", "E0540", "E0569", "E0683", "E0686", "E0687", "E0703", "E0713", "E2292", "E0554", "E0741", "E0745", "E0763", "E0795", "E0797", "E0851", "E0885", "E0888", "E0891", "E0964", "E0965", "E0979", "E0980", "E0981", "E1011", "E1036", "E1338", "E1339", "E1347", "E1370", "E2759", "E2775", "E2799", "E2773", "E2763", "E2569", "E2642", "E2738", "E2707", "E2736", "E2753", "E2734", "E2735", "E2737", "E0404", "E0533", "E0555", "E0572", "E0677", "E0725", "E0793", "E1304", "E1306", "E1309", "E1311", "E1313", "E1315", "E1316", "E1319", "E1320", "E1321", "E1322", "E1323", "E1326", "E1327", "E1328", "E1329", "E1332", "E1333", "E1336", "E2690", "E2737") # these samples were digested multiple times and never had enough DNA to sequence successfully
-rem_d <- c("D2511", "D2514", "D2520", "D2527", "D1836", "D2557", "D2622", "D2673", "D2674", "D2678", "D0673", "D1901", "D0697", "D0729", "D0735", "D1056", "D1956", "D1260", "D1961", "D1263", "D1963", "D1266", "D1966", "D1267", "D1967", "D2236", "D1206", "D2256", "D1207", "D2257", "D1115", "D2258", "D1118", "D2259", "D1119", "D2260", "D1212", "D2261", "D1120", "D2262", "D1217", "D2263", "D1220", "D2894", "D2999", "D2890", "D3214", "D3223", "D2793", "D2891", "D3130", "D2683", "D2906", "D2816", "D2688", "D2817", "D2736", "D2696", "D2922")  # these samples were digested more than once and the other digest can be ligated.
+rem_e <- c("E0266", "E1699", "E0501", "E0525", "E0526", "E0536", "E0540", "E0569", "E0683", "E0686", "E0687", "E0703", "E0713", "E2292", "E0554", "E0741", "E0745", "E0763", "E0795", "E0797", "E0851", "E0885", "E0888", "E0891", "E0964", "E0965", "E0979", "E0980", "E0981", "E1011", "E1036", "E1338", "E1339", "E1347", "E1370", "E2759", "E2775", "E2799", "E2773", "E2763", "E2569", "E2642", "E2738", "E2707", "E2736", "E2753", "E2734", "E2735", "E2737", "E0404", "E0533", "E0555", "E0572", "E0677", "E0725", "E0793", "E1304", "E1306", "E1309", "E1311", "E1313", "E1315", "E1316", "E1319", "E1320", "E1321", "E1322", "E1323", "E1326", "E1327", "E1328", "E1329", "E1332", "E1333", "E1336", "E2690", "E2737", "E0248", "E0267", "E0301", "E0310", "E0314", "E0315", "E0321", "E0322", "E0324", "E0336", "E0340", "E0358", "E0424", "E0462", "E0463", "E0470", "E0476", "E0480", "E0487", "E0490", "E0506", "E0508", "E0512", "E0516", "E0521", "E0532", "E0565", "E2602", "E2607", "E2808") # these samples were digested multiple times and never had enough DNA to sequence successfully
+rem_d <- c("D2511", "D2514", "D2520", "D2527", "D1836", "D2557", "D2622", "D2673", "D2674", "D2678", "D0673", "D1901", "D0697", "D0729", "D0735", "D1056", "D1956", "D1260", "D1961", "D1263", "D1963", "D1266", "D1966", "D1267", "D1967", "D2236", "D1206", "D2256", "D1207", "D2257", "D1115", "D2258", "D1118", "D2259", "D1119", "D2260", "D1212", "D2261", "D1120", "D2262", "D1217", "D2263", "D1220", "D2894", "D2999", "D2890", "D3214", "D3223", "D2793", "D2891", "D3130", "D2683", "D2906", "D2816", "D2688", "D2817", "D2736", "D2696", "D2922", "D1834", "D2650")  # these samples were digested more than once and the other digest can be ligated.
 rem_l <- c("L0214", "L1161", "L0216", "L0223", "L0227", "L0228", "L0229", "L0233", "L0234", "L1170", "L0235", "L0237", "L0241", "L0248", "L0251", "L0252", "L0253", "L0834", "L0310", "L0332", "L1306", "L0361", "L0367", "L0836", "L0838", "L0839", "L0378", "L0381", "L0840", "L0396", "L0399", "L0648", "L0404", "L1307", "L0842", "L0843", "L0850", "L0828", "L0638", "L0830", "L0968", "L1012", "L0162", "L1086", "L0848", "L0180", "L0766", "L0746", "L0548", "L1287", "L0938", "L1011", "L1327", "L1298", "L1328", "L0767", "L0970", "L0971", "L0940", "L0972", "L0941", "L1334", "L2868", "L2630") # these samples were ligated more than once and need to be digested again.  The other ligation is kept as a flag to redigest.
 
 need <- need %>% 
   filter(!digest_id %in% rem_d, 
          !extraction_id %in% rem_e, 
-         !ligation_id %in% rem_l) %>% 
-  filter(!grepl("not enough", dig_notes))
+         !ligation_id %in% rem_l) 
+# %>% 
+#   filter(!grepl("not enough", dig_notes))
 ```
 Basic decision making:
 
@@ -132,5 +133,33 @@ saveRDS(digest, file = "samples_need_digest.Rdata")
 ligate <- need %>% 
   filter(!sample_id %in% digest$sample_id)
 saveRDS(ligate, file = "samples_ready_ligate.Rdata")
+```
+
+Digested the samples that needed to be tried again and now ready to compare our list of samples that need to be done to our list of samples ready to ligate.
+
+```{r}
+# library(dplyr)
+# ligate <- readRDS("data/samples_ready_ligate.Rdata")
+# load("digs_need_seq.Rdata") # imports as need
+
+# not_need <- anti_join(ligate, need, by = "sample_id")
+# not_lig <- anti_join(need, ligate, by = "sample_id")
+
+# are there any repeat samples in need?
+rep <- need %>% 
+  group_by(sample_id) %>% 
+  summarise(num = n()) %>% 
+  filter(num > 1)
+
+for (i in rep$sample_id){
+  x <- need %>% 
+    filter(sample_id == i) %>% 
+    arrange(digest_id)
+  x <- x %>% 
+    slice(1:(nrow(x)-1))
+  need <- anti_join(need, x)
+}
+
+saveRDS(need, "data/samples_to_ligate.Rdata")
 ```
 
