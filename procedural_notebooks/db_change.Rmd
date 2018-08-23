@@ -1,14 +1,13 @@
 ---
-title: "update dates, enzyme, vol_in, final_vol for `r params$first` - `r params$last`"
+title: "add notes about mistakes for  `r params$first` - `r params$last`"
 output:
   pdf_document: default
-  html_notebook: default
 params: 
-  type: "digest"
-  id: "digest_id"
+  type: "ligation"
+  id: "ligation_id"
   db: "Laboratory"
-  first: D6252
-  last: D6431
+  first: L5431
+  last: L5463
   
 ---
 
@@ -26,13 +25,10 @@ Find the range of rows to be changed
 ```{r change}
 # change plate names
 change <- dat %>%
-  filter(digest_id >= params$first, digest_id <= params$last) %>% 
-  mutate(date = "2018-07-30", 
-         vol_in = 40, 
-         ng_in = NA, 
-         enzymes = "PstI-MluCI", 
-         final_vol = 40)
-  
+  filter(digest_id >= "D4396" & digest_id <= "D4431") %>% 
+  filter(pool == "P102") %>% 
+  mutate(notes = ifelse(is.na(notes), "due to an error in the robot files, these samples may have received double the amount of digest and water", paste0("due to an error in the robot files, these samples may have received double the amount of digest and water, ", notes)))
+
 dat <- change_rows(dat, change, params$id)
 
 ```

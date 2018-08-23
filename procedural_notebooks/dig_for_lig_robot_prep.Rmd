@@ -37,9 +37,12 @@ digs <- readRDS(params$infile)
   
 dig <- dbReadTable(lab, "digest") %>%
   filter(digest_id %in% digs$digest_id) %>%
-  select(digest_id, quant, well, plate) %>%
+  select(digest_id, quant, well, plate, notes) %>%
   arrange(digest_id) %>% 
-  filter(quant >= 2.25) # anything below this amount cannot be ligated at 50ng or higher
+  filter(quant >= 2.25, # anything below this amount cannot be ligated at 50ng or higher
+         !grepl("empty", notes), 
+         !grepl("contaiminated", notes), 
+         !grepl("not enough", notes)) 
 
 # There are fewer digests from the db than the infile, why? Because the quants are too low.
 # missing <- anti_join(digs, dig, by = "digest_id")
@@ -287,33 +290,33 @@ for (i in seq(plate_list$round)){
 
 ```
 
-# ```{r echo=FALSE, message=FALSE}
-# # add ligations to database ####
-# 
-# # fetch last used ligation_id
-# lig_max <- dbReadTable(lab, "ligation") %>% 
-#   summarise(lig_id = max(ligation_id)) %>% 
-#   mutate(lig_id = as.numeric(substr(lig_id, 2, 5)))
-# 
-# # pool_max <- dbReadTable(lab, "ligation") %>% 
-# #   summarise(pool = max(pool)) %>% 
-# #   mutate(pool = as.numeric(substr(pool, 2, 5)))
-# 
-# ligations <- ligations %>% 
-#   mutate(ligation_id = (1+lig_max$lig_id):(nrow(ligations) + lig_max$lig_id), 
-#     ligation_id = paste("L", ligation_id, sep = "")) %>% 
-#   mutate(pool = paste("P", formatC(as.numeric(substr(pool, 2, 6)), width = 3, format = "d", flag = 0), sep = "")) %>% 
-#   rename(vol_in = uL_in, 
-#          well = dest_well) %>% 
-#   select(ligation_id, digest_id, well, vol_in, DNA, water, pool)
-# 
-# 
-# 
-# ## add to db
-# # dbWriteTable(lab, "ligation", ligations, append = T, row.names = F)
-# # dbDisconnect(lab)
-# # rm(lab)
-# ```
+```{r echo=FALSE, message=FALSE}
+# add ligations to database ####
+
+# fetch last used ligation_id
+lig_max <- dbReadTable(lab, "ligation") %>%
+  summarise(lig_id = max(ligation_id)) %>%
+  mutate(lig_id = as.numeric(substr(lig_id, 2, 5)))
+
+# pool_max <- dbReadTable(lab, "ligation") %>%
+#   summarise(pool = max(pool)) %>%
+#   mutate(pool = as.numeric(substr(pool, 2, 5)))
+
+ligations <- ligations %>%
+  mutate(ligation_id = (1+lig_max$lig_id):(nrow(ligations) + lig_max$lig_id),
+    ligation_id = paste("L", ligation_id, sep = "")) %>%
+  mutate(pool = paste("P", formatC(as.numeric(substr(pool, 2, 6)), width = 3, format = "d", flag = 0), sep = "")) %>%
+  rename(vol_in = uL_in,
+         well = dest_well) %>%
+  select(ligation_id, digest_id, well, vol_in, DNA, water, pool)
+
+
+
+## add to db
+# dbWriteTable(lab, "ligation", ligations, append = T, row.names = F)
+# dbDisconnect(lab)
+# rm(lab)
+```
 
 
 

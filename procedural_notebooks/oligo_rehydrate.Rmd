@@ -1,0 +1,25 @@
+---
+title: "rehydrate oligos"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+To rehydrate oligos:
+Resuspend Oligos
+IDT says to multiply # of nmoles on vial by 10 and add the answer µL of buffer to bring concentration to 100µM.  We want 200µM so we are multiplying by 5.
+
+```{r}
+# P2.1 from 2016-04-26 has 51.4nmoles
+(x <- 51.4 * 5)
+```
+Add `r x`uL of 1xTE buffer to the IDT tube.
+
+```{r}
+# P2.2 from 2016-04-26 has 78.6nmoles
+(x <- 78.6 * 5)
+```
+
+Go to the google doc "Oligo Construction and Resuspension” in the Pinsky Lab folder
+Click on the “Resuspension” Tab
+Scroll to the bottom, enter the date of resuspension, name of adapter on tube, nm of adapter on tube, and drag down the “amount of TE…” and “Final mol” cells

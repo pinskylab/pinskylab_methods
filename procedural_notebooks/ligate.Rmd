@@ -1,7 +1,7 @@
 ---
 title: "Ligation on `r Sys.Date()`"
 params:
-  num_samples: 552
+  num_samples: 240
 output:
   pdf_document: default
 ---
