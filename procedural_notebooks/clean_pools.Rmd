@@ -1,8 +1,8 @@
 ---
 title: "Cleaning pool `r params$pool` on `r Sys.Date()`"
 params:
-  pool: P096
-  pool_vol: 1100
+  pool: P128
+  pool_vol: 1000
 output:
   pdf_document: default
 ---

@@ -1,0 +1,52 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+For 1 plate of PCR rxns, make 100µL:
+* final: 100µL @ 10µM = initial 5µL @ 200µM
+* Combine 95µL pH2O + 5µL primary primer stock (in primer freezer box in freezer)
+3/4/2014 - pg 54 of lab notebook
+
+This protocol assumes that you have read and understand the manufacturer’s instructions attached below. Please read the full manufacturer’s instructions before using this abbreviated protocol.
+
+PCR pools
+
+update sample_data file with PCR numbers and indices
+open PCR worksheet and calculate master mix:
+Run each pool in 4 rxns at 10µL of sample each in 20µL reactions
+Don’t include R primer in master mix, add later…example recipe looks like:
+Place 9µL master mix in each well
+Place 10µL sample in each well
+Place 1µL R primer (of the correct index) in each well
+Run on thermocycler PHUSION_PCR which is 98˚ for 30 sec, (98˚ for 10 sec, 64˚ for 30 sec, 72˚ for 30 sec) X 12, 72˚ for 10 minutes, hold at 4˚C
+After the thermocycler finishes (~35 minutes) Combine the reactions of each pool individually in tubes (o-ring if not cleaning immediately) labeled on the top with the pool number and on the side with
+“PCR #" not clean date
+
+Clean the PCR products separately (separate pools) each pool should be 80µL add 120µL Ampure - elute into 40µL TE
+
+Qubit the pools Make a note of the supplies used and update the inventory
+
+For PCR Single reaction volumes: 7.9 pH2O 4.0 Phusion buffer 0.5 MgCl2 0.4 10mM dNTPs 1.0 F Primer 1.0 R Primer (2_2) 0.2 Phusion polymerase
+
+```{r}
+num_wells <- 96
+
+neg_control <- 0
+
+rxns_plus_error <- ceiling((96+1)*1.1)
+
+rxn_size <- 20
+
+final_volume <- rxn_size * rxns_plus_error
+
+calc_table <- readr::read_csv("item, vol_to_add, initial_conc, final_conc, final_vol, per_rxn
+                              5x buffer, NA, 5, 1, NA, NA
+                              F primer, NA, 10, 0.5, NA, NA
+                              R primer, NA, 10, 0.5, NA, NA
+                              dNTPs, NA, 10, 0.2, NA, NA
+                              MgCl2, NA, 50, 1.25, NA, NA
+                              phusion, NA, NA, NA, NA, NA 
+                              pH20, NA, NA, NA, NA, NA")
+```
+
