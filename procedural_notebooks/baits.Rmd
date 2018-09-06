@@ -2,7 +2,7 @@
 title: "My Baits"
 output: html_notebook
 params:
-  num_rxns: 68
+  num_rxns: 48
 ---
 
 ```{r setup, echo=FALSE, message=FALSE}
