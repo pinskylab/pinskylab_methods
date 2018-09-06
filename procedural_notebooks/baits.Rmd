@@ -1,0 +1,109 @@
+---
+title: "My Baits"
+output: html_notebook
+params:
+  num_rxns: 48
+---
+
+```{r setup, echo=FALSE, message=FALSE}
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+```
+
+**Part 1: Hybridization**  
+Here, sequencing libraries are denatured, their adapters are blocked by adapter blocker, and baits are allowed to encounter and then hybridize to their targets.  
+
+Gather these components:  
+Reagents:  
+* HYB reagents (Box 1 & 2): H1(orange) H2(red) H3(yellow) H4(teal)
+* BLOCK reagents (Box 2): B1(green) B2(blue) B3(mustard)  
+* RNase Block (Box 2) **Keep on ice** (purple)  
+* Baits (Box 3) **Keep on ice** (white)  
+* Sequencing libraries to be enriched  
+
+*Thoroughly vortex HYB #1 H1 before use, and bring HYB #4 H4 to room temperature to fully dissolve its SDS before use*  
+
+Equipment:  
+* 1.7 mL (×2) and 50 mL (×1) nuclease-free tubes
+* Low-bind 0.2mL tubes with individual caps (×2 per reaction)
+* Pipettors & tips; multichannel pipettor for pipetting up to 20 μL recommended
+* Vortex mixer
+* Thermal cycler  
+
+Program the thermal cycler:
+Program the lid temperature to stay at 105°C, or at least 10°C above each step temperature, to keep evaporation to a minimum.
+
+```{r echo=FALSE, message=FALSE}
+a <- read_csv("step, temp_C, time
+  1, 95, 5m
+  2, 65, 5m
+  3, 65, inf")
+
+kable(a) %>% 
+  kable_styling()
+```
+
+Assemble the Hybridization Mix, briefly vortex and centrifuge:
+```{r echo=FALSE, message=FALSE}
+b <- read_csv("component, uL_rxn
+  hyb1, 9
+  hyb2, 0.5
+  hyb3, 3.5
+  hyb4, 0.5
+  rnase block, 1
+  baits, 5.5") %>% 
+  mutate(total = uL_rxn * params$num_rxns)
+
+total <- b %>% 
+  summarise(tot_per_rxn = sum(uL_rxn), 
+    tot_today = sum(total)) %>% 
+  mutate(component = "total") %>% 
+  rename(uL_rxn = tot_per_rxn, 
+    total = tot_today)
+
+b <- rbind(b, total)
+
+kable(b) %>% 
+  kable_styling()
+```
+
+For each capture reaction, aliquot 18.5 μL of Hybridization Mix to a 0.2 mL tube. These are now referred to as “HYBs”
+
+Assemble the Blockers Mix and briefly vortex:
+```{r echo=FALSE, message=FALSE}
+c <- read_csv("component, uL_rxn
+  block1, 2.5
+  block2, 0.5
+  block3, 3.5") %>% 
+  mutate(total = uL_rxn * params$num_rxns)
+
+total <- c %>% 
+  summarise(tot_per_rxn = sum(uL_rxn), 
+    tot_today = sum(total)) %>% 
+  mutate(component = "total") %>% 
+  rename(uL_rxn = tot_per_rxn, 
+    total = tot_today)
+
+c <- rbind(c, total)
+
+kable(c) %>% 
+  kable_styling()
+```
+4. For each capture reaction, aliquot 5 μL Blockers Mix to a low-bind 0.2mL tube
+5. Add 7 μL DNA library (100 – 500ng) to each Blockers Mix aliquot and homogenize by pipetting.
+
+These are now referred to as “LIBs” total volume: 12 μL
+
+
+**Part 2: Bind and Wash**
+
+Prepare 10mM Tris-Cl, 0.05% Tween-20 solution (pH 8.0-8.5)
+```{r echo=FALSE, message=FALSE}
+sol <- read_csv("component, init_conc, fin_conc 
+                mM Tris-Cl, 1000, 10
+                % Tween-20, 100, 0.05") %>% 
+  mutate(ul_fin_vol = 30*params$num_rxns*1.1, 
+         ul_init_vol = fin_conc * ul_fin_vol/init_conc)
+```
+
