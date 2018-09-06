@@ -233,4 +233,22 @@ Here, the bead-bound enriched library is released from the RNA bait via heat den
 
 ###3.2 - Suggested Amplification Setup
 
+Prior to sequencing, Arbor recommends amplifying the enriched library using a polymerase with reduced GC and length bias, such as KAPA® HiFi (Kapa Biosystems; see Quail et al. 2012; doi:10.1038/nmeth.1814).
 
+```{r echo=FALSE, message=FALSE}
+sol <- read_csv("component, fin_conc, ul_per_rxn 
+                pH2O, NA, 5
+                2x KAPA HiFi HotStart ReadyMix, 1X, 25
+                10uM F primer, 500, 2.5
+                10uM R primer, 500, 2.5
+                library, NA, 15") %>% 
+  mutate(ul_fin_vol = ul_per_rxn * params$num_rxns*1.1)
+kable(sol) %>% 
+  kable_styling()
+```
+
+Run the "REAMP" protocol in the thermal cycler.
+
+If there were beads in the reamp, place on magnet and keep supernatant.
+
+Clean with Ampure and quantify.
