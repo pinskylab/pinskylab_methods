@@ -1,42 +1,40 @@
 ---
-title: "Make platemap from database well locations"
+title: "Platemap of `r params$filter`"
+params:
+  filter: L3927
+  style: 2
+  table: ligation
+  type: digest_id
 output:
-  github_document: default
-  params: 
-      test: yes
+  html_document: default
+  html_notebook: default
 ---
 
-This document will generate a platemap based on the well locations recorded in the database.
+<!-- This document will generate a platemap based on the well locations recorded in the database. 
+style 1 = a pool map, filter should be a pool name, type should be ligation_id
+style 2 = a full plate map, filter should be a ligation id and type can be either ligation_id or digest id depending on what if you want a source or destination plate map-->
 
 ```{r echo=FALSE, message=FALSE}
 source("../genomics/scripts/lab_helpers.R")
+library(kableExtra)
 lab <- read_db("Laboratory")
-```
 
-Make a plate map:
-```{r}
+
 map <- lab %>% 
-  tbl("ligation") %>% 
-  filter(plate == params$plate) %>% 
-  collect()
+  tbl(params$table) %>% 
+  collect() 
 
-map <- plate_from_db(map, "digest_id")  
-
-
-if (substr(plate_name, 1, 1) == "L"){
-map <- lab %>% 
-  tbl("ligation") %>% 
-  filter(plate == plate_name) %>% 
-  collect()
-
-dig_dest_map <- plate_from_db(map, "digest_id")
-dig_plate <- platemap
-
-lig_dest_map <- plate_from_db(map, "ligation_id")
+if(params$style == 1){
+  map <- map %>% 
+  filter(pool == params$filter)
 }
-# taking up room so the ligation plate is all on one page
-#
-#
+
+if (params$style == 2){
+  map <- map %>% 
+    filter(grepl(params$filter, plate))
+}
+
+map <- plate_from_db(map, params$type)  
 
 # knitr::kable(dig_plate)
 knitr::kable(platemap) %>% 
