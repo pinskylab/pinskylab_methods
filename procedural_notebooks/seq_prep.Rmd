@@ -3,14 +3,14 @@ title: "Prepping libraries for sequencing submission"
 params:
   date: '2018-09-13'
   facility: PrincetonLSI
-  first_baits: B001
+  first_baits: B004
   frag_length: 430
-  last_baits: B003
+  last_baits: B006
   library_type: ddRADSeq
   num_lanes: 2
   pe_or_se: se
   platform: hiseq
-  seq: SEQ18
+  seq: SEQ19
 output:
   pdf_document: default
   html_notebook: default
@@ -62,14 +62,6 @@ dat_db <- lab %>%
 
 # create a row to add to the seq table in the db
 change <- tibble(seq_id = params$seq, date = params$date, library_type = params$library_type, facility = params$facility, platform = params$platform, num_lanes = params$num_lanes, pe_se = params$pe_or_se, vol_pooled_libs = tot$seq_vol, vol_TE = (30-tot$seq_vol), contents = paste(params$first_baits, params$last_baits, sep = "-"), read_length = NA, amphiprion_folder = NA, notes = NA)
-
-#____________________________________________________________
-# add columns to seq db (only have to do this once today)
-dat_db <- dat_db %>% 
-  mutate(vol_pooled_libs = NA, vol_TE = NA)
-dat_db <- dat_db %>% 
-  select(seq_id:contents, vol_pooled_libs, vol_TE, library_type:notes)
-#____________________________________________________________
 
 dat_db <- rbind(dat_db, change) %>% 
   mutate(vol_pooled_libs = formatC(vol_pooled_libs, width = 1), 
