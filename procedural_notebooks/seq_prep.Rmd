@@ -1,0 +1,153 @@
+---
+title: "Prepping libraries for sequencing submission"
+params:
+  date: '2018-09-13'
+  facility: PrincetonLSI
+  first_baits: B001
+  frag_length: 430
+  last_baits: B003
+  library_type: ddRADSeq
+  num_lanes: 2
+  pe_or_se: se
+  platform: hiseq
+  seq: SEQ18
+output:
+  pdf_document: default
+  html_notebook: default
+---
+```{r}
+source("../genomics/scripts/lab_helpers.R")
+lab <- write_db("Laboratory")
+print(params)
+
+# pull in the baits that are going to be pooled for sequencing
+baits <- lab %>% 
+  tbl("baits") %>% 
+  collect() 
+
+# update the db to reflect pooling
+change <- baits %>% 
+  filter(baits_id >= params$first_baits & baits_id <= params$last_baits) %>% 
+  mutate(seq = params$seq)
+
+baits <- change_rows(baits, change, "baits_id")
+# dbWriteTable(write_lab, "baits", dat_db, row.names=F, overwrite = T)
+
+
+# calculate the percent concentration of DNA in each bait
+change <- change %>% 
+  mutate(vol = 20, 
+    perc = as.numeric(ng_ul)/as.numeric(vol))
+
+# calculate the percent concentration of the pooled baits
+tot <- change %>% 
+   # sum of percents
+  summarise(tot_perc = sum(perc)) %>%
+  # sum of volumes
+  mutate(vol = change$vol[1] * 3,  
+    # calculate the ng_ul of the combined DNA
+    ng_ul = tot_perc * vol, 
+    # calculate the nM of the combined DNA (430bp fragment length)
+    nM = (ng_ul/(660*params$frag_length))*10^6, 
+    # calculate the volume of library to produce 10nM
+    seq_vol = (30*10)/nM) # 30 because that is our desired final volume to send to seq, 10 because we want to send 10nM 
+
+knitr::kable(tot) %>% 
+  kableExtra::kable_styling()
+
+# add to seq table in the db
+dat_db <- lab %>% 
+  tbl("sequencing") %>% 
+  collect()
+
+# create a row to add to the seq table in the db
+change <- tibble(seq_id = params$seq, date = params$date, library_type = params$library_type, facility = params$facility, platform = params$platform, num_lanes = params$num_lanes, pe_se = params$pe_or_se, vol_pooled_libs = tot$seq_vol, vol_TE = (30-tot$seq_vol), contents = paste(params$first_baits, params$last_baits, sep = "-"), read_length = NA, amphiprion_folder = NA, notes = NA)
+
+#____________________________________________________________
+# add columns to seq db (only have to do this once today)
+dat_db <- dat_db %>% 
+  mutate(vol_pooled_libs = NA, vol_TE = NA)
+dat_db <- dat_db %>% 
+  select(seq_id:contents, vol_pooled_libs, vol_TE, library_type:notes)
+#____________________________________________________________
+
+dat_db <- rbind(dat_db, change) %>% 
+  mutate(vol_pooled_libs = formatC(vol_pooled_libs, width = 1), 
+    vol_TE = formatC(vol_TE, width = 1))
+
+# dbWriteTable(lab, "sequencing", dat_db, row.names=F, overwrite = T)
+```
+
+
+
+
+
+
+Paste the qubit results into the PCR page of the Sample_Data file as directed above in the qubit protocol.
+
+On the PCR page, in the µL PCR product to make 30µL 10nM column, pipet that number into the sequencing vial.
+Then pipet the number from the water column.
+
+Label a vial with the SEQ number on top (SEQ 04) and  SEQ # date nM ng/µL indices on the side for example (this really does fit):
+
+Pinsky
+SEQ 04
+12-10-2014
+10 nM 
+Indices 4,5,6,7
+
+Stuff a kim wipe into a 50mL falcon tube, place the diluted 10nM sequencing tube inside, stuff in another kim wipe, screw on the cap and place in a styrofoam cooler with an icepack.  We want to keep the sample cool but we do not want to freeze it.  If it isn’t ready to depart immediately, keep the 50mL falcon with the sequencing tube in it in the fridge.
+
+Place the original pooled sequencing sample vial in the freezer box in the -20
+
+##Update 4/13/2015 - MRS
+It is possible to calculate the concentration of each pool and then add 100ng of each:
+
+Based on the qubit quantification (X), determine the volume of sample (Y) that will supply 100ng to the sequencing pool:
+
+100ng ÷ X ng/µL = Y µL
+
+The concentration of this pooled sequencing sample is calculated in the next cell by dividing 400 by the sum volume (400 because you added 100ng of 4 pools) - this value should calculate automatically in the spreadsheet
+
+We are using 430bp fragments (375 from pippin plus 55 added by illumina primer for index and flowcell attachment) - enter this value into the spreadsheet
+
+The spreadsheet will calculate nmol/µL by dividing the concentration by the product of 660 and the number of basepairs (430) …660*430=283,800
+
+The spreadsheet will calculate nM (aka nmol/L) by multiplying nmol/µL by one million
+
+
+
+
+Calculate the 4 pools independently on the PCR sheet in the Sample_Data file
+
+Sum the volume on the Sequencing sheet in the Sample_Data file
+
+Combine the 4 pools based on the volume calculated 
+
+
+The next two cells in the Sequencing spreadsheet calculate the volume of sample and the volume of water to be combined in this new tube  - the volume of pooled sequencing sample is calculated by dividing 300 by the nM and the volume of water is calculated by subtracting the volume of sequencing sample from 30.
+
+Combine the sequencing sample and Pure water in the new tube.  
+
+Stuff a kim wipe into a 50mL falcon tube, place the diluted 10nM sequencing tube inside, stuff in another kim wipe, screw on the cap and place in a styrofoam cooler with an icepack.  We want to keep the sample cool but we do not want to freeze it.  If it isn’t ready to depart immediately, keep the 50mL falcon with the sequencing tube in it in the fridge.
+
+Place the original pooled sequencing sample vial in the freezer box in the -20
+
+If sending to Princeton, don’t generate the PO until the seq is complete (particularly if you are submitting more than one seq within a month).  Ask Princeton if they can add some description to the quote to make it look different than the rest of the quotes they have sent (like add the seq number).  We have had problems in the past with multiple quotes from similar dates with no other difference on the page.  Had to add a line of text saying “This invoice is for sequencing done to APCL12 DNA on February 6th, 2016”.
+
+If sending the sample to Princeton, Malin will fill out the submission form on this webpage:
+https://htseq.princeton.edu
+
+Princeton also has guidelines on this webpage:
+http://www.princeton.edu/genomics/sequencing/instructions/sample-preparation/
+
+Their guidelines differ from our personal contact’s recommendations at Princeton and we will follow our own set of guidelines unless instructed otherwise by Malin.
+
+
+
+
+
+
+
+
+
