@@ -1,12 +1,12 @@
 ---
 title: "Platemap of `r params$filter`"
 params:
-  filter: L3927
-  style: 2
+  filter: P118
+  style: 1
   table: ligation
-  type: digest_id
+  type: ligation_id
 output:
-  html_document: default
+  pdf_document: default
   html_notebook: default
 ---
 
