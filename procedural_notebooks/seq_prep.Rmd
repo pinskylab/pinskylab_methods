@@ -3,14 +3,14 @@ title: "Prepping libraries for sequencing submission"
 params:
   date: '2018-09-13'
   facility: PrincetonLSI
-  first_baits: B004
+  first_baits: B010
   frag_length: 430
-  last_baits: B006
+  last_baits: B012
   library_type: ddRADSeq
   num_lanes: 2
   pe_or_se: se
   platform: hiseq
-  seq: SEQ19
+  seq: SEQ21
 output:
   pdf_document: default
   html_notebook: default
@@ -31,7 +31,7 @@ change <- baits %>%
   mutate(seq = params$seq)
 
 baits <- change_rows(baits, change, "baits_id")
-# dbWriteTable(write_lab, "baits", dat_db, row.names=F, overwrite = T)
+dbWriteTable(lab, "baits", baits, row.names=F, overwrite = T)
 
 
 # calculate the percent concentration of DNA in each bait
@@ -56,18 +56,18 @@ knitr::kable(tot) %>%
   kableExtra::kable_styling()
 
 # add to seq table in the db
-dat_db <- lab %>% 
-  tbl("sequencing") %>% 
-  collect()
+# dat_db <- lab %>% 
+#   tbl("sequencing") %>% 
+#   collect()
 
 # create a row to add to the seq table in the db
-change <- tibble(seq_id = params$seq, date = params$date, library_type = params$library_type, facility = params$facility, platform = params$platform, num_lanes = params$num_lanes, pe_se = params$pe_or_se, vol_pooled_libs = tot$seq_vol, vol_TE = (30-tot$seq_vol), contents = paste(params$first_baits, params$last_baits, sep = "-"), read_length = NA, amphiprion_folder = NA, notes = NA)
+change <- tibble(seq_id = params$seq, date = params$date, library_type = params$library_type, facility = params$facility, platform = params$platform, num_lanes = params$num_lanes, pe_se = params$pe_or_se, vol_pooled_libs = tot$seq_vol, vol_TE = (30-tot$seq_vol), contents = paste(params$first_baits, params$last_baits, sep = "-"))
 
-dat_db <- rbind(dat_db, change) %>% 
-  mutate(vol_pooled_libs = formatC(vol_pooled_libs, width = 1), 
-    vol_TE = formatC(vol_TE, width = 1))
+# dat_db <- rbind(dat_db, change) %>% 
+#   mutate(vol_pooled_libs = formatC(vol_pooled_libs, width = 1), 
+#     vol_TE = formatC(vol_TE, width = 1))
 
-# dbWriteTable(lab, "sequencing", dat_db, row.names=F, overwrite = T)
+dbWriteTable(lab, "sequencing", change, row.names=F, overwrite = F, append = T)
 ```
 
 
