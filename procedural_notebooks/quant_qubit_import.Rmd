@@ -4,10 +4,10 @@ output:
   pdf_document: default
   html_notebook: default
 params:
-  first: D6407
-  last: D6431
-  type: digest
-  id: digest_id
+  first: B001
+  last: B003
+  type: baits
+  id: baits_id
 ---
 
 
@@ -18,7 +18,7 @@ source("../genomics/scripts/lab_helpers.R")
 library(knitr)
 lab <- read_db("Laboratory")
 
-infile <- "/Volumes/USB DISK/2018 7/QUBIT_2018-07-31_4-43-PM.csv"
+infile <- "/Volumes/USB DISK/2018 9/QUBIT_2018-09-13_3-23-PM.csv"
 ```
 
 
@@ -26,11 +26,15 @@ infile <- "/Volumes/USB DISK/2018 7/QUBIT_2018-07-31_4-43-PM.csv"
 ```{r echo=FALSE, warning=FALSE}
 qubit <- read.csv(infile, header = T, stringsAsFactors = F) %>% 
   arrange(Name)
+
+qubit <- qubit %>% 
+  filter(grepl("2018-09", Date.Time)) %>% 
+  slice (1:3) # we only want the top 3 reads from this file
 ### you get an error because there is a special symbol in the header row, change micro symbol to u ####
 
 # create a table of the samples that were measured
-samples <- tibble(sample = c(6407:6419, 6424:6431, 6411)) %>% 
-  mutate(sample = paste("D", sample, sep = ""))
+samples <- tibble(sample = formatC(001:003, width = 3, format = "d", flag = "0")) %>% 
+  mutate(sample = paste("B", sample, sep = ""))
 
 qubit <- cbind(samples, qubit) %>% 
   rename(date_time = Date.Time, 
@@ -43,43 +47,42 @@ kable(qubit) %>%
   kableExtra::kable_styling()
 
 ```
-
-For this round, D6411 was too high to read with the HS kit, and so it was re-read with the BR kit.  Remove the >600 reading from the table of results so that there is only one result for D6411. Also, the BR kit has different math to calculate the concentration, so adjust the quant of this sample by multiplying by 1000.
-```{r echo=FALSE, message=FALSE}
-qubit <- qubit %>% 
-  filter(conc != ">600") %>% 
-  mutate(quant = ifelse(sample == "D6411", quant * 1000, quant))
-kable(qubit) %>% 
-  kableExtra::kable_styling()
-```
-
-Import the results into the database
+Import the results into the database 
 ```{r echo=FALSE}
 
 # connect to the database
 db <- write_db("Laboratory")
 
 # pull in the entire table
-dat_db <- db %>% 
-  tbl(params$type) %>% 
+dat_db <- db %>%
+  tbl(params$type) %>%
   collect()
 
 if (params$type == "digest"){
-  qubit <- qubit %>% 
-    select(sample, quant) %>% 
+  qubit <- qubit %>%
+    select(sample, quant) %>%
     rename(digest_id = sample)
-  change <- dat_db %>% 
-    filter(digest_id %in% qubit$digest_id) %>% 
+  change <- dat_db %>%
+    filter(digest_id %in% qubit$digest_id) %>%
     select(-quant)
-  
+
 }
 
-change <- left_join(change, qubit, by = params$id)
-dat_db <- change_rows(dat_db, change, params$id)
+if (params$type == "baits"){
+  qubit <- qubit %>% 
+    select(sample, quant) %>% 
+    rename(baits_id = sample, 
+      ng_ul = quant)
+  dat_db <- qubit
+}
 
-# dbWriteTable(db, params$type, dat_db, row.names = F, overwrite = T)
+# change <- left_join(change, qubit, by = params$id)
+# dat_db <- change_rows(dat_db, change, params$id)
+
+
+
+
+# dbWriteTable(db, params$type, dat_db, row.names = F, overwrite = F, append = T)
 # dbDisconnect(db)
-
-
 ```
 
