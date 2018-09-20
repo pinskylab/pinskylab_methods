@@ -2,14 +2,17 @@
 title: "R Notebook"
 output: html_notebook
 params:
-  seq:  SEQ18
+  seq:  SEQ18-SEQ21
   
 ---
 
 Retrieve seq files from Princeton:  
 1. make a directory on amphiprion to hold the seq
 ```{bash}
-mkdir /local/shared/pinskylab/sequencing/hiseq_2018_09_17_SEQ18
+mkdir /local/shared/pinskylab/sequencing/hiseq_**2018_09_17**_SEQ18
+mkdir /local/shared/pinskylab/sequencing/hiseq_**2018_09_17**_SEQ19
+mkdir /local/shared/pinskylab/sequencing/hiseq_**2018_09_17**_SEQ20
+mkdir /local/shared/pinskylab/sequencing/hiseq_**2018_09_17**_SEQ21
 ```
 
 * https://htseq.princeton.edu/cgi-bin/login.pl?redirect_url=https://htseq.princeton.edu/cgi-bin/dashboard.pl
@@ -19,7 +22,7 @@ mkdir /local/shared/pinskylab/sequencing/hiseq_2018_09_17_SEQ18
 * click wget and then the copy button to get all files.  This will copy the wget commands for all files.
 * paste in amphiprion in the directory you made in the previous step
 
-Make working directories in personal space **already done**
+#Make working directories in personal space **already done**
 ```{bash}
 cd ~/02-apcl-ddocent
 mkdir 18seq 19seq 20seq 21seq
@@ -40,30 +43,121 @@ mkdir bcsplit 01Pool 02Pool 03Pool 04Pool 05Pool 06Pool 07Pool 08Pool 09Pool 10P
 cd bcsplit/
 mkdir lane1 lane2
 ```
-Create an index file for the Pools
+#Create an index file for the Pools that is tab separated **already done**
 ```{r}
+source("../genomics/scripts/lab_helpers.R")
+lab <- read_db("Laboratory")
 
+# read baits table
+baits <- lab %>%
+  tbl("baits") %>% 
+  collect() %>% 
+  select(baits_id, seq)
+
+# read PCR table
+pcr <- lab %>% 
+  tbl("pcr") %>% 
+  collect() %>% 
+  filter(bait_id %in% baits$baits_id) %>% 
+  select(pcr_id, bait_id, index)
+
+# join pcr_id and index to seq id
+pools <- left_join(pcr, baits, by = c("bait_id" = "baits_id")) %>% 
+  select(seq, pcr_id, index)
+
+# pull in the barcodes for illumina indexes
+index <- lab %>% 
+  tbl("illumina") %>% 
+  collect()
+
+# join the barcodes to the seq and pcr ids
+pools <- left_join(pools, index, by = c("index" = "index_num")) %>% 
+  select(seq, pcr_id, index_code)
+
+# create a list of the multiple seqs
+seqs <- select(pools, seq) %>% 
+  distinct()
+for(i in seq(seqs$seq)){
+  x <- pools %>% 
+  filter(seq == seqs$seq[i]) %>% 
+  select(pcr_id, index_code)
+
+# write the files for amphiprion
+readr::write_tsv(x, path = paste0("index-", seqs$seq[i], ".tsv"), col_names = F)
+}
+```
+Move the files from the laptop to amphiprion using the fetch program, place the index files in the log folder for each seq **already done**
+
+#Create a names file for each pool **already done**
+The names have to be species, underscore and then the sample identifier, so APCL_L5432 for ligation_id L5432
+```{r}
+# read the ligations
+ligs <- lab %>% 
+  tbl("ligation") %>% 
+  filter(pool %in% pools$pcr_id) %>% 
+  select(ligation_id, barcode_num, pool) %>% 
+  collect()
+
+# read the barcodes
+barcode <- lab %>% 
+  tbl("barcodes") %>% 
+  collect()
+
+# join the ligation_id and pool ids to the barcodes
+ligs <- left_join(ligs, barcode, by = "barcode_num")
+
+# join the ligs to the seq_ids
+ligs <- left_join(ligs, pools, by = c("pool" = "pcr_id")) %>% 
+  # adjust the ligation name for dDocent
+  mutate(name = paste0("APCL_", ligation_id, ".F")) %>% 
+  select(seq, pool, name, barcode) %>% 
+# reduce the pool to only a number
+    mutate(pool = substr(pool, 2,5))
+
+# write files for amphiprion
+# create a list of the multiple seqs
+names <- select(ligs, pool) %>% 
+  distinct()
+
+# loop through all of the pools
+for(i in seq(names$pool)){
+  x <- ligs %>% 
+  filter(pool == names$pool[i]) %>% 
+  select(name, barcode)
+
+# write the files for amphiprion
+readr::write_tsv(x, path = paste0("names_", names$pool[i], ".tsv"), col_names = F)
+}
+
+```
+Move the files from the laptop to amphiprion using the fetch program, place the names files in the log folder for each seq **already done**
+
+Create a barcodes file of all of the barcodes used for these samples **already done**
+```{bash}
+cd ~/02-apcl-ddocent
+
+cp 16seq/logs/barcodes 18seq/logs/ 
+cp 16seq/logs/barcodes 19seq/logs 
+cp 16seq/logs/barcodes 20seq/logs 
+cp 16seq/logs/barcodes 21seq/logs
 ```
 
 
+Run barcode splitter in lane1 folder and lane 2 folder - takes about 8 hours
+```{bash}
+<!-- in lane1 folderread 1_read_1 and 1_read_2 -->
+nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/
 
-P065	ATCACG
-P066	TGACCA
-P067	CAGATC
-P068	TAGCTT
+**hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_1_Read_1_passed_filter.fastq.gz** /local/shared/pinsky_lab/sequencing/**hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_1_Read_2_Index_Read_passed_filter.fastq.gz** 
 
+<!-- in lane2 folder read 2_read_1 and 2_read_2 -->
+nohup barcode_splitter.py --bcfile ../../logs/index-seq18 --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/
+**hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_2_Read_1_passed_filter.fastq.gz** /local/shared/pinsky_lab/sequencing/
+**hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_2_Read_2_Index_Read_passed_filter.fastq.gz **
 
-Create a names file for each pool
-Create a barcodes file
+```
 
-Run barcode splitter - takes about 8 hours
-* michelles 2016-07-01 16:57:30 lane1 $ nohup /local/home/michelles/14_programs/paired_sequence_utils/barcode_splitter.py --bcfile ../../logs/index-seq16 --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_1_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_1_Read_2_Index_Read_passed_filter.fastq.gz 
-nohup: ignoring input and appending output to `nohup.out'
-
-michelles 2016-07-01 16:58:09 lane2 $ nohup /local/home/michelles/14_programs/paired_sequence_utils/barcode_splitter.py --bcfile ../../logs/index-seq16 --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_2_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_2_Read_2_Index_Read_passed_filter.fastq.gz 
-nohup: ignoring input and appending output to `nohup.out'
-
- Look at the results from nohup.out, compare to previous sequencing runs to make sure the output looks like it is the correct size (~ 30,000,000 reads)
+Look at the results from nohup.out, compare to previous sequencing runs to make sure the output looks like it is the correct size (~ 30,000,000 reads)
 Lane1:
 Sample  Barcode Count   Percent
 P065    ATCACG  29730291        25.73%
@@ -81,19 +175,25 @@ unmatched       None    3086094 2.72%
 
 During the first attempt, the final total of reads from pool 68 that were fed into process_radtags was ~7,650,000 reads, much fewer than the >55,000,000 visible here.  Something must have gone wrong with the barcode splitter last time, causing it to end early.
 
-Concatenate the results - takes about a minute
-michelles 2016-07-02 08:59:51 bcsplit $ cat ./lane1/P065-read-1.fastq.gz ./lane2/P065-read-1.fastq.gz > ../1/P065.fastq.gz
+Concatenate the results in the bcsplit folder - takes about a minute
+```{bash}
+cat ./lane1/P065-read-1.fastq.gz ./lane2/P065-read-1.fastq.gz > ../1/P065.fastq.gz
 
-michelles 2016-07-02 09:01:29 bcsplit $ cat ./lane1/P066-read-1.fastq.gz ./lane2/P066-read-1.fastq.gz > ../2/P066.fastq.gz
+cat ./lane1/P066-read-1.fastq.gz ./lane2/P066-read-1.fastq.gz > ../2/P066.fastq.gz
 
-michelles 2016-07-02 09:01:05 bcsplit $ cat ./lane1/P067-read-1.fastq.gz ./lane2/P067-read-1.fastq.gz > ../3/P067.fastq.gz
+cat ./lane1/P067-read-1.fastq.gz ./lane2/P067-read-1.fastq.gz > ../3/P067.fastq.gz
 
-michelles 2016-07-02 09:02:48 bcsplit $ cat ./lane1/P068-read-1.fastq.gz ./lane2/P068-read-1.fastq.gz > ../4/P068.fastq.gz
+cat ./lane1/P068-read-1.fastq.gz ./lane2/P068-read-1.fastq.gz > ../4/P068.fastq.gz
+```
 
-[x]process_radtags - use esc-R or ctrl-\ to "find and replace" in nano - takes about 2.5 hours for 4 pools and 192 samples
+
+_________________________________________________________________________________
+#process_radtags - use esc-R or ctrl-\ to "find and replace" in nano - takes about 2.5 hours for 4 pools and 192 samples
 Using scripts from first attempt
 michelles 2016-07-02 09:09:57 16seq $ nohup ./scripts/65process.sh &
 [1] 30887
+
+
 michelles 2016-07-02 09:10:16 16seq $ nohup: ignoring input and appending output to `nohup.out'
 nohup: failed to run command `./scripts/65process.sh': Permission denied
 [1]+  Exit 126                nohup ./scripts/65process.sh
