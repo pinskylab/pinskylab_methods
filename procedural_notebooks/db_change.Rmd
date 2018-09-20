@@ -1,13 +1,14 @@
 ---
-title: "add notes about mistakes for  `r params$first` - `r params$last`"
+title: "add baits_id  `r params$first` - `r params$last`"
 output:
   pdf_document: default
 params: 
-  type: "ligation"
-  id: "ligation_id"
+  type: "pcr"
+  id: "pcr_id"
   db: "Laboratory"
-  first: L5431
-  last: L5463
+  first: P125
+  last: P128
+  bait_id:  B012
   
 ---
 
@@ -25,16 +26,16 @@ Find the range of rows to be changed
 ```{r change}
 # change plate names
 change <- dat %>%
-  filter(digest_id >= "D4396" & digest_id <= "D4431") %>% 
-  filter(pool == "P102") %>% 
-  mutate(notes = ifelse(is.na(notes), "due to an error in the robot files, these samples may have received double the amount of digest and water", paste0("due to an error in the robot files, these samples may have received double the amount of digest and water, ", notes)))
+  filter(pcr_id >= params$first & pcr_id <= params$last) %>% 
+  mutate(bait_id = params$bait_id)
+
 
 dat <- change_rows(dat, change, params$id)
 
 ```
 Write to database
 ```{r write}
-# dbWriteTable(write, params$type, dat, row.names = F, overwrite = T, append = F)
+dbWriteTable(write, params$type, dat, row.names = F, overwrite = T, append = F)
 # dbDisconnect(write)
 ```
 
