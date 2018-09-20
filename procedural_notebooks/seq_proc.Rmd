@@ -1,0 +1,203 @@
+---
+title: "R Notebook"
+output: html_notebook
+params:
+  seq:  SEQ18
+  
+---
+
+Retrieve seq files from Princeton:  
+1. make a directory on amphiprion to hold the seq
+```{bash}
+mkdir /local/shared/pinskylab/sequencing/hiseq_2018_09_17_SEQ18
+```
+
+* https://htseq.princeton.edu/cgi-bin/login.pl?redirect_url=https://htseq.princeton.edu/cgi-bin/dashboard.pl
+* Click on the sequencing run of interest in the box on the left that says “Recently Entered Samples"
+* In the box titled Sample Provenance, click on the link following "This library was utilized within the following output(s):” - repeat for each lane
+* In the “Data and Statistics” box, in the bottom right corner is a green button that says “Download"
+* click wget and then the copy button to get all files.  This will copy the wget commands for all files.
+* paste in amphiprion in the directory you made in the previous step
+
+Make working directories in personal space **already done**
+```{bash}
+cd ~/02-apcl-ddocent
+mkdir 18seq 19seq 20seq 21seq
+cd ../18seq/ 
+mkdir bcsplit 01Pool 02Pool 03Pool 04Pool 05Pool 06Pool 07Pool 08Pool 09Pool 10Pool 11Pool 12Pool logs samples scripts
+cd bcsplit/
+mkdir lane1 lane2
+cd ../../19seq/
+mkdir bcsplit 01Pool 02Pool 03Pool 04Pool 05Pool 06Pool 07Pool 08Pool 09Pool 10Pool 11Pool 12Pool logs samples scripts
+cd bcsplit/
+mkdir lane1 lane2
+cd ../../20seq/
+mkdir bcsplit 01Pool 02Pool 03Pool 04Pool 05Pool 06Pool 07Pool 08Pool 09Pool 10Pool 11Pool 12Pool logs samples scripts
+cd bcsplit/
+mkdir lane1 lane2
+cd ../../21seq/
+mkdir bcsplit 01Pool 02Pool 03Pool 04Pool 05Pool 06Pool 07Pool 08Pool 09Pool 10Pool 11Pool 12Pool logs samples scripts
+cd bcsplit/
+mkdir lane1 lane2
+```
+Create an index file for the Pools
+```{r}
+
+```
+
+
+
+P065	ATCACG
+P066	TGACCA
+P067	CAGATC
+P068	TAGCTT
+
+
+Create a names file for each pool
+Create a barcodes file
+
+Run barcode splitter - takes about 8 hours
+* michelles 2016-07-01 16:57:30 lane1 $ nohup /local/home/michelles/14_programs/paired_sequence_utils/barcode_splitter.py --bcfile ../../logs/index-seq16 --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_1_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_1_Read_2_Index_Read_passed_filter.fastq.gz 
+nohup: ignoring input and appending output to `nohup.out'
+
+michelles 2016-07-01 16:58:09 lane2 $ nohup /local/home/michelles/14_programs/paired_sequence_utils/barcode_splitter.py --bcfile ../../logs/index-seq16 --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_2_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_2_Read_2_Index_Read_passed_filter.fastq.gz 
+nohup: ignoring input and appending output to `nohup.out'
+
+ Look at the results from nohup.out, compare to previous sequencing runs to make sure the output looks like it is the correct size (~ 30,000,000 reads)
+Lane1:
+Sample  Barcode Count   Percent
+P065    ATCACG  29730291        25.73%
+P066    TGACCA  28536894        24.70%
+P067    CAGATC  25952281        22.46%
+P068    TAGCTT  28207903        24.42%
+unmatched       None    3100364 2.68%
+
+Lane2:
+P065    ATCACG  29244547        25.75%
+P066    TGACCA  28033663        24.68%
+P067    CAGATC  25493132        22.44%
+P068    TAGCTT  27734885        24.42%
+unmatched       None    3086094 2.72%
+
+During the first attempt, the final total of reads from pool 68 that were fed into process_radtags was ~7,650,000 reads, much fewer than the >55,000,000 visible here.  Something must have gone wrong with the barcode splitter last time, causing it to end early.
+
+Concatenate the results - takes about a minute
+michelles 2016-07-02 08:59:51 bcsplit $ cat ./lane1/P065-read-1.fastq.gz ./lane2/P065-read-1.fastq.gz > ../1/P065.fastq.gz
+
+michelles 2016-07-02 09:01:29 bcsplit $ cat ./lane1/P066-read-1.fastq.gz ./lane2/P066-read-1.fastq.gz > ../2/P066.fastq.gz
+
+michelles 2016-07-02 09:01:05 bcsplit $ cat ./lane1/P067-read-1.fastq.gz ./lane2/P067-read-1.fastq.gz > ../3/P067.fastq.gz
+
+michelles 2016-07-02 09:02:48 bcsplit $ cat ./lane1/P068-read-1.fastq.gz ./lane2/P068-read-1.fastq.gz > ../4/P068.fastq.gz
+
+[x]process_radtags - use esc-R or ctrl-\ to "find and replace" in nano - takes about 2.5 hours for 4 pools and 192 samples
+Using scripts from first attempt
+michelles 2016-07-02 09:09:57 16seq $ nohup ./scripts/65process.sh &
+[1] 30887
+michelles 2016-07-02 09:10:16 16seq $ nohup: ignoring input and appending output to `nohup.out'
+nohup: failed to run command `./scripts/65process.sh': Permission denied
+[1]+  Exit 126                nohup ./scripts/65process.sh
+michelles 2016-07-02 09:10:29 16seq $ chmod u+x ./scripts/65process.sh
+ michelles 2016-07-02 09:10:56 16seq $ nohup ./scripts/65process.sh &
+[1] 30937
+michelles 2016-07-02 09:11:00 16seq $ nohup: ignoring input and appending output to `nohup.out'
+michelles 2016-07-02 09:11:45 16seq $ nohup ./scripts/66process.sh &
+[2] 30945
+michelles 2016-07-02 09:11:53 16seq $ nohup: ignoring input and appending output to `nohup.out'
+nohup: failed to run command `./scripts/66process.sh': Permission denied
+[2]+  Exit 126                nohup ./scripts/66process.sh
+michelles 2016-07-02 09:11:57 16seq $ chmod u+x ./scripts/66process.sh
+ michelles 2016-07-02 09:12:06 16seq $ chmod u+x ./scripts/67process.sh
+ michelles 2016-07-02 09:12:15 16seq $ chmod u+x ./scripts/68process.sh
+ michelles 2016-07-02 09:12:21 16seq $ nohup ./scripts/66process.sh &
+[2] 30949
+michelles 2016-07-02 09:12:40 16seq $ nohup: ignoring input and appending output to `nohup.out'
+michelles 2016-07-02 09:12:41 16seq $ nohup ./scripts/67process.sh &
+[3] 30951
+michelles 2016-07-02 09:12:48 16seq $ nohup: ignoring input and appending output to `nohup.out'
+michelles 2016-07-02 09:12:49 16seq $ nohup ./scripts/68process.sh &
+[4] 30954
+michelles 2016-07-02 09:12:55 16seq $ nohup: ignoring input and appending output to `nohup.out'
+nohup ./scripts/68process.sh &
+[5] 30956
+michelles 2016-07-02 09:12:57 16seq $ nohup: ignoring input and appending output to `nohup.out'
+michelles 2016-07-02 09:13:04 16seq $ kill 30954 30956
+[4]-  Terminated              nohup ./scripts/68process.sh
+[5]+  Terminated              nohup ./scripts/68process.sh
+michelles 2016-07-02 09:13:48 16seq $ nohup ./scripts/68process.sh &
+[4] 30959
+
+michelles 2016-07-04 14:48:00 16seq $ mv Pool1/process_radtags.log ./logs/process65.log
+michelles 2016-07-04 14:48:13 16seq $ mv Pool2/process_radtags.log ./logs/process66.log
+michelles 2016-07-04 14:48:23 16seq $ mv Pool3/process_radtags.log ./logs/process67.log
+michelles 2016-07-04 14:48:32 16seq $ mv Pool4/process_radtags.log ./logs/process68.log
+
+michelles 2016-07-04 14:50:06 16seq $ ~/13-stacks_analysis_scripts/readprocesslog.py
+Enter the path and file name of the log, i.e. ./logs/16process.out: ./logs/process68.log
+
+Keep track of read statistics from sequencing run
+
+Rename the process radtags output to sample names
+* michelles 2016-07-04 15:29:46 16seq $ cd Pool1/
+michelles 2016-07-04 15:30:56 Pool1 $ sh rename.for.dDocent_se_gz ../logs/names_65
+APCL_15614L2776.F
+AAACAC
+michelles 2016-07-04 15:31:23 Pool1 $ mv APCL_15* ../samples/
+* Repeat for all pools
+* michelles 2016-07-04 15:32:41 16seq $ rm -r Pool*
+
+Trim and map the reads
+michelles 2016-07-04 15:40:48 samples $ dDocent
+dDocent 2.18
+Contact jpuritz@gmail.com with any problems
+ 
+Checking for required software
+All required software is installed!
+192 individuals are detected. Is this correct? Enter yes or no and press [ENTER]
+yes
+Proceeding with 192 individuals
+dDocent detects 40 processors available on this system.
+Please enter the maximum number of processors to use for this analysis.
+15
+dDocent detects 252G maximum memory available on this system.
+Please enter the maximum memory to use for this analysis. The size can be postfixed with
+K, M, G, T, P, k, m, g, t, or p which would multiply the size with 1024, 1048576, 1073741824,
+1099511627776, 1125899906842624, 1000, 1000000, 1000000000, 1000000000000, or 1000000000000000 respectively.
+For example, to limit dDocent to ten gigabytes, enter 10G or 10g
+0
+Do you want to quality trim your reads?
+Type yes or no and press [ENTER]?
+yes
+Do you want to perform an assembly?
+Type yes or no and press [ENTER]?
+no
+Reference contigs need to be in a file named reference.fasta
+Do you want to map reads?  Type yes or no and press [ENTER]
+yes
+BWA will be used to map reads.  You may need to adjust -A -B and -O parameters for your taxa.
+Would you like to enter a new parameters now? Type yes or no and press [ENTER]
+yes
+Please enter new value for A (match score).  It should be an integer.  Default is 1.
+1
+Please enter new value for B (mismatch score).  It should be an integer.  Default is 4.
+4
+Please enter new value for O (gap penalty).  It should be an integer.  Default is 6.
+6
+Do you want to use FreeBayes to call SNPs?  Please type yes or no and press [ENTER]
+no
+Please enter your email address.  dDocent will email you when it is finished running.
+Don't worry; dDocent has no financial need to sell your email address to spammers.
+michelle.stuart@rutgers.edu
+At this point, all configuration information has been entered and dDocent may take several hours to run.
+It is recommended that you move this script to a background operation and disable terminal input and output.
+All data and logfiles will still be recorded.
+To do this:
+Press control and Z simultaneously
+Type 'bg' without the quotes and press enter
+Type 'disown -h' again without the quotes and press enter
+Now sit back, relax, and wait for your analysis to finish.
+^Z
+[1]+  Stopped                 dDocent
+michelles 2016-07-04 15:41:44 samples $ bg
+[1]+ dDocent &
+michelles 2016-07-04 15:41:45 samples $ disown -h
