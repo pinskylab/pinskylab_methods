@@ -1,14 +1,14 @@
 ---
-title: "add baits_id  `r params$first` - `r params$last`"
+title: "fix index numbers for ` - `r params$last`"
 output:
   pdf_document: default
 params: 
   type: "pcr"
   id: "pcr_id"
   db: "Laboratory"
-  first: P125
+  first: P091
   last: P128
-  bait_id:  B012
+
   
 ---
 
@@ -26,8 +26,9 @@ Find the range of rows to be changed
 ```{r change}
 # change plate names
 change <- dat %>%
-  filter(pcr_id >= params$first & pcr_id <= params$last) %>% 
-  mutate(bait_id = params$bait_id)
+  filter(pcr_id >= params$first & pcr_id <= params$last, 
+    pcr_id != "P105", pcr_id != "P106") %>% 
+  mutate(index = rep(1:12, 3))
 
 
 dat <- change_rows(dat, change, params$id)
@@ -35,7 +36,7 @@ dat <- change_rows(dat, change, params$id)
 ```
 Write to database
 ```{r write}
-dbWriteTable(write, params$type, dat, row.names = F, overwrite = T, append = F)
+# dbWriteTable(write, params$type, dat, row.names = F, overwrite = T, append = F)
 # dbDisconnect(write)
 ```
 
