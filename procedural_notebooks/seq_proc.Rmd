@@ -1,21 +1,21 @@
 ---
-title: "R Notebook"
+title: "Processing sequences fall 2018"
 output: html_notebook
 params:
   seq:  SEQ18-SEQ21
   
 ---
 
-Retrieve seq files from Princeton:  
-1. make a directory on amphiprion to hold the seq **done**
-```{bash}
+##Retrieve seq files from Princeton:  
+###* Make a directory on amphiprion to hold the seq **done** 
+
 mkdir /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18
 mkdir /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ19
 mkdir /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ20
 mkdir /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ21
-```
 
-* https://htseq.princeton.edu/cgi-bin/login.pl?redirect_url=https://htseq.princeton.edu/cgi-bin/dashboard.pl
+
+###* https://htseq.princeton.edu/cgi-bin/login.pl?redirect_url=https://htseq.princeton.edu/cgi-bin/dashboard.pl **done**
 * Click on the sequencing run of interest in the box on the left that says “Recently Entered Samples"
 * In the box titled Sample Provenance, click on the link following "This library was utilized within the following output(s):” - repeat for each lane
 * In the “Data and Statistics” box, in the bottom right corner is a green button that says “Download"
@@ -86,8 +86,8 @@ Saving to: “md5sum.txt”
 
 
 
-#Make working directories in personal space **already done**
-```{bash}
+###Make working directories in personal space **done**
+
 cd ~/02-apcl-ddocent
 mkdir 18seq 19seq 20seq 21seq
 cd ../18seq/ 
@@ -106,8 +106,8 @@ cd ../../21seq/
 mkdir bcsplit 01Pool 02Pool 03Pool 04Pool 05Pool 06Pool 07Pool 08Pool 09Pool 10Pool 11Pool 12Pool logs samples scripts
 cd bcsplit/
 mkdir lane1 lane2
-```
-#Create an index file for the Pools that is tab separated **already done**
+
+###Create an index file for the Pools that is tab separated **done**
 ```{r}
 source("../genomics/scripts/lab_helpers.R")
 lab <- read_db("Laboratory")
@@ -150,9 +150,11 @@ for(i in seq(seqs$seq)){
 readr::write_tsv(x, path = paste0("index-", seqs$seq[i], ".tsv"), col_names = F)
 }
 ```
-Move the files from the laptop to amphiprion using the fetch program, place the index files in the log folder for each seq **already done**
+##Move the files from the laptop to amphiprion using the fetch program, place the index files in the log folder for each seq ** done**  
+See Michelle if you need a serial number for Fetch
 
-#Create a names file for each pool **already done**
+
+###Create a names file for each pool **done**
 The names have to be species, underscore and then the sample identifier, so APCL_L5432 for ligation_id L5432
 ```{r}
 # read the ligations
@@ -194,21 +196,21 @@ readr::write_tsv(x, path = paste0("names_", names$pool[i], ".tsv"), col_names = 
 }
 
 ```
-Move the files from the laptop to amphiprion using the fetch program, place the names files in the log folder for each seq **already done**
+###Move the files from the laptop to amphiprion using the fetch program, place the names files in the log folder for each seq **done**
 
-Create a barcodes file of all of the barcodes used for these samples **already done**
-```{bash}
+###Create a barcodes file of all of the barcodes used for these samples **done**
+
 cd ~/02-apcl-ddocent
 
 cp 16seq/logs/barcodes 18seq/logs/ 
 cp 16seq/logs/barcodes 19seq/logs 
 cp 16seq/logs/barcodes 20seq/logs 
 cp 16seq/logs/barcodes 21seq/logs
-```
 
 
-#Run barcode splitter in lane1 folder and lane 2 folder - takes about 8 hours **started 10am on Monday for seq18**
-```{bash}
+
+###Run barcode splitter in lane1 folder and lane 2 folder - takes about 8 hours **started 10am on Monday for seq18**
+
 <!-- in lane1 folder  1_read_1 and 1_read_2 -->
 nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz
 
@@ -217,7 +219,7 @@ nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suff
 <!-- in lane2 folder  2_read_1 and 2_read_2 -->
 nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_2_Index_Read_passed_filter.fastq.gz
 
-```
+
 output:
 michelles 2018-09-24 10:06:48 lane1 $ nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz
 nohup: ignoring input and appending output to `nohup.out'
@@ -229,7 +231,7 @@ nohup: ignoring input and appending output to `nohup.out'
 
 
 
-Look at the results from nohup.out, compare to previous sequencing runs to make sure the output looks like it is the correct size (~ 30,000,000 reads)
+###Look at the results from nohup.out, compare to previous sequencing runs to make sure the output looks like it is the correct size (~ 30,000,000 reads)
 Lane1:
 Sample  Barcode Count   Percent
 P065    ATCACG  29730291        25.73%
@@ -247,8 +249,8 @@ unmatched       None    3086094 2.72%
 
 During the first attempt, the final total of reads from pool 68 that were fed into process_radtags was ~7,650,000 reads, much fewer than the >55,000,000 visible here.  Something must have gone wrong with the barcode splitter last time, causing it to end early.
 
-Concatenate the results in the bcsplit folder - takes about a minute
-```{bash}
+###Concatenate the results in the bcsplit folder - takes about a minute
+
 cat ./lane1/P065-read-1.fastq.gz ./lane2/P065-read-1.fastq.gz > ../1/P065.fastq.gz
 
 cat ./lane1/P066-read-1.fastq.gz ./lane2/P066-read-1.fastq.gz > ../2/P066.fastq.gz
@@ -256,41 +258,64 @@ cat ./lane1/P066-read-1.fastq.gz ./lane2/P066-read-1.fastq.gz > ../2/P066.fastq.
 cat ./lane1/P067-read-1.fastq.gz ./lane2/P067-read-1.fastq.gz > ../3/P067.fastq.gz
 
 cat ./lane1/P068-read-1.fastq.gz ./lane2/P068-read-1.fastq.gz > ../4/P068.fastq.gz
-```
+
 
 
 _________________________________________________________________________________
-# create scripts for all 48 pools to process radtags
+### create scripts for all 48 pools to process radtags **done**
 
 ```{r}
 #assign the correct pool directory to each pool
+
 pools <- pools %>% 
   arrange(seq, pcr_id) %>% 
   mutate(pool_dir = rep(1:12, 4), 
          pool_dir = formatC(pool_dir, width = 2, flag = 0), 
          pool_dir = paste0(pool_dir, "Pool"))
 
-# write files
+## write files
 library(readr)
-readr::write_file("#!/bin/bash", path = paste0(pools$pcr_id[1], "_process.sh"), append = F)
+# create first line of new file
+for (i in seq(pools$seq)){
+  write_file("#!/bin/bash", path = paste0(pools$pcr_id[i], "_process.sh"), append = F)
+  # add a line return
+  write_file("\n", path = paste0(pools$pcr_id[i], "_process.sh"), append = T)
+  # generate the code
+  x <- paste("process_radtags -b ./logs/barcodes -c -q --renz_1 pstI --renz_2 mluCI -i gzfastq --adapter_1 ACACTCTTTCCCTACACGACGCTCTTCCGATCT -f", paste0("./", pools$pool_dir[i], "/", pools$pcr_id[i], ".fastq.gz"),  "-o", paste0("./", pools$pool_dir[i], "/"), sep = " ")
+  # add the code to the file
+  write_file(x, path = paste0(pools$pcr_id[i], "_process.sh"), append = T)  
+}
 
-process_radtags -b ./logs/barcodes -c -q --renz_1 pstI --renz_2 mluCI \
--i gzfastq --adapter_1 ACACTCTTTCCCTACACGACGCTCTTCCGATCT \
--f ./Pool1/P065.fastq.gz -o ./Pool1/
-
-mv process_radtags.log ../logs/65process.log
-
-
-
-
-
+```
+###Move the scripts to amphiprion into the seq scripts folder with fetch 
+With fetch you can also highlight all of the scripts and click get info, execute instead of having to type in the chmod u+x command for each file.
 
 #process_radtags - use esc-R or ctrl-\ to "find and replace" in nano - takes about 2.5 hours for 4 pools and 192 samples
-scripts look like
+
+From the seq folder (18SEQ for example), run the process scripts, can run all 4 in separate windows (or all 48?)
+
+# write a script to generate command line to run process radtags scripts
+```{r}
+for (j in seqs$seq){
+  y <- pools %>% 
+    filter(seq == j)
+  write_file("#!/bin/bash", path = paste0(j,"_process_all.sh"), append = F)
+  # add a line return
+  write_file("\n", path = paste0(j,"_process_all.sh"), append = T)
+  for (i in y$pcr_id){
+    # generate the code
+    x <- paste("nohup", paste0("./scripts/", i, "_process.sh &"), sep = " ")
+    # add the code to the file
+    write_file(x, path = paste0(j,"_process_all.sh"), append = T)  
+    # add a line return
+    write_file("\n", path = paste0(j,"_process_all.sh"), append = T)
+  }  
+}
+
+```
 
 
 
-michelles 2016-07-02 09:10:29 16seq $ chmod u+x ./scripts/65process.sh
  michelles 2016-07-02 09:10:56 16seq $ nohup ./scripts/65process.sh &
 [1] 30937
 michelles 2016-07-02 09:11:00 16seq $ nohup: ignoring input and appending output to `nohup.out'
@@ -320,17 +345,20 @@ michelles 2016-07-02 09:13:04 16seq $ kill 30954 30956
 michelles 2016-07-02 09:13:48 16seq $ nohup ./scripts/68process.sh &
 [4] 30959
 
+## Move files from output into logs folder
 michelles 2016-07-04 14:48:00 16seq $ mv Pool1/process_radtags.log ./logs/process65.log
 michelles 2016-07-04 14:48:13 16seq $ mv Pool2/process_radtags.log ./logs/process66.log
 michelles 2016-07-04 14:48:23 16seq $ mv Pool3/process_radtags.log ./logs/process67.log
 michelles 2016-07-04 14:48:32 16seq $ mv Pool4/process_radtags.log ./logs/process68.log
 
+
+# run the readprocesslog.py script 
 michelles 2016-07-04 14:50:06 16seq $ ~/13-stacks_analysis_scripts/readprocesslog.py
 Enter the path and file name of the log, i.e. ./logs/16process.out: ./logs/process68.log
 
 Keep track of read statistics from sequencing run
 
-Rename the process radtags output to sample names
+## Rename the process radtags output to sample names
 * michelles 2016-07-04 15:29:46 16seq $ cd Pool1/
 michelles 2016-07-04 15:30:56 Pool1 $ sh rename.for.dDocent_se_gz ../logs/names_65
 APCL_15614L2776.F
@@ -339,7 +367,7 @@ michelles 2016-07-04 15:31:23 Pool1 $ mv APCL_15* ../samples/
 * Repeat for all pools
 * michelles 2016-07-04 15:32:41 16seq $ rm -r Pool*
 
-Trim and map the reads
+## Trim and map the reads
 michelles 2016-07-04 15:40:48 samples $ dDocent
 dDocent 2.18
 Contact jpuritz@gmail.com with any problems
