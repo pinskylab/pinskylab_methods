@@ -7,12 +7,12 @@ params:
 ---
 
 Retrieve seq files from Princeton:  
-1. make a directory on amphiprion to hold the seq
+1. make a directory on amphiprion to hold the seq **done**
 ```{bash}
-mkdir /local/shared/pinskylab/sequencing/hiseq_**2018_09_17**_SEQ18
-mkdir /local/shared/pinskylab/sequencing/hiseq_**2018_09_17**_SEQ19
-mkdir /local/shared/pinskylab/sequencing/hiseq_**2018_09_17**_SEQ20
-mkdir /local/shared/pinskylab/sequencing/hiseq_**2018_09_17**_SEQ21
+mkdir /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18
+mkdir /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ19
+mkdir /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ20
+mkdir /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ21
 ```
 
 * https://htseq.princeton.edu/cgi-bin/login.pl?redirect_url=https://htseq.princeton.edu/cgi-bin/dashboard.pl
@@ -20,7 +20,71 @@ mkdir /local/shared/pinskylab/sequencing/hiseq_**2018_09_17**_SEQ21
 * In the box titled Sample Provenance, click on the link following "This library was utilized within the following output(s):” - repeat for each lane
 * In the “Data and Statistics” box, in the bottom right corner is a green button that says “Download"
 * click wget and then the copy button to get all files.  This will copy the wget commands for all files.
-* paste in amphiprion in the directory you made in the previous step
+* paste in amphiprion **in the directory you made in the previous step**
+
+Other than the directory change on the first line below, all of these command lines automatically went after I pasted the wget from the webpage. **Output looks like:**
+michelles 2018-09-24 08:56:14 ~ $ cd /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/
+michelles 2018-09-24 08:58:46 hiseq_2018_09_24_SEQ18 $ wget -nd https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_barcodes.txt
+--2018-09-24 08:58:49--  https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_barcodes.txt
+Resolving htseq.princeton.edu... 128.112.116.222
+Connecting to htseq.princeton.edu|128.112.116.222|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 27 [text/plain]
+Saving to: “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_barcodes.txt”
+
+100%[======================================>] 27          --.-K/s   in 0s      
+
+2018-09-24 08:58:49 (2.02 MB/s) - “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_barcodes.txt” saved [27/27]
+
+michelles 2018-09-24 08:58:49 hiseq_2018_09_24_SEQ18 $ wget -nd https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz
+--2018-09-24 08:58:49--  https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz
+Resolving htseq.princeton.edu... 128.112.116.222
+Connecting to htseq.princeton.edu|128.112.116.222|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 11130170054 (10G) [application/x-gzip]
+Saving to: “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz”
+
+100%[===================================>] 11,130,170,054 97.6M/s   in 2m 9s   
+
+2018-09-24 09:00:59 (82.1 MB/s) - “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz” saved [11130170054/11130170054]
+
+michelles 2018-09-24 09:00:59 hiseq_2018_09_24_SEQ18 $ wget -nd https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz
+--2018-09-24 09:00:59--  https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz
+Resolving htseq.princeton.edu... 128.112.116.222
+Connecting to htseq.princeton.edu|128.112.116.222|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 878210521 (838M) [application/x-gzip]
+Saving to: “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz”
+
+100%[======================================>] 878,210,521 99.3M/s   in 8.5s    
+
+2018-09-24 09:01:07 (98.8 MB/s) - “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz” saved [878210521/878210521]
+
+michelles 2018-09-24 09:01:07 hiseq_2018_09_24_SEQ18 $ wget -nd https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_3_Index_Read_passed_filter.fastq.gz
+--2018-09-24 09:01:07--  https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_3_Index_Read_passed_filter.fastq.gz
+Resolving htseq.princeton.edu... 128.112.116.222
+Connecting to htseq.princeton.edu|128.112.116.222|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 590500250 (563M) [application/x-gzip]
+Saving to: “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_3_Index_Read_passed_filter.fastq.gz”
+
+100%[======================================>] 590,500,250 54.0M/s   in 8.2s    
+
+2018-09-24 09:01:16 (68.6 MB/s) - “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_3_Index_Read_passed_filter.fastq.gz” saved [590500250/590500250]
+
+michelles 2018-09-24 09:01:16 hiseq_2018_09_24_SEQ18 $ wget -nd https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/md5sum.txt
+--2018-09-24 09:01:16--  https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/md5sum.txt
+Resolving htseq.princeton.edu... 128.112.116.222
+Connecting to htseq.princeton.edu|128.112.116.222|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 0 [text/plain]
+Saving to: “md5sum.txt”
+
+    [ <=>                                   ] 0           --.-K/s   in 0s      
+
+2018-09-24 09:01:16 (0.00 B/s) - “md5sum.txt” saved [0/0]
+
+
 
 #Make working directories in personal space **already done**
 ```{bash}
@@ -143,19 +207,27 @@ cp 16seq/logs/barcodes 21seq/logs
 ```
 
 
-Run barcode splitter in lane1 folder and lane 2 folder - takes about 8 hours
+#Run barcode splitter in lane1 folder and lane 2 folder - takes about 8 hours
 ```{bash}
 <!-- in lane1 folderread 1_read_1 and 1_read_2 -->
-nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/
+nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz
 
-**hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_1_Read_1_passed_filter.fastq.gz** /local/shared/pinsky_lab/sequencing/**hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_1_Read_2_Index_Read_passed_filter.fastq.gz** 
+
 
 <!-- in lane2 folder read 2_read_1 and 2_read_2 -->
-nohup barcode_splitter.py --bcfile ../../logs/index-seq18 --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/
-**hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_2_Read_1_passed_filter.fastq.gz** /local/shared/pinsky_lab/sequencing/
-**hiseq_2016_06_01_SEQ16/Clownfish-ddRADseq-SEQ16-for-158-cycles-HT2T3BCXX_2_Read_2_Index_Read_passed_filter.fastq.gz **
+nohup barcode_splitter.py --bcfile ../../logs/index-seq18 --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_2_passed_filter.fastq.gz
 
 ```
+output:
+michelles 2018-09-24 10:06:48 lane1 $ nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz
+nohup: ignoring input and appending output to `nohup.out'
+
+michelles 2018-09-24 10:13:45 lane2 $ nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_2_Index_Read_passed_filter.fastq.gz
+nohup: ignoring input and appending output to `nohup.out'
+
+
+
+
 
 Look at the results from nohup.out, compare to previous sequencing runs to make sure the output looks like it is the correct size (~ 30,000,000 reads)
 Lane1:
@@ -188,15 +260,36 @@ cat ./lane1/P068-read-1.fastq.gz ./lane2/P068-read-1.fastq.gz > ../4/P068.fastq.
 
 
 _________________________________________________________________________________
+# create scripts for all 48 pools to process radtags
+
+```{r}
+#assign the correct pool directory to each pool
+pools <- pools %>% 
+  arrange(seq, pcr_id) %>% 
+  mutate(pool_dir = rep(1:12, 4), 
+         pool_dir = formatC(pool_dir, width = 2, flag = 0), 
+         pool_dir = paste0(pool_dir, "Pool"))
+
+# write files
+library(readr)
+readr::write_file("#!/bin/bash", path = paste0(pools$pcr_id[1], "_process.sh"), append = F)
+
+process_radtags -b ./logs/barcodes -c -q --renz_1 pstI --renz_2 mluCI \
+-i gzfastq --adapter_1 ACACTCTTTCCCTACACGACGCTCTTCCGATCT \
+-f ./Pool1/P065.fastq.gz -o ./Pool1/
+
+mv process_radtags.log ../logs/65process.log
+
+
+
+
+
+
 #process_radtags - use esc-R or ctrl-\ to "find and replace" in nano - takes about 2.5 hours for 4 pools and 192 samples
-Using scripts from first attempt
-michelles 2016-07-02 09:09:57 16seq $ nohup ./scripts/65process.sh &
-[1] 30887
+scripts look like
 
 
-michelles 2016-07-02 09:10:16 16seq $ nohup: ignoring input and appending output to `nohup.out'
-nohup: failed to run command `./scripts/65process.sh': Permission denied
-[1]+  Exit 126                nohup ./scripts/65process.sh
+
 michelles 2016-07-02 09:10:29 16seq $ chmod u+x ./scripts/65process.sh
  michelles 2016-07-02 09:10:56 16seq $ nohup ./scripts/65process.sh &
 [1] 30937
