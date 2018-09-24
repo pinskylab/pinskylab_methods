@@ -209,13 +209,13 @@ cp 16seq/logs/barcodes 21seq/logs
 
 #Run barcode splitter in lane1 folder and lane 2 folder - takes about 8 hours
 ```{bash}
-<!-- in lane1 folderread 1_read_1 and 1_read_2 -->
+<!-- in lane1 folder  1_read_1 and 1_read_2 -->
 nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz
 
 
 
-<!-- in lane2 folder read 2_read_1 and 2_read_2 -->
-nohup barcode_splitter.py --bcfile ../../logs/index-seq18 --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_2_passed_filter.fastq.gz
+<!-- in lane2 folder  2_read_1 and 2_read_2 -->
+nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_2_Index_Read_passed_filter.fastq.gz
 
 ```
 output:
