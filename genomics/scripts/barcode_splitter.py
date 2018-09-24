@@ -144,7 +144,7 @@ def main (argv=None):
                 read = index_read
             # Output sequences into barcode/read file    
             outputs[barcode_match][readnum].write(fastq_string(read))
-    print "Sample\tBarcode\tCount\tPercent"
+    print(int "Sample\tBarcode\tCount\tPercent")
     for barcode in sorted(barcode_dict, key=barcode_dict.get):
         print "%s\t%s\t%s\t%.2f%%" % (barcode_dict[barcode], barcode, counts[barcode], (counts[barcode]/total_read_count)*100 )
     print "%s\t%s\t%s\t%.2f%%" % (UNMATCHED, None, counts[UNMATCHED], (counts[UNMATCHED]/total_read_count)*100 )
