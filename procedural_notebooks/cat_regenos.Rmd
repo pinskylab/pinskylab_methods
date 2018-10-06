@@ -75,19 +75,19 @@ if (grepl(params$seq, list(x$SEQ))){
     mutate(SEQ = paste0(substr(SEQ, 4,5), "seq"))
   if (nrow(x) == 2){
     # construct the pieces for the line of code
-  y <- paste0("/local/home/michelles/02-apcl-ddocent/", x$SEQ[1], "/samples/APCL_", x$ligation_id[1], ".F.fq.gz")
-  z <- paste0("/local/home/michelles/02-apcl-ddocent/", x$SEQ[2], "/samples/APCL_", x$ligation_id[2], ".F.fq.gz")
-  a <- paste0("/local/home/michelles/02-apcl-ddocent/", params$dir, "/samples/",  "APCL_",x$ligation_id[1], ".", x$ligation_id[2], ".F.fq.gz")
+  y <- paste0("/data/apcl/", x$SEQ[1], "/samples/APCL_", x$ligation_id[1], ".F.fq.gz")
+  z <- paste0("/data/apcl/", x$SEQ[2], "/samples/APCL_", x$ligation_id[2], ".F.fq.gz")
+  a <- paste0("/data/apcl/", params$dir, "/samples/",  "APCL_",x$ligation_id[1], ".", x$ligation_id[2], ".F.fq.gz")
   b <- paste("cat", y, z, ">", a, sep = " ")
   write_file(b, path = "cat_regenos.sh", append = T)
   write_file("\n", path = "cat_regenos.sh", append = T)
   }
   if (nrow(x) == 3){
     # construct the pieces for the line of code
-  y <- paste0("/local/home/michelles/02-apcl-ddocent/", x$SEQ[1], "/samples/APCL_", x$ligation_id[1], ".F.fq.gz")
-  z <- paste0("/local/home/michelles/02-apcl-ddocent/", x$SEQ[2], "/samples/APCL_", x$ligation_id[2], ".F.fq.gz")
-  c <- paste0("/local/home/michelles/02-apcl-ddocent/", x$SEQ[3], "/samples/APCL_", x$ligation_id[3], ".F.fq.gz")
-  a <- paste0("/local/home/michelles/02-apcl-ddocent/", params$dir, "/samples/",  "APCL_", x$ligation_id[1], ".", x$ligation_id[2], ".", x$ligation_id[3], ".F.fq.gz")
+  y <- paste0("/data/apcl/", x$SEQ[1], "/samples/APCL_", x$ligation_id[1], ".F.fq.gz")
+  z <- paste0("/data/apcl/", x$SEQ[2], "/samples/APCL_", x$ligation_id[2], ".F.fq.gz")
+  c <- paste0("/data/apcl/", x$SEQ[3], "/samples/APCL_", x$ligation_id[3], ".F.fq.gz")
+  a <- paste0("/data/apcl/", params$dir, "/samples/",  "APCL_", x$ligation_id[1], ".", x$ligation_id[2], ".", x$ligation_id[3], ".F.fq.gz")
   b <- paste("cat", y, z, c, ">", a, sep = " ")
   write_file(b, path = "cat_regenos.sh", append = T)
   write_file("\n", path = "cat_regenos.sh", append = T)
@@ -112,8 +112,8 @@ for (i in 1:nrow(regenos))  {
       mutate(SEQ = paste0(substr(SEQ, 4,5), "seq"))
     for (j in 1:nrow(x)){
       # construct the pieces for the line of code
-      y <- paste0("/local/home/michelles/02-apcl-ddocent/", x$SEQ[j], "/samples/APCL_", x$ligation_id[j], "*")
-      a <- paste0("/local/home/michelles/02-apcl-ddocent/", x$SEQ[j], "/samples/regenos/")
+      y <- paste0("/data/apcl/", x$SEQ[j], "/samples/APCL_", x$ligation_id[j], "*")
+      a <- paste0("/data/apcl/", x$SEQ[j], "/samples/regenos/")
       b <- paste("mv", y, a, sep = " ")
       write_file(b, path = "move_regenos.sh", append = T)
       write_file("\n", path = "move_regenos.sh", append = T)
