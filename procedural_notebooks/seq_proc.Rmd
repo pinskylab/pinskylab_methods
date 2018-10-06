@@ -2,127 +2,32 @@
 title: "Processing sequences fall 2018"
 output: html_notebook
 params:
-  seq:  SEQ18-SEQ21
+  seq:  SEQ29
   
 ---
+Changed the names of the sequences to allow for the sequencing ids that Sarah has used.
 
-##Retrieve seq files from Princeton:  
-###* Make a directory on amphiprion to hold the seq **done** 
-
-mkdir /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18
-mkdir /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ19
-mkdir /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ20
-mkdir /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ21
-
-
-###* https://htseq.princeton.edu/cgi-bin/login.pl?redirect_url=https://htseq.princeton.edu/cgi-bin/dashboard.pl **done**
-* Click on the sequencing run of interest in the box on the left that says “Recently Entered Samples"
-* In the box titled Sample Provenance, click on the link following "This library was utilized within the following output(s):” - repeat for each lane
-* In the “Data and Statistics” box, in the bottom right corner is a green button that says “Download"
-* click wget and then the copy button to get all files.  This will copy the wget commands for all files.
-* paste in amphiprion **in the directory you made in the previous step**
-
-Other than the directory change on the first line below, all of these command lines automatically went after I pasted the wget from the webpage. **Output looks like:**
-michelles 2018-09-24 08:56:14 ~ $ cd /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/
-michelles 2018-09-24 08:58:46 hiseq_2018_09_24_SEQ18 $ wget -nd https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_barcodes.txt
---2018-09-24 08:58:49--  https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_barcodes.txt
-Resolving htseq.princeton.edu... 128.112.116.222
-Connecting to htseq.princeton.edu|128.112.116.222|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 27 [text/plain]
-Saving to: “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_barcodes.txt”
-
-100%[======================================>] 27          --.-K/s   in 0s      
-
-2018-09-24 08:58:49 (2.02 MB/s) - “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_barcodes.txt” saved [27/27]
-
-michelles 2018-09-24 08:58:49 hiseq_2018_09_24_SEQ18 $ wget -nd https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz
---2018-09-24 08:58:49--  https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz
-Resolving htseq.princeton.edu... 128.112.116.222
-Connecting to htseq.princeton.edu|128.112.116.222|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 11130170054 (10G) [application/x-gzip]
-Saving to: “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz”
-
-100%[===================================>] 11,130,170,054 97.6M/s   in 2m 9s   
-
-2018-09-24 09:00:59 (82.1 MB/s) - “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz” saved [11130170054/11130170054]
-
-michelles 2018-09-24 09:00:59 hiseq_2018_09_24_SEQ18 $ wget -nd https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz
---2018-09-24 09:00:59--  https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz
-Resolving htseq.princeton.edu... 128.112.116.222
-Connecting to htseq.princeton.edu|128.112.116.222|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 878210521 (838M) [application/x-gzip]
-Saving to: “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz”
-
-100%[======================================>] 878,210,521 99.3M/s   in 8.5s    
-
-2018-09-24 09:01:07 (98.8 MB/s) - “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz” saved [878210521/878210521]
-
-michelles 2018-09-24 09:01:07 hiseq_2018_09_24_SEQ18 $ wget -nd https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_3_Index_Read_passed_filter.fastq.gz
---2018-09-24 09:01:07--  https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_3_Index_Read_passed_filter.fastq.gz
-Resolving htseq.princeton.edu... 128.112.116.222
-Connecting to htseq.princeton.edu|128.112.116.222|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 590500250 (563M) [application/x-gzip]
-Saving to: “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_3_Index_Read_passed_filter.fastq.gz”
-
-100%[======================================>] 590,500,250 54.0M/s   in 8.2s    
-
-2018-09-24 09:01:16 (68.6 MB/s) - “18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_3_Index_Read_passed_filter.fastq.gz” saved [590500250/590500250]
-
-michelles 2018-09-24 09:01:16 hiseq_2018_09_24_SEQ18 $ wget -nd https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/md5sum.txt
---2018-09-24 09:01:16--  https://htseq.princeton.edu/tmp/kFCfrw9EojSRBPwqK/md5sum.txt
-Resolving htseq.princeton.edu... 128.112.116.222
-Connecting to htseq.princeton.edu|128.112.116.222|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 0 [text/plain]
-Saving to: “md5sum.txt”
-
-    [ <=>                                   ] 0           --.-K/s   in 0s      
-
-2018-09-24 09:01:16 (0.00 B/s) - “md5sum.txt” saved [0/0]
-
-
-
-###Make working directories in personal space **done**
-
-cd ~/02-apcl-ddocent
-mkdir 18seq 19seq 20seq 21seq
-cd ../18seq/ 
-mkdir bcsplit 01Pool 02Pool 03Pool 04Pool 05Pool 06Pool 07Pool 08Pool 09Pool 10Pool 11Pool 12Pool logs samples scripts
-cd bcsplit/
-mkdir lane1 lane2
-cd ../../19seq/
-mkdir bcsplit 01Pool 02Pool 03Pool 04Pool 05Pool 06Pool 07Pool 08Pool 09Pool 10Pool 11Pool 12Pool logs samples scripts
-cd bcsplit/
-mkdir lane1 lane2
-cd ../../20seq/
-mkdir bcsplit 01Pool 02Pool 03Pool 04Pool 05Pool 06Pool 07Pool 08Pool 09Pool 10Pool 11Pool 12Pool logs samples scripts
-cd bcsplit/
-mkdir lane1 lane2
-cd ../../21seq/
-mkdir bcsplit 01Pool 02Pool 03Pool 04Pool 05Pool 06Pool 07Pool 08Pool 09Pool 10Pool 11Pool 12Pool logs samples scripts
-cd bcsplit/
-mkdir lane1 lane2
-
-###Create an index file for the Pools that is tab separated **done**
-```{r}
+```{r setup}
 source("../genomics/scripts/lab_helpers.R")
 lab <- read_db("Laboratory")
+library(readr)
+```
+See the jupyter notebook seq_processing for the amphiprion side of this protocol.  Start there.
 
+###Create an index file for the Pools that is tab separated **done**
+
+```{r}
 # read baits table
 baits <- lab %>%
-  tbl("baits") %>% 
-  collect() %>% 
+  tbl("baits") %>%
+  collect() %>%
   select(baits_id, seq)
 
 # read PCR table
 pcr <- lab %>% 
   tbl("pcr") %>% 
   collect() %>% 
-  filter(bait_id %in% baits$baits_id) %>% 
+  filter(SEQ %in% params$seq) %>% 
   select(pcr_id, bait_id, index)
 
 # join pcr_id and index to seq id
@@ -147,9 +52,10 @@ for(i in seq(seqs$seq)){
   select(pcr_id, index_code)
 
 # write the files for amphiprion
-readr::write_tsv(x, path = paste0("index-", seqs$seq[i], ".tsv"), col_names = F)
+# readr::write_tsv(x, path = paste0("index-", seqs$seq[i], ".tsv"), col_names = F)
 }
 ```
+
 ##Move the files from the laptop to amphiprion using the fetch program, place the index files in the log folder for each seq ** done**  
 See Michelle if you need a serial number for Fetch
 
@@ -175,7 +81,7 @@ ligs <- left_join(ligs, barcode, by = "barcode_num")
 # join the ligs to the seq_ids
 ligs <- left_join(ligs, pools, by = c("pool" = "pcr_id")) %>% 
   # adjust the ligation name for dDocent
-  mutate(name = paste0("APCL_", ligation_id, ".F")) %>% 
+  mutate(name = paste0("APCL_", ligation_id)) %>% 
   select(seq, pool, name, barcode) %>% 
 # reduce the pool to only a number
     mutate(pool = substr(pool, 2,5))
@@ -192,76 +98,40 @@ for(i in seq(names$pool)){
   select(name, barcode)
 
 # write the files for amphiprion
-readr::write_tsv(x, path = paste0("names_", names$pool[i], ".tsv"), col_names = F)
+# readr::write_tsv(x, path = paste0("names_", names$pool[i], ".tsv"), col_names = F)
 }
 
 ```
 ###Move the files from the laptop to amphiprion using the fetch program, place the names files in the log folder for each seq **done**
 
-###Create a barcodes file of all of the barcodes used for these samples **done**
-
-cd ~/02-apcl-ddocent
-
-cp 16seq/logs/barcodes 18seq/logs/ 
-cp 16seq/logs/barcodes 19seq/logs 
-cp 16seq/logs/barcodes 20seq/logs 
-cp 16seq/logs/barcodes 21seq/logs
-
-
-
-###Run barcode splitter in lane1 folder and lane 2 folder - takes about 8 hours **started 10am on Monday for seq18**
-
-<!-- in lane1 folder  1_read_1 and 1_read_2 -->
-nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz
-
-
-
-<!-- in lane2 folder  2_read_1 and 2_read_2 -->
-nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_2_Index_Read_passed_filter.fastq.gz
-
-
-output:
-michelles 2018-09-24 10:06:48 lane1 $ nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_1_Read_2_Index_Read_passed_filter.fastq.gz
-nohup: ignoring input and appending output to `nohup.out'
-
-michelles 2018-09-24 10:13:45 lane2 $ nohup barcode_splitter.py --bcfile ../../logs/index-seq18.tsv --idxread 2 --suffix .fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_1_passed_filter.fastq.gz /local/shared/pinsky_lab/sequencing/hiseq_2018_09_24_SEQ18/18_APCL_SEQ-for-196-cycles-HLMHLBCX2_2_Read_2_Index_Read_passed_filter.fastq.gz
-nohup: ignoring input and appending output to `nohup.out'
 
 
 
 
+###Concatenate the results in the bcsplit folder - takes about a minute **done**
 
-###Look at the results from nohup.out, compare to previous sequencing runs to make sure the output looks like it is the correct size (~ 30,000,000 reads)
-Lane1:
-Sample  Barcode Count   Percent
-P065    ATCACG  29730291        25.73%
-P066    TGACCA  28536894        24.70%
-P067    CAGATC  25952281        22.46%
-P068    TAGCTT  28207903        24.42%
-unmatched       None    3100364 2.68%
+```{r}
+library(readr)
+for (j in seqs$seq){
+  y <- pools %>% 
+    filter(seq == j)
+  # write_file("#!/bin/bash", path = paste0(j,"_cat_all.sh"), append = F)
+  # add a line return
+  # write_file("\n", path = paste0(j,"_cat_all.sh"), append = T)
+  for (i in seq(y$pcr_id)){
+    z <- formatC(i, width = 2, flag = 0)
+    # generate the code
+    x <- paste("cat", paste0("./lane1/", y$pcr_id[i], "-read-1.fastq.gz"), paste0("./lane2/", y$pcr_id[i], "-read-1.fastq.gz"), ">",  paste0("../", z, "Pool/", y$pcr_id[i], ".fastq.gz"), sep = " ")
+    # add the code to the file
+    # write_file(x, path = paste0(j,"_cat_all.sh"), append = T)  
+    # add a line return
+    # write_file("\n", path = paste0(j,"_cat_all.sh"), append = T)
+  }  
+}
 
-Lane2:
-P065    ATCACG  29244547        25.75%
-P066    TGACCA  28033663        24.68%
-P067    CAGATC  25493132        22.44%
-P068    TAGCTT  27734885        24.42%
-unmatched       None    3086094 2.72%
-
-During the first attempt, the final total of reads from pool 68 that were fed into process_radtags was ~7,650,000 reads, much fewer than the >55,000,000 visible here.  Something must have gone wrong with the barcode splitter last time, causing it to end early.
-
-###Concatenate the results in the bcsplit folder - takes about a minute
-
-cat ./lane1/P065-read-1.fastq.gz ./lane2/P065-read-1.fastq.gz > ../1/P065.fastq.gz
-
-cat ./lane1/P066-read-1.fastq.gz ./lane2/P066-read-1.fastq.gz > ../2/P066.fastq.gz
-
-cat ./lane1/P067-read-1.fastq.gz ./lane2/P067-read-1.fastq.gz > ../3/P067.fastq.gz
-
-cat ./lane1/P068-read-1.fastq.gz ./lane2/P068-read-1.fastq.gz > ../4/P068.fastq.gz
+```
 
 
-
-_________________________________________________________________________________
 ### create scripts for all 48 pools to process radtags **done**
 
 ```{r}
@@ -277,13 +147,13 @@ pools <- pools %>%
 library(readr)
 # create first line of new file
 for (i in seq(pools$seq)){
-  write_file("#!/bin/bash", path = paste0(pools$pcr_id[i], "_process.sh"), append = F)
+  # write_file("#!/bin/bash", path = paste0(pools$pcr_id[i], "_process.sh"), append = F)
   # add a line return
-  write_file("\n", path = paste0(pools$pcr_id[i], "_process.sh"), append = T)
+  # write_file("\n", path = paste0(pools$pcr_id[i], "_process.sh"), append = T)
   # generate the code
   x <- paste("process_radtags -b ./logs/barcodes -c -q --renz_1 pstI --renz_2 mluCI -i gzfastq --adapter_1 ACACTCTTTCCCTACACGACGCTCTTCCGATCT -f", paste0("./", pools$pool_dir[i], "/", pools$pcr_id[i], ".fastq.gz"),  "-o", paste0("./", pools$pool_dir[i], "/"), sep = " ")
   # add the code to the file
-  write_file(x, path = paste0(pools$pcr_id[i], "_process.sh"), append = T)  
+  # write_file(x, path = paste0(pools$pcr_id[i], "_process.sh"), append = T)  
 }
 
 ```
@@ -315,84 +185,147 @@ for (j in seqs$seq){
 ```
 
 
-
- michelles 2016-07-02 09:10:56 16seq $ nohup ./scripts/65process.sh &
-[1] 30937
-michelles 2016-07-02 09:11:00 16seq $ nohup: ignoring input and appending output to `nohup.out'
-michelles 2016-07-02 09:11:45 16seq $ nohup ./scripts/66process.sh &
-[2] 30945
-michelles 2016-07-02 09:11:53 16seq $ nohup: ignoring input and appending output to `nohup.out'
-nohup: failed to run command `./scripts/66process.sh': Permission denied
-[2]+  Exit 126                nohup ./scripts/66process.sh
-michelles 2016-07-02 09:11:57 16seq $ chmod u+x ./scripts/66process.sh
- michelles 2016-07-02 09:12:06 16seq $ chmod u+x ./scripts/67process.sh
- michelles 2016-07-02 09:12:15 16seq $ chmod u+x ./scripts/68process.sh
- michelles 2016-07-02 09:12:21 16seq $ nohup ./scripts/66process.sh &
-[2] 30949
-michelles 2016-07-02 09:12:40 16seq $ nohup: ignoring input and appending output to `nohup.out'
-michelles 2016-07-02 09:12:41 16seq $ nohup ./scripts/67process.sh &
-[3] 30951
-michelles 2016-07-02 09:12:48 16seq $ nohup: ignoring input and appending output to `nohup.out'
-michelles 2016-07-02 09:12:49 16seq $ nohup ./scripts/68process.sh &
-[4] 30954
-michelles 2016-07-02 09:12:55 16seq $ nohup: ignoring input and appending output to `nohup.out'
-nohup ./scripts/68process.sh &
-[5] 30956
-michelles 2016-07-02 09:12:57 16seq $ nohup: ignoring input and appending output to `nohup.out'
-michelles 2016-07-02 09:13:04 16seq $ kill 30954 30956
-[4]-  Terminated              nohup ./scripts/68process.sh
-[5]+  Terminated              nohup ./scripts/68process.sh
-michelles 2016-07-02 09:13:48 16seq $ nohup ./scripts/68process.sh &
-[4] 30959
-
-## Move files from output into logs folder
-michelles 2016-07-04 14:48:00 16seq $ mv Pool1/process_radtags.log ./logs/process65.log
-michelles 2016-07-04 14:48:13 16seq $ mv Pool2/process_radtags.log ./logs/process66.log
-michelles 2016-07-04 14:48:23 16seq $ mv Pool3/process_radtags.log ./logs/process67.log
-michelles 2016-07-04 14:48:32 16seq $ mv Pool4/process_radtags.log ./logs/process68.log
+started the last one at 9:45pm on Monday 9/24/2018 - should take about 5 hours
+done before 6am on Tuesday
 
 
-# run the readprocesslog.py script 
-michelles 2016-07-04 14:50:06 16seq $ ~/13-stacks_analysis_scripts/readprocesslog.py
-Enter the path and file name of the log, i.e. ./logs/16process.out: ./logs/process68.log
+Write text for moving files
+```{r}
+for (j in seqs$seq){
+  y <- pools %>% 
+    filter(seq == j)
+  write_file("#!/bin/bash", path = paste0(j,"_move_radlogs.sh"), append = F)
+  # add a line return
+  write_file("\n", path = paste0(j,"_move_radlogs.sh"), append = T)
+  for (i in seq(y$pcr_id)){
+    z <- formatC(i, width = 2, flag = 0)
+    # generate the code
+    x <- paste("mv", paste0(z, "Pool/process_radtags.log"), paste0("./logs/process", y$pcr_id[i], ".log"), sep = " ")
+    # add the code to the file
+    write_file(x, path = paste0(j,"_move_radlogs.sh"), append = T)  
+    # add a line return
+    write_file("\n", path = paste0(j,"_move_radlogs.sh"), append = T)
+  }  
+}
 
-Keep track of read statistics from sequencing run
+```
+
+
+
+Which samples failed?
+```{r}
+upligs <- lab %>%
+  tbl("ligation") %>% 
+  filter(pool %in% current$pcr_id) %>% 
+  mutate(total_reads = as.numeric(total_reads), 
+    lack_rad_tag = as.numeric(lack_rad_tag), 
+    low_quality = as.numeric(low_quality), 
+    retained = as.numeric(retained)) %>% 
+  collect()
+
+
+hist(upligs$total_reads, breaks = 100)
+
+# zoom in to the lower end 
+zoom <- upligs %>% 
+  filter(total_reads < 200000)
+hist(zoom$total_reads, breaks = 10)
+
+low <- upligs %>% 
+  mutate(total_reads = as.numeric(total_reads)) %>% 
+  filter(total_reads < 100000) %>% 
+  select(ligation_id)
+
+
+
+summary(upligs)
+
+maximum <- upligs %>% 
+  filter(retained > 1000000)
+
+total <- upligs %>% 
+  summarise(sum = sum(total_reads))
+
+```
+
+
 
 ## Rename the process radtags output to sample names
-* michelles 2016-07-04 15:29:46 16seq $ cd Pool1/
-michelles 2016-07-04 15:30:56 Pool1 $ sh rename.for.dDocent_se_gz ../logs/names_65
-APCL_15614L2776.F
-AAACAC
-michelles 2016-07-04 15:31:23 Pool1 $ mv APCL_15* ../samples/
-* Repeat for all pools
-* michelles 2016-07-04 15:32:41 16seq $ rm -r Pool*
+write renaming text
+```{r}
+library(readr)
+for (j in seqs$seq){
+  y <- pools %>% 
+    filter(seq == j) %>% 
+    arrange(pcr_id)
+  write_file("#!/bin/bash", path = paste0(j,"_all_rename.sh"), append = F)
+  # add a line return
+  write_file("\n", path = paste0(j,"_all_rename.sh"), append = T)
+  for (i in seq(y$pcr_id)){
+    z <- formatC(i, width = 2, flag = 0)
+    c <- substr(y$pcr_id[i], 2, 5)
+    # generate the code
+    a <- paste("cd", paste0(z, "Pool/"), sep = " ")
+    # add the code to the file
+    write_file(a, path = paste0(j,"_all_rename.sh"), append = T)  
+    # add a line return
+    write_file("\n", path = paste0(j,"_all_rename.sh"), append = T)
+    x <- paste("sh rename.for.dDocent_se_gz",  paste0("../logs/names_", c, ".tsv"), sep = " ")
+    # add the code to the file
+    write_file(x, path = paste0(j,"_all_rename.sh"), append = T)  
+    # add a line return
+    write_file("\n", path = paste0(j,"_all_rename.sh"), append = T)
+    write_file("mv APCL* ../samples/", path = paste0(j,"_all_rename.sh"), append = T)
+    write_file("\n", path = paste0(j,"_all_rename.sh"), append = T)
+  write_file("cd ..", path = paste0(j,"_all_rename.sh"), append = T)  
+  write_file("\n", path = paste0(j,"_all_rename.sh"), append = T)
+    
+  }  
+}
+
+```
+
+
+
+
 
 ## Trim and map the reads
-michelles 2016-07-04 15:40:48 samples $ dDocent
-dDocent 2.18
-Contact jpuritz@gmail.com with any problems
+michelles 2018-09-25 07:25:10 samples $ dDocent
+dDocent 2.5.5 
+
+Contact jpuritz@uri.edu with any problems 
+
  
 Checking for required software
+/local/home/michelles/14_programs/dDocent/dDocent: line 84: [: 1.0-r82: integer expression expected
+
 All required software is installed!
-192 individuals are detected. Is this correct? Enter yes or no and press [ENTER]
+
+**dDocent run started Tue Sep 25 07:25:15 EDT 2018 **
+
+576 individuals are detected. Is this correct? Enter yes or no and press [ENTER]
 yes
-Proceeding with 192 individuals
+Proceeding with 576 individuals
 dDocent detects 40 processors available on this system.
 Please enter the maximum number of processors to use for this analysis.
-15
-dDocent detects 252G maximum memory available on this system.
-Please enter the maximum memory to use for this analysis. The size can be postfixed with
-K, M, G, T, P, k, m, g, t, or p which would multiply the size with 1024, 1048576, 1073741824,
-1099511627776, 1125899906842624, 1000, 1000000, 1000000000, 1000000000000, or 1000000000000000 respectively.
-For example, to limit dDocent to ten gigabytes, enter 10G or 10g
-0
+30
+dDocent detects 252 gigabytes of maximum memory available on this system.
+Please enter the maximum memory to use for this analysis in gigabytes
+For example, to limit dDocent to ten gigabytes, enter 10
+This option does not work with all distributions of Linux.  If runs are hanging at variant calling, enter 0
+Then press [ENTER]
+150
+
 Do you want to quality trim your reads?
 Type yes or no and press [ENTER]?
 yes
+
 Do you want to perform an assembly?
-Type yes or no and press [ENTER]?
+Type yes or no and press [ENTER].
 no
+
 Reference contigs need to be in a file named reference.fasta
+
 Do you want to map reads?  Type yes or no and press [ENTER]
 yes
 BWA will be used to map reads.  You may need to adjust -A -B and -O parameters for your taxa.
@@ -406,9 +339,12 @@ Please enter new value for O (gap penalty).  It should be an integer.  Default i
 6
 Do you want to use FreeBayes to call SNPs?  Please type yes or no and press [ENTER]
 no
+
 Please enter your email address.  dDocent will email you when it is finished running.
 Don't worry; dDocent has no financial need to sell your email address to spammers.
-michelle.stuart@rutgers.edu
+stuart620@gmail.com        
+
+
 At this point, all configuration information has been entered and dDocent may take several hours to run.
 It is recommended that you move this script to a background operation and disable terminal input and output.
 All data and logfiles will still be recorded.
@@ -416,9 +352,23 @@ To do this:
 Press control and Z simultaneously
 Type 'bg' without the quotes and press enter
 Type 'disown -h' again without the quotes and press enter
-Now sit back, relax, and wait for your analysis to finish.
-^Z
-[1]+  Stopped                 dDocent
-michelles 2016-07-04 15:41:44 samples $ bg
-[1]+ dDocent &
-michelles 2016-07-04 15:41:45 samples $ disown -h
+
+Now sit back, relax, and wait for your analysis to finish
+
+Finished at 9:47am same day
+
+Once trimming is done, prepare to call snps
+Symlink the files into the analysis directory
+
+In the APCL_analysis directory, create a new analysis folder
+mkdir 21-03seq
+
+In all of the XXseq/sample directories, symlink the files to the 21-03seq directory
+
+ln -s APCL* ../../APCL_analysis/21-03seq/
+
+
+
+Wait for seq 19-21 to be ready 
+
+
