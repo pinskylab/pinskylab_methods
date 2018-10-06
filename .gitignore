@@ -8,3 +8,5 @@ methods.Rproj
 .httr-oauth
 *.icloud
 .httr-oauth-SUSPENDED
+.Rhistory 2
+.Rhistory 3
