@@ -1,12 +1,12 @@
 ---
-title: "fix index numbers for ` - `r params$last`"
+title: "add seqs to pcr pools"
 output:
   pdf_document: default
 params: 
   type: "pcr"
   id: "pcr_id"
   db: "Laboratory"
-  first: P091
+  first: P073
   last: P128
 
   
@@ -26,9 +26,13 @@ Find the range of rows to be changed
 ```{r change}
 # change plate names
 change <- dat %>%
-  filter(pcr_id >= params$first & pcr_id <= params$last, 
-    pcr_id != "P105", pcr_id != "P106") %>% 
-  mutate(index = rep(1:12, 3))
+  filter(pcr_id >= params$first & pcr_id <= params$last) %>% 
+  mutate(SEQ = ifelse(pcr_id >= params$first & pcr_id <= "P088", "SEQ28", SEQ), 
+    SEQ = ifelse(pcr_id >= "P089" & pcr_id <= "P102", "SEQ29", SEQ),
+    SEQ = ifelse(pcr_id >= "P103" & pcr_id <= "P116", "SEQ30", SEQ),
+    SEQ = ifelse(pcr_id >= "P117" & pcr_id <= "P128", "SEQ31", SEQ))
+
+
 
 
 dat <- change_rows(dat, change, params$id)
