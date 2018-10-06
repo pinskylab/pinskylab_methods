@@ -1,0 +1,240 @@
+---
+title: "Fix cat lines for problem_samples"
+output: html_notebook
+---
+
+```{r}
+library(readr)
+library(tidyr)
+library(dplyr)
+
+raw_lines <- read_lines("cat: /local/home/michelles/02-apcl-ddocent/03seq/samples/APCL_L0415.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/APCL_L3033.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/APCL_L1616.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/APCL_L1659.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/APCL_L1643.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/APCL_L1627.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/28seq/samples/APCL_L2968.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/APCL_L1667.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/APCL_L1668.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/APCL_L1638.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/05seq/samples/APCL_L0846.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/05seq/samples/APCL_L0866.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/04seq/samples/APCL_L0697.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/APCL_L1726.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/APCL_L1727.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/05seq/samples/APCL_L0922.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/APCL_L1705.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/13seq/samples/APCL_L2444.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/07seq/samples/APCL_L0610.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/04seq/samples/APCL_L0738.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/12seq/samples/APCL_L2250.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/08seq/samples/APCL_L1345.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/08seq/samples/APCL_L1238.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/05seq/samples/APCL_L0936.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/APCL_L1644.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/05seq/samples/APCL_L0973.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/08seq/samples/APCL_L1288.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/16seq/samples/APCL_L2882.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/15seq/samples/APCL_L2764.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/16seq/samples/APCL_L2935.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/APCL_L3008.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/15seq/samples/APCL_L2716.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/16seq/samples/APCL_L2818.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/16seq/samples/APCL_L2900.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/16seq/samples/APCL_L2904.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/APCL_L1596.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/07seq/samples/APCL_L0595.F.fq.gz: No such file or directory")
+
+info <- tibble(full = substr(raw_lines, 44, 75))
+
+split_info <- info %>% 
+  separate(full, into = c("seq", "dir", "sample"), sep = "/") %>% 
+  # change the directory
+  mutate(dir = "problem_samples") %>% 
+  # create an extra column for the samples
+  separate(sample, into = c("before", "after"), sep = "_")
+
+# read in the original cat lines
+cat <- tibble(full = read_lines("cat_regenos.sh", skip = 1))
+
+# separate into portions of the command
+split_cat <- cat %>%
+  separate(full, into = c("cmd", "first", "second", "third", "fourth", "fifth"), sep = " ")
+
+# separate the cats that combine 3 files
+threes <- split_cat %>% 
+  filter(third != ">")
+split_cat <- anti_join(split_cat, threes)
+
+# remove extra info from the split_cat to reduce to matching files
+small_cat <- split_cat %>% 
+  select(first, second, fourth) %>% 
+  separate(first, into = c("first_before", "first_after"), sep = "_") %>% 
+  separate(second, into = c("second_before", "second_after"), sep = "_") %>% 
+  separate(first_before, into = c("f_space", "f_local", "f_home", "f_usr", "f_ddocent", "f_seq", "f_samples", "f_APCL"), sep = "/") %>% 
+  separate(second_before, into = c("s_space", "s_local", "s_home", "s_usr", "s_ddocent", "s_seq", "s_samples", "s_APCL"), sep = "/") %>% 
+  select(f_seq, first_after, s_seq, second_after) %>% 
+  # create extra columns to merge the sets of three back into the main table
+  mutate(t_seq = NA, 
+    third_after = NA)
+
+# remove extra info from the split_cat to reduce to matching files
+small_3 <- threes %>% 
+  select(first, second, third) %>% 
+  separate(first, into = c("first_before", "first_after"), sep = "_") %>% 
+  separate(second, into = c("second_before", "second_after"), sep = "_") %>% 
+  separate(third, into = c("third_before", "third_after"), sep = "_") %>% 
+  separate(first_before, into = c("f_space", "f_local", "f_home", "f_usr", "f_ddocent", "f_seq", "f_samples", "f_APCL"), sep = "/") %>% 
+  separate(second_before, into = c("s_space", "s_local", "s_home", "s_usr", "s_ddocent", "s_seq", "s_samples", "s_APCL"), sep = "/") %>% 
+  separate(third_before, into = c("t_space", "t_local", "t_home", "t_usr", "t_ddocent", "t_seq", "t_samples", "t_APCL"), sep = "/") %>% 
+  select(f_seq, first_after, s_seq, second_after, t_seq, third_after)
+
+# join the 2 cat files back together
+all_cat <- rbind(small_3, small_cat)
+
+# find rows that contain a problem sample in the first column
+firsts <- all_cat %>% 
+  filter(first_after %in% split_info$after) %>% 
+  mutate(f_dir = "samples/problem_samples", 
+    s_dir = "samples", 
+    t_dir = "samples")
+
+seconds <- all_cat %>% 
+  filter(second_after %in% split_info$after) %>% 
+  mutate(f_dir = "samples", 
+    s_dir = "samples/problem_samples", 
+    t_dir = "samples")
+
+thirds <- all_cat %>% 
+  filter(third_after %in% split_info$after) %>% 
+  mutate(f_dir = "samples", 
+    s_dir = "samples", 
+    t_dir = "samples/problem_samples")
+
+# combine all of these rows into 1 table
+f_doubles <- c("L0415.F.fq.gz", "L1596.F.fq.gz", "L3154.F.fq.gz")
+prob_loc <- rbind(firsts, seconds, thirds) %>% 
+  arrange(first_after, second_after, third_after) %>% 
+  mutate(f_dir = ifelse(first_after %in% f_doubles, "samples/problem_samples", f_dir), 
+    s_dir = ifelse(first_after %in% f_doubles, "samples/problem_samples", s_dir),
+  t_dir = ifelse(first_after %in% f_doubles, "samples/problem_samples", t_dir)) %>%
+  distinct() %>% 
+  mutate(first_after = paste0("APCL_", first_after), 
+    second_after = paste0("APCL_", second_after),
+    third_after = ifelse(!is.na(third_after),paste0("APCL_", third_after), NA))
+
+# remove problem samples directory from seq28
+prob_loc <- prob_loc %>% 
+  mutate(f_dir = ifelse(f_seq == "28seq", "samples", f_dir), 
+    s_dir = ifelse(s_seq == "28seq", "samples", s_dir), 
+    t_dir = ifelse(t_seq == "28seq", "samples", t_dir))
+
+# recreate cat commands
+# begin constructing the file of command lines
+cmds <- prob_loc %>% 
+  mutate(loc_1 = paste("/local/home/michelles/02-apcl-ddocent", f_seq, f_dir, first_after, sep = "/"), 
+    loc_2 = paste("/local/home/michelles/02-apcl-ddocent", s_seq, s_dir, second_after, sep = "/"), 
+    dest = paste0("/local/home/michelles/02-apcl-ddocent/regenos/", substr(first_after, 6, 10), "_", second_after), 
+    cmd = paste("cat", loc_1, loc_2, ">", dest, sep = " "))
+
+cmds <- cmds %>% 
+  # make an exception for those with 3 regenos
+  mutate(loc_3 = ifelse(!is.na(t_seq), paste("/local/home/michelles/02-apcl-ddocent", t_seq, t_dir, third_after, sep = "/"), NA), 
+    dest = ifelse(!is.na(t_seq), paste0("/local/home/michelles/02-apcl-ddocent/regenos/", substr(first_after, 6,10), "_", substr(second_after, 6, 10), "_", third_after), dest), 
+    cmd = ifelse(!is.na(t_seq), paste("cat", loc_1, loc_2, loc_3, ">", dest, sep = " "), cmd))
+
+
+
+# reduce the table to only the command lines
+cmds <- cmds %>% 
+  select(cmd)
+
+write_csv(cmds, path = "cat_prob_regenos.sh")
+
+```
+These paths are pointing to files that don't exist, and they might be in the known issues table, but I can't see the known issues table because we can't connnect to the db through R or sequel pro at Lacawac.
+
+
+```{r}
+library(dplyr)
+# source("../genomics/scripts/lab_helpers.R")
+# lab <- read_db("Laboratory")
+
+# read in the lines of the latest error
+err <- read_lines("cat: /local/home/michelles/02-apcl-ddocent/13seq/samples/problem_samples/L2444.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/04seq/samples/problem_samples/L0808.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L2984.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/03seq/samples/problem_samples/L0415.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3033.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/problem_samples/L1659.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/07seq/samples/problem_samples/L1069.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/problem_samples/L1638.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/07seq/samples/problem_samples/L0453.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/05seq/samples/problem_samples/L0846.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L2988.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/05seq/samples/problem_samples/L0866.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/28seq/samples/problem_samples/L4456.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/04seq/samples/problem_samples/L0697.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3021.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/problem_samples/L1726.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/05seq/samples/problem_samples/L1008.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/05seq/samples/problem_samples/L0922.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3128.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/08seq/samples/problem_samples/L1345.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3127.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/08seq/samples/problem_samples/L1238.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3159.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/05seq/samples/problem_samples/L0936.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3145.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/05seq/samples/problem_samples/L0973.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3122.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/08seq/samples/problem_samples/L1288.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3156.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/16seq/samples/problem_samples/L2882.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3058.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/15seq/samples/problem_samples/L2764.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3112.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/16seq/samples/problem_samples/L2935.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3133.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/15seq/samples/problem_samples/L2716.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3169.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/16seq/samples/problem_samples/L2818.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3140.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/16seq/samples/problem_samples/L2900.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3024.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/16seq/samples/problem_samples/L2904.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3111.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/problem_samples/L1596.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/07seq/samples/problem_samples/L0595.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/08seq/samples/problem_samples/L1175.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/problem_samples/L1627.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/07seq/samples/problem_samples/L1048.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/04seq/samples/problem_samples/L0737.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/problem_samples/L1705.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/problem_samples/L1742.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3154.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/04seq/samples/problem_samples/L0738.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/12seq/samples/problem_samples/L2250.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/03seq/samples/problem_samples/L0424.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/problem_samples/L1616.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/08seq/samples/problem_samples/L1303.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/problem_samples/L1643.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/03seq/samples/problem_samples/L0336.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/28seq/samples/problem_samples/L2968.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/03seq/samples/problem_samples/L0383.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/problem_samples/L1667.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/05seq/samples/problem_samples/L0841.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/problem_samples/L1668.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/05seq/samples/problem_samples/L1010.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/problem_samples/L1727.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3141.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/07seq/samples/problem_samples/L0610.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/04seq/samples/problem_samples/L0829.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/09seq/samples/problem_samples/L1644.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/15seq/samples/problem_samples/L2695.F.fq.gz: No such file or directory
+cat: /local/home/michelles/02-apcl-ddocent/17seq/samples/problem_samples/L3008.F.fq.gz: No such file or directory")
+
+err_tbl <- tibble(full = substr(err, 44, 75))
+```
+

@@ -1,0 +1,131 @@
+---
+title: "Generating gen_id for database on `r Sys.Date()`"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+```{r workspace, echo=FALSE, message=FALSE}
+library(knitr)
+library(kableExtra)
+source("../genomics/scripts/gen_helpers.R")
+source("../genomics/scripts/lab_helpers.R")
+leyte <- read_db("Leyte")
+lab <- read_db("Laboratory")
+```
+
+**Samples that have successfully completed sequencing**
+These samples have passed Michelle's dDocent filters in seqs 03-17
+```{r success, echo=FALSE, message=FALSE}
+# locate the genepop file and read as data frame
+genfile <- "../genomics/data/seq17_03g95maf2q30dp15.gen"
+genedf <- read_genepop(genfile)
+
+# format the file-----------------------------
+
+# remove columns of loci
+genedf <- genedf %>% 
+  select(names) %>% 
+  rename(ligation_id=names)
+
+
+# Just in case some of the samples are named with APCL before the ligation_id, create a search term to search for ligation ids within a name
+ligid <- "(.+)(L\\d\\d\\d\\d)" 
+# change all of the names to ligation id only
+genedf$ligation_id <- genedf$ligation_id %>% str_replace(ligid,"\\2")
+
+# get sample ids for these ligations ----------------------------
+samples <- samp_from_lig(genedf)
+
+if (nrow(samples) != nrow(genedf)){
+  # are there duplicate ligation ids in genedf?
+  no_dups <- distinct(genedf, ligation_id) 
+    # that wasn't the issue, same number of rows in no_dups as in genedf
+
+  # which ligation ids are in genedf that are not in samples?
+  no_sample <- genedf %>% filter(!ligation_id %in% samples$ligation_id)
+    # these 11 samples are problem samples that can't be matched to a sample
+}else{
+  print("All sequenced samples accounted for")
+}
+
+# write.csv(samples, file = paste("data/samples_successfully_seq_as_of_", Sys.Date(), ".csv", sep = "" ))
+
+rm(no_dups, no_sample, genedf)
+
+samples <- samples %>% 
+  arrange(sample_id)
+
+saveRDS(samples, file = "success_seq_samples.Rdata")
+```
+A list of these samples has been saved as an Rdata file.
+
+A gen_id will be generated to represent that these samples have been genotyped.
+```{r}
+samples <- samples %>% 
+  filter(!is.na(sample_id)) %>% 
+  select(sample_id) %>% 
+  # remove any duplicates
+  distinct() 
+
+samples <- samples %>% 
+  mutate(gen_id = 1:nrow(samples))
+  
+```
+
+#### First time only ####
+Add this column into the database 
+```{r}
+leyte <- write_db("Leyte")
+
+dat <- leyte %>%
+  tbl("clownfish") %>% 
+  collect()
+
+change <- left_join(dat, samples, by = "sample_id")
+
+# dbWriteTable(leyte, "clownfish", change, row.names = F, overwrite = T)
+```
+
+Replace cap_id with gen_id
+```{r}
+fish <- leyte %>% 
+  tbl("clownfish") %>% 
+  filter(!is.na(cap_id)) %>% 
+  collect() %>% 
+  select(sample_id, cap_id, gen_id)
+
+max_cap_id <- fish %>% 
+  summarise(max = max(cap_id))
+
+for (i in 1:max_cap_id$max){
+  x <- fish %>% 
+    filter(cap_id == i) %>% 
+    arrange(gen_id) %>% 
+    mutate(gen_id = gen_id[1])
+  fish <- anti_join(fish, x, by = "sample_id")
+  fish <- rbind(fish, x)
+}
+
+fish <- select(fish, -cap_id)
+```
+
+Update database
+```{r}
+dat <- leyte %>% 
+  tbl("clownfish") %>% 
+  collect() %>% 
+  select(-cap_id)
+
+change <- dat %>% 
+  filter(sample_id %in% fish$sample_id) %>% 
+  # remove the old cap and gen ids
+  select(-gen_id)
+
+change <- left_join(change, fish, by = "sample_id")
+
+dat <- change_rows(dat, change, "sample_id") %>% 
+  select(fish_table_id:color, gen_id, recap:corr_message)
+
+# dbWriteTable(leyte, "clownfish", dat, row.names = F, overwrite = T)
+```
+
