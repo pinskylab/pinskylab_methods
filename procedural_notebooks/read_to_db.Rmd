@@ -2,7 +2,7 @@
 title: "Add sequencing results to database"
 output: html_notebook
 params:
-  seq:  SEQ31
+  seq:  SEQ04
 ---
 
 ```{r}
@@ -30,11 +30,13 @@ barcode <- wlab %>%
   tbl("barcodes") %>% 
   collect()
 
+# for SEQ04 the files are named differently
+pcr_ids <- substr(current$pcr_id, 3,4)
 
 # pull out only the pools in current sequencing run
 for(i in seq(current$pcr_id)){
   # define the log file
-  filename <- paste0("~/Downloads/process", current$pcr_id[i], ".log.tsv")
+  filename <- paste0("~/Downloads/", pcr_ids[i], "process.out.tsv")
   # read in the log file
   samples <- read_delim(filename, delim = "\t", col_names = c("barcode", "total_reads", "lack_rad_tag", "low_quality", "retained"), 
     col_types = cols("c", "c", "c", "c", "c")) #import all columns as character
