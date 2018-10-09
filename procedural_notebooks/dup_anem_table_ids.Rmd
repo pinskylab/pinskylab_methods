@@ -1,0 +1,37 @@
+---
+title: "Fixing Duplicate anem_table_ids"
+output: html_notebook
+---
+
+There are duplicate anem_table_ids in the Leyte database due to the addition of collectors.  This script attempts to solve it.
+
+```{r setup}
+source("../genomics/scripts/lab_helpers.R")
+source("../genomics/scripts/field_helpers.R")
+
+leyte <- read_db("Leyte")
+```
+
+Get the duplicated anem_table_ids
+```{r dup anems}
+anem <- leyte %>% 
+  tbl("anemones") %>% 
+  collect()
+
+dups <- anem %>% 
+  group_by(anem_table_id) %>% 
+  summarise(count = n()) %>% 
+  filter(count > 1)
+
+dup_anem <- anem %>% 
+  filter(anem_table_id %in% dups$anem_table_id) %>% 
+  arrange(anem_table_id)
+```
+
+Some of these duplicates are from when I split the Magbangon and Cabatoan dives and did not split out the anemones correctly.
+
+Get a list of dives to figure out which are the split dives
+```{r split dives}
+
+```
+
