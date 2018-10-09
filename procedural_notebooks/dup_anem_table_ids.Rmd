@@ -9,11 +9,11 @@ There are duplicate anem_table_ids in the Leyte database due to the addition of 
 source("../genomics/scripts/lab_helpers.R")
 source("../genomics/scripts/field_helpers.R")
 
-leyte <- read_db("Leyte")
+leyte <- write_db("Leyte")
 ```
 
 Get the duplicated anem_table_ids
-```{r dup anems}
+```{r find dup anems}
 anem <- leyte %>% 
   tbl("anemones") %>% 
   collect()
@@ -31,7 +31,109 @@ dup_anem <- anem %>%
 Some of these duplicates are from when I split the Magbangon and Cabatoan dives and did not split out the anemones correctly.
 
 Get a list of dives to figure out which are the split dives
-```{r split dives}
+```{r find split dives}
+dives <- leyte %>% 
+  tbl("diveinfo") %>% 
+  collect() %>% 
+  filter(dive_table_id >= 582)
+```
 
+How many of the split dives are in the dup_anem table?
+```{r match split dives to dup anems}
+splits <- dup_anem %>% 
+  filter(dive_table_id %in% dives$dive_table_id)
+```
+
+Backup anemone db table and remove duplicated anems based on split dives
+```{r remove split dive dup anems}
+dat <- leyte %>% 
+  tbl("anemones") %>% 
+  collect()
+
+# saveRDS(dat, file = "~/Documents/db_backups/anem_table_before_remove_dup_anems_from_split_dives_2018-10-09.Rdata")
+  
+# remove all anem_table_ids associated with split dives
+change <- dat %>%
+  filter(!anem_table_id %in% splits$anem_table_id)
+
+# double check the number of rows to make sure the correct info is taking place, the following should be TRUE
+(nrow(dat) - nrow(change))/2 == nrow(splits)
+
+# add back in the half of the split dive to keep
+change <- rbind(change, splits)
+
+# dbWriteTable(leyte, "anemones", change, overwrite = T, row.names = F)
+```
+
+Get a refreshed list of duplicated anem_table_ids
+```{r dup anem refresh}
+anem <- leyte %>% 
+  tbl("anemones") %>% 
+  collect()
+
+dups <- anem %>% 
+  group_by(anem_table_id) %>% 
+  summarise(count = n()) %>% 
+  filter(count > 1)
+
+dup_anem <- anem %>% 
+  filter(anem_table_id %in% dups$anem_table_id) %>% 
+  arrange(anem_table_id)
+
+```
+
+Now the duplicated anem_table_ids are in rows that are identical except for the collector.
+Take a look at the dive info and see if that gives a hint as to which row is correct.
+```{r dives for multi collectors}
+dives <- leyte %>% 
+  tbl("diveinfo") %>% 
+  filter(dive_table_id %in% dup_anem$dive_table_id) %>% 
+  collect() %>% 
+  select(dive_table_id, divers)
+```
+
+Dive 538 in dive info says the diver is JJO, but in the dup_anem table it has rows for both JJO and AGD.
+
+Which dup_anems match the dives table?
+```{r matching dup anems to dives}
+match <- left_join(dives, dup_anem, by = "dive_table_id") %>% 
+  select(-collector) %>% 
+  rename(collector = divers) %>% 
+  distinct()
+```
+
+Backup and remove duplicate rows from db
+```{r remove dup anems}
+dat <- leyte %>% 
+  tbl("anemones") %>% 
+  collect()
+
+# saveRDS(dat, file = "~/Documents/db_backups/anem_table_before_remove_dup_anems_table_ids_2018-10-09.Rdata")
+  
+# remove all anem_table_ids associated with split dives
+change <- dat %>%
+  filter(!anem_table_id %in% match$anem_table_id)
+
+# double check the number of rows to make sure the correct info is taking place, the following should be TRUE
+(nrow(dat) - nrow(change))/2 == nrow(match)
+# this is FALSE because one of the anem_table_ids has 3 observations
+
+# add back in the half of the split dive to keep
+change <- rbind(change, match)
+
+# dbWriteTable(leyte, "anemones", change, overwrite = T, row.names = F)
+```
+
+Double check that all dup anem table ids are gone
+```{r double check}
+anem <- leyte %>% 
+  tbl("anemones") %>% 
+  collect()
+
+dups <- anem %>% 
+  group_by(anem_table_id) %>% 
+  summarise(count = n()) %>% 
+  filter(count > 1)
+# dups has 0 obs
 ```
 
