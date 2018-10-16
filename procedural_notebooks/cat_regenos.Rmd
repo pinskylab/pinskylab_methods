@@ -2,8 +2,8 @@
 title: "Find regenos and cat their sequences so that we have max data"
 output: html_notebook
 params:
-  seq:  SEQ31
-  dir:  31seq
+  seq:  SEQ04
+  dir:  04seq
 ---
 
 Samples that have been sequenced more than once in an attempt to get better data:
