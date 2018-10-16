@@ -26,6 +26,8 @@ dups <- anem %>%
 dup_anem <- anem %>% 
   filter(anem_table_id %in% dups$anem_table_id) %>% 
   arrange(anem_table_id)
+# if this returns 0 obs, there are no duplicated anem_table_ids
+
 ```
 
 Some of these duplicates are from when I split the Magbangon and Cabatoan dives and did not split out the anemones correctly.

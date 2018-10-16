@@ -3,9 +3,9 @@ title: "add seqs to pcr pools"
 output:
   pdf_document: default
 params: 
-  type: "pcr"
-  id: "pcr_id"
-  db: "Laboratory"
+  type: "anemones"
+  id: "anem_table_id"
+  db: "Leyte"
   first: P073
   last: P128
 
@@ -14,6 +14,7 @@ params:
 
 Access database.
 ```{r workspace, echo = F, message=FALSE}
+
 source("../genomics/scripts/lab_helpers.R")
 write <- write_db(params$db)
 library(knitr)
@@ -23,22 +24,29 @@ db <- read_db(params$db)
 dat <- db %>% tbl(params$type) %>% collect()
 ```
 Find the range of rows to be changed
+# 3 rows have an old anem id but no anem_id, fixing in the database on 2018-10-15, MRS
 ```{r change}
-# change plate names
-change <- dat %>%
-  filter(pcr_id >= params$first & pcr_id <= params$last) %>% 
-  mutate(SEQ = ifelse(pcr_id >= params$first & pcr_id <= "P088", "SEQ28", SEQ), 
-    SEQ = ifelse(pcr_id >= "P089" & pcr_id <= "P102", "SEQ29", SEQ),
-    SEQ = ifelse(pcr_id >= "P103" & pcr_id <= "P116", "SEQ30", SEQ),
-    SEQ = ifelse(pcr_id >= "P117" & pcr_id <= "P128", "SEQ31", SEQ))
+dat <- db %>% 
+  tbl("anemones") %>% 
+  collect()
 
-
-
+change <- dat %>% 
+  filter(!is.na(old_anem_id) & is.na(anem_id)) %>% 
+  mutate(anem_id = old_anem_id, 
+    correction = "Y", 
+    corr_date = "2018-10-15", 
+    corr_editor = "MRS", 
+    corr_message = "Row contained an old_anem_id but not an anem_id, moved the old_anem_id over into the correct field.", 
+    old_anem_id = NA)
 
 dat <- change_rows(dat, change, params$id)
 
+test <- dat %>% 
+  filter(anem_id == 127)
 ```
-Write to database
+
+
+# Write to database
 ```{r write}
 # dbWriteTable(write, params$type, dat, row.names = F, overwrite = T, append = F)
 # dbDisconnect(write)
