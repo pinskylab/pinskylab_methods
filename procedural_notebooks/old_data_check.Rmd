@@ -365,28 +365,45 @@ write_rds(backup, path = "~/Documents/db_backups/clownfish.Rdata")
 
 # dbWriteTable(leyte, "clownfish", clown, row.names = F, overwrite = T)
 ```
-
-
-
-# What tags are in the spreadsheet that were not scanned by the scanner (type-os) - should return 0 rows
-spreadsheet <- anti_join(tag_ids, pit, by = c("tag_id" = "scan"))
-clown %>% 
-  filter(tag_id %in% spreadsheet$tag_id) %>% 
-  select(dive_num, obs_time, tag_id)
-
-# if there are rows in spreadsheet, view pit and compare
-
-
-# What tags are in the scanner that are not in spreadsheet (type-os) - should return 0 rows
-anti_join(pit, tag_ids, by = c("scan" = "tag_id"))  
-# 818456 was scanned but the fish escaped before they could be tagged so as of 2018-03-14  it has not been used yet.
-
 # make sure that pit tags with N only occur once on the data sheet
-multi <- tag_ids %>% 
-  filter(recap == "N") %>% 
+```{r}
+multi <- clown %>% 
+  filter(recap != "Y") %>% 
   group_by(tag_id) %>% 
   summarise(tag_count = n()) %>% 
   filter(tag_count > 1)
+
+# 10 tags don't look like recaps but don't have a y
+recaps <- clown %>% 
+  filter(tag_id %in% multi$tag_id & recap != "Y") %>% 
+  arrange(tag_id)
+
+# this fish was captured and the tag was scanned but the fish escaped before the tag could be implanted so the next fish got the tag
+# make sure clown is fresh from db
+clown <- leyte %>% 
+  tbl("clownfish") %>% 
+  collect()
+
+change <- clown %>% 
+  filter(fish_table_id == 9135) %>% 
+  mutate(tag_id = NA, 
+    corr_message = ifelse(is.na(corr_message), "Changed tag_id to NA because this fish escaped before the scanned pit tag could be implanted", paste("Changed tag_id to NA because this fish escaped before the scanned pit tag could be implanted", corr_date, corr_editor, corr_message, sep = ", ")), 
+    correction = "Y", 
+    corr_date = "2018-10-16", 
+    corr_editor = "MRS")
+
+clown <- change_rows(clown, change, "fish_table_id")
+
+# make a backup
+backup <- leyte %>% 
+  tbl("clownfish") %>% 
+  collect()
+write_rds(backup, path = "~/Documents/db_backups/clownfish.Rdata")
+
+# dbWriteTable(leyte, "clownfish", clown, row.names = F, overwrite = T)
+
+```
+
 
 # if multi is not zero rows, there is a type-o in one of the rows for each tag listed, double check these. (the recent anti_join(pit, tag_ids) should have also flagged this)
 
