@@ -47,6 +47,13 @@ test <- dat %>%
 
 # Write to database
 ```{r write}
+# backup 
+backup <- leyte %>% 
+  tbl(params$type) %>% 
+  collect()
+
+write_rds(backup, path = paste0("~/Documents/db_backups/", Sys.Date(), "_", params$type, ".Rdata"))
+
 # dbWriteTable(write, params$type, dat, row.names = F, overwrite = T, append = F)
 # dbDisconnect(write)
 ```
