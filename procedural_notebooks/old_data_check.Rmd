@@ -336,8 +336,8 @@ clown <- leyte %>%
   collect()
 
 change <- clown %>% 
-  filter(tag_id == "986112100164019") %>% 
-  mutate(tag_id = "986112100164819", 
+  filter(tag_id == "986112100166389") %>% 
+  mutate(tag_id = "986112100166309", 
     corr_message = ifelse(is.na(corr_message), "Changed tag_id because it was a type-o based on the pit scanner at the same time", paste("Changed tag_id because it was a type-o based on the pit scanner at the same time", corr_date, corr_editor, corr_message, sep = ", ")), 
     correction = "Y", 
     corr_date = "2018-10-16", 
