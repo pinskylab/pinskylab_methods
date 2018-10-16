@@ -1,0 +1,208 @@
+---
+title: "Reassign anem_obs"
+output: html_notebook
+---
+#Setup 
+```{r setup}
+library(tidyverse)
+source("../genomics/scripts/field_helpers.R")
+source("../genomics/scripts/lab_helpers.R")
+leyte <- write_db("Leyte")
+```
+
+
+```{r anem_table}
+# find  anem_ids
+anem <- leyte %>% 
+  tbl("anemones") %>%
+  collect()
+```
+**The past method**
+# which anemones already have an anem_obs number?
+```{r}
+have_obs <- anem %>% 
+  filter(!is.na(anem_obs)) %>% 
+  select(anem_id, anem_obs) %>% 
+  mutate(anem_obs = as.integer(anem_obs)) %>% 
+  distinct() %>% 
+  arrange(anem_id)
+```
+# attach anem_obs to any new anem observations that have been seen before, can only do this by removing and reattaching anem_obs
+```{r}
+all_anem <- select(anem, -anem_obs)
+all_anem <- left_join(all_anem, have_obs, by = "anem_id")
+```
+
+# which of these have an old_anem_id but no anem_obs?
+```{r}
+old_obs <- all_anem %>% 
+  filter(!is.na(old_anem_id) & is.na(anem_obs))
+```
+# attach existing anem_obs to any old_anem_id that has already been assigned one
+```{r}
+old_obs <- select(old_obs, -anem_obs)
+old_obs <- left_join(old_obs, have_obs, by = c("old_anem_id" = "anem_id")) %>% 
+  distinct()
+```
+# update these rows in all_anem
+```{r}
+all_anem <- anti_join(all_anem, old_obs, by = "anem_table_id")
+all_anem <- rbind(all_anem, old_obs)
+rm(old_obs)
+```
+# which anemones have old_anem_id and no anem_obs (still)
+```{r}
+have_old <- all_anem %>% 
+  filter(!is.na(old_anem_id) & is.na(anem_obs)) 
+
+# assign an anem obs to anems with no obs and an old_anem_id ####
+x <- max(all_anem$anem_obs, na.rm = T)
+y <- x + 1
+z <- x+nrow(have_old)
+have_old <- have_old %>% 
+  mutate(anem_obs = y:z)
+# split out the old anem ids with their newly assigned anem obs
+olds <- have_old %>% 
+  select(old_anem_id, anem_obs) %>% 
+  rename(anem_id = old_anem_id)
+# do the same for anem_ids
+anems <- have_old %>% 
+  select(anem_id, anem_obs)  %>% 
+  distinct()
+# combine
+new_obs <- rbind(olds, anems) %>% 
+  distinct()
+# add to have_obs
+have_obs <- rbind(have_obs, new_obs) 
+have_obs <-  have_obs %>% 
+  mutate(anem_id = as.integer(anem_id),
+    anem_obs = as.integer(anem_obs)) %>% 
+      distinct()
+
+test <- have_obs %>% 
+  group_by(anem_id) %>% 
+  summarise(count = n()) %>% 
+  filter(count > 1)
+
+huh <- have_obs %>% 
+  filter(anem_id %in% test$anem_id)
+
+
+
+# attach to all_anem
+all_anem <- select(all_anem, -anem_obs) 
+all_anem <- left_join(all_anem, have_obs, by = "anem_id")
+rm(new_obs, olds, anems, have_old)
+```
+# all anem now contains some duplicates
+```{r}
+test <- all_anem %>%
+  select(anem_table_id) %>% 
+  summarise(count = n())
+
+
+```
+
+
+
+
+# assign anem_obs to anemones that have been seen more than once but don't have an old_id ####
+multi <- all_anem %>% 
+  filter(is.na(anem_obs)) %>% 
+  group_by(anem_id) %>% 
+  summarise(visits = n()) %>% 
+  filter(visits > 1)
+
+# assign anem_obs
+x <- max(all_anem$anem_obs, na.rm = T)
+y <- x + 1
+z <- x+nrow(multi)
+multi <- multi %>% 
+  mutate(anem_obs = y:z) %>% 
+  select(-visits)
+
+# attach to the anem_obs list
+have_obs <- rbind(have_obs, multi)
+
+# attach to all_anem
+all_anem <- select(all_anem, -anem_obs)
+all_anem <- left_join(all_anem, have_obs, by = "anem_id")
+
+# remove the lines containing these anem_obs from all_anem
+anemObs <- all_anem %>% 
+  filter(!is.na(anem_obs))
+all_anem <- anti_join(all_anem, anemObs, by = c("lat", "lon", "old_anem_id", "anem_id", "era", "anem_obs"))
+
+
+
+
+
+# Visited more than once?
+```{r}
+same_id_more_than_once <- anem %>% 
+  filter(!is.na(anem_id)) %>% 
+  group_by(anem_id) %>% 
+  summarise(num_visits = n()) %>% 
+  filter(num_visits > 1) 
+same <- same_id_more_than_once %>% 
+  mutate(anem_obs = seq(same_id_more_than_once$anem_id))
+```
+
+# Assign anem_obs to anemones with the same anem_id that have been visited more than once
+```{r}
+anem <- left_join(anem, select(same, -num_visits), by = "anem_id")
+
+# find the max used anem_obs
+max <- anem %>% 
+  filter(!is.na(anem_obs)) %>% 
+  summarise(max = max(anem_obs))
+```
+# All anem_ids currently associated with anem_obs
+```{r}
+all_obs <- anem %>% 
+  filter(!is.na(anem_obs)) %>% 
+  select(anem_id, old_anem_id, anem_obs) %>% 
+  distinct()
+
+# pull out old_anem_ids
+olds <- all_obs %>% 
+  filter(!is.na(old_anem_id)) %>% 
+  select(old_anem_id, anem_obs) %>% 
+  distinct () %>% 
+  rename(anem_id = old_anem_id)
+
+all_obs <- select(all_obs, -old_anem_id)
+all_obs <- rbind(all_obs, olds) %>% 
+  distinct()
+```
+
+# Anems with more than one obs
+```{r}
+more <- all_obs %>% 
+  group_by(anem_id) %>% 
+  summarise(num_obs = n()) %>% 
+  filter(num_obs > 1)
+
+singles <- tibble()
+for (i in seq(more$anem_id)){
+  x <- all_obs %>% 
+    filter(anem_id == more$anem_id[i]) %>% 
+    arrange(anem_obs) %>% 
+    slice(1)
+  singles <- rbind(singles, x)
+}
+
+change <- anem %>% 
+  filter(anem_id %in% singles$anem_id) %>% 
+  select(-anem_obs)
+change <- left_join(change, singles, by = "anem_id")
+
+anem <- change_rows(anem, change, "anem_table_id")
+```
+# Check the status of anem_obs
+```{r}
+test <- anem %>% 
+  filter(!is.na(anem_obs)) %>% 
+  select(anem_id, old_anem_id, anem_obs)
+```
+
