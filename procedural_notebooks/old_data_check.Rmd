@@ -324,11 +324,23 @@ test4 <- pit_scans %>%
   filter(date %in% test$date) %>% 
   arrange(date, time)
 
-# fish from test
-# "" "" "986112100166389" "986112100172585"
+# fish from test "986112100172585" - have to look at 14:22 in the pitscan table.  There isn't anything scanned at 14:22 in the pitscan table...look in pit table
+test4 <- pit %>%
+  filter(date == "2017-06-15", 
+    time > "14:00") %>% 
+  arrange(time)
+# [1] "986112100163700" "986112100172598" "986112100172415"
 
-# scanned  from test4
- # "" "" "986112100166309"
+# are all 3 of these tags accounted for in clown?
+test5 <- clown %>% 
+  filter(tag_id %in% test4$scan)
+# it looks like 986112100172598  was seen in 2018 but isn't in clown for 2017...double check
+test6 <- test5 %>% 
+  filter(fish_table_id == 11833) %>% 
+  select(fish_table_id, anem_table_id)
+test6 <- left_join(test6, select(anem, anem_table_id, dive_table_id), by = "anem_table_id")
+test6 <- left_join(test6, select(dive, dive_table_id, date), by = "dive_table_id")
+# yes, this is from 2018, so the 2017 fish is the type-o.
 
 # make sure clown is fresh from db
 clown <- leyte %>% 
@@ -336,8 +348,8 @@ clown <- leyte %>%
   collect()
 
 change <- clown %>% 
-  filter(tag_id == "986112100166389") %>% 
-  mutate(tag_id = "986112100166309", 
+  filter(tag_id == "986112100172585") %>% 
+  mutate(tag_id = "986112100172598", 
     corr_message = ifelse(is.na(corr_message), "Changed tag_id because it was a type-o based on the pit scanner at the same time", paste("Changed tag_id because it was a type-o based on the pit scanner at the same time", corr_date, corr_editor, corr_message, sep = ", ")), 
     correction = "Y", 
     corr_date = "2018-10-16", 
