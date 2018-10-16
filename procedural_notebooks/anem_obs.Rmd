@@ -79,130 +79,45 @@ have_obs <-  have_obs %>%
     anem_obs = as.integer(anem_obs)) %>% 
       distinct()
 
+# do any anem_ids have more than one anem_obs? No.
 test <- have_obs %>% 
   group_by(anem_id) %>% 
   summarise(count = n()) %>% 
   filter(count > 1)
-
-huh <- have_obs %>% 
-  filter(anem_id %in% test$anem_id)
-
-
 
 # attach to all_anem
 all_anem <- select(all_anem, -anem_obs) 
 all_anem <- left_join(all_anem, have_obs, by = "anem_id")
 rm(new_obs, olds, anems, have_old)
 ```
-# all anem now contains some duplicates
+# Test
 ```{r}
+# Are there any repeat anem_table_ids?
 test <- all_anem %>%
-  select(anem_table_id) %>% 
-  summarise(count = n())
+  group_by(anem_table_id) %>% 
+  summarise(count = n()) %>% 
+  filter(count > 1)
 
-
-```
-
-
-
-
-# assign anem_obs to anemones that have been seen more than once but don't have an old_id ####
-multi <- all_anem %>% 
-  filter(is.na(anem_obs)) %>% 
-  group_by(anem_id) %>% 
-  summarise(visits = n()) %>% 
-  filter(visits > 1)
-
-# assign anem_obs
-x <- max(all_anem$anem_obs, na.rm = T)
-y <- x + 1
-z <- x+nrow(multi)
-multi <- multi %>% 
-  mutate(anem_obs = y:z) %>% 
-  select(-visits)
-
-# attach to the anem_obs list
-have_obs <- rbind(have_obs, multi)
-
-# attach to all_anem
-all_anem <- select(all_anem, -anem_obs)
-all_anem <- left_join(all_anem, have_obs, by = "anem_id")
-
-# remove the lines containing these anem_obs from all_anem
-anemObs <- all_anem %>% 
-  filter(!is.na(anem_obs))
-all_anem <- anti_join(all_anem, anemObs, by = c("lat", "lon", "old_anem_id", "anem_id", "era", "anem_obs"))
-
-
-
-
-
-# Visited more than once?
-```{r}
-same_id_more_than_once <- anem %>% 
+# do any anem_ids have more than one anem_obs? 
+test <- all_anem %>% 
   filter(!is.na(anem_id)) %>% 
+  select(anem_id, anem_obs) %>% 
+  distinct() %>% 
   group_by(anem_id) %>% 
-  summarise(num_visits = n()) %>% 
-  filter(num_visits > 1) 
-same <- same_id_more_than_once %>% 
-  mutate(anem_obs = seq(same_id_more_than_once$anem_id))
+  summarise(count = n()) %>% 
+  filter(count > 1)
 ```
-
-# Assign anem_obs to anemones with the same anem_id that have been visited more than once
+# Write to the database
 ```{r}
-anem <- left_join(anem, select(same, -num_visits), by = "anem_id")
+# backup 
+anem <- leyte %>% 
+  tbl("anemones") %>% 
+  collect()
 
-# find the max used anem_obs
-max <- anem %>% 
-  filter(!is.na(anem_obs)) %>% 
-  summarise(max = max(anem_obs))
-```
-# All anem_ids currently associated with anem_obs
-```{r}
-all_obs <- anem %>% 
-  filter(!is.na(anem_obs)) %>% 
-  select(anem_id, old_anem_id, anem_obs) %>% 
-  distinct()
+write_rds(anem, path = paste0("~/Documents/db_backups/", Sys.Date(), "_anemones.Rdata"))
 
-# pull out old_anem_ids
-olds <- all_obs %>% 
-  filter(!is.na(old_anem_id)) %>% 
-  select(old_anem_id, anem_obs) %>% 
-  distinct () %>% 
-  rename(anem_id = old_anem_id)
-
-all_obs <- select(all_obs, -old_anem_id)
-all_obs <- rbind(all_obs, olds) %>% 
-  distinct()
-```
-
-# Anems with more than one obs
-```{r}
-more <- all_obs %>% 
-  group_by(anem_id) %>% 
-  summarise(num_obs = n()) %>% 
-  filter(num_obs > 1)
-
-singles <- tibble()
-for (i in seq(more$anem_id)){
-  x <- all_obs %>% 
-    filter(anem_id == more$anem_id[i]) %>% 
-    arrange(anem_obs) %>% 
-    slice(1)
-  singles <- rbind(singles, x)
-}
-
-change <- anem %>% 
-  filter(anem_id %in% singles$anem_id) %>% 
-  select(-anem_obs)
-change <- left_join(change, singles, by = "anem_id")
-
-anem <- change_rows(anem, change, "anem_table_id")
-```
-# Check the status of anem_obs
-```{r}
-test <- anem %>% 
-  filter(!is.na(anem_obs)) %>% 
-  select(anem_id, old_anem_id, anem_obs)
+# write
+# dbWriteTable(leyte, "anemones", all_anem, row.names = F, overwrite = T)
+# dbDisconnect(leyte)
 ```
 
