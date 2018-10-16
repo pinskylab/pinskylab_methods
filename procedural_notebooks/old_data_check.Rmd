@@ -324,8 +324,14 @@ test4 <- pit_scans %>%
   filter(date %in% test$date) %>% 
   arrange(date, time)
 
-# scanned = 986112100163196
-# fish    = 986112100163996
+# fish    = 986112100173219  from test
+
+
+
+
+# scanned = 986112100164819  from test4
+
+# "986112100163196" "986112100174076" "986112100173208" "986112100164819" "986112100166309"
 
 # make sure clown is fresh from db
 clown <- leyte %>% 
@@ -333,8 +339,8 @@ clown <- leyte %>%
   collect()
 
 change <- clown %>% 
-  filter(tag_id == "986112100163996") %>% 
-  mutate(tag_id = "986112100163196", 
+  filter(tag_id == "986112100174070") %>% 
+  mutate(tag_id = "986112100174076", 
     corr_message = ifelse(is.na(corr_message), "Changed tag_id because it was a type-o based on the pit scanner at the same time", paste("Changed tag_id because it was a type-o based on the pit scanner at the same time", corr_date, corr_editor, corr_message, sep = ", ")), 
     correction = "Y", 
     corr_date = "2018-10-16", 
