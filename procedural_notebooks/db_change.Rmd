@@ -6,8 +6,8 @@ params:
   type: "anemones"
   id: "anem_table_id"
   db: "Leyte"
-  first: P073
-  last: P128
+  first: NA
+  last: NA
 
   
 ---
@@ -27,22 +27,21 @@ Find the range of rows to be changed
 # 3 rows have an old anem id but no anem_id, fixing in the database on 2018-10-15, MRS
 ```{r change}
 dat <- db %>% 
-  tbl("anemones") %>% 
+  tbl(params$type) %>% 
   collect()
 
 change <- dat %>% 
-  filter(!is.na(old_anem_id) & is.na(anem_id)) %>% 
-  mutate(anem_id = old_anem_id, 
-    correction = "Y", 
-    corr_date = "2018-10-15", 
+  filter(anem_id == 3122) %>% 
+  mutate(correction = "Y", 
+    corr_date = "2018-10-16", 
     corr_editor = "MRS", 
-    corr_message = "Row contained an old_anem_id but not an anem_id, moved the old_anem_id over into the correct field.", 
-    old_anem_id = NA)
+    corr_message = "Changed old_anem_id from 1250 to 1218 because 1250 was seen elsewhere during the same dive and 1218 is closer to where 3122 was mapped.", 
+    old_anem_id = 1218)
 
 dat <- change_rows(dat, change, params$id)
 
 test <- dat %>% 
-  filter(anem_id == 127)
+  filter(anem_id == 3122)
 ```
 
 
