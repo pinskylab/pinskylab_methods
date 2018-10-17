@@ -368,17 +368,38 @@ write_rds(backup, path = "~/Documents/db_backups/clownfish.Rdata")
 # make sure that pit tags with N only occur once on the data sheet
 ```{r}
 multi <- clown %>% 
-  filter(recap != "Y") %>% 
+  filter(recap != "Y", 
+    !is.na(tag_id)) %>% 
   group_by(tag_id) %>% 
   summarise(tag_count = n()) %>% 
   filter(tag_count > 1)
 
 # 10 tags don't look like recaps but don't have a y
 recaps <- clown %>% 
-  filter(tag_id %in% multi$tag_id & recap != "Y") %>% 
-  arrange(tag_id)
+  filter(tag_id %in% multi$tag_id,
+    recap == "N" | is.na(recap)) %>% 
+  arrange(tag_id) %>% 
+  select(fish_table_id, anem_table_id, sample_id, fin_id, recap, tag_id)
 
-# this fish was captured and the tag was scanned but the fish escaped before the tag could be implanted so the next fish got the tag
+# attach obs time and dive_table_id
+recaps <- left_join(recaps, select(anem, anem_table_id, dive_table_id, obs_time))
+# attach date
+recaps <- left_join(recaps, select(dive, dive_table_id, date)) 
+recaps <- recaps %>% 
+  select(-dive_table_id)
+
+# look at the pitscan table for those times
+test <- pit %>% 
+  filter(date %in% recaps$date) %>% 
+  arrange(date, time)
+
+# look at the fish associated with that anem
+test2 <- clown %>% 
+  filter(anem_table_id == 7531) %>% 
+  arrange(fin_id)
+
+
+# one fish was captured and the tag was scanned but the fish escaped before the tag could be implanted so the next fish got the tag
 # make sure clown is fresh from db
 clown <- leyte %>% 
   tbl("clownfish") %>% 
@@ -402,8 +423,9 @@ write_rds(backup, path = "~/Documents/db_backups/clownfish.Rdata")
 
 # dbWriteTable(leyte, "clownfish", clown, row.names = F, overwrite = T)
 
-```
+# the rest of the fish have weird shadow versions of themselves.
 
+```
 
 # if multi is not zero rows, there is a type-o in one of the rows for each tag listed, double check these. (the recent anti_join(pit, tag_ids) should have also flagged this)
 
