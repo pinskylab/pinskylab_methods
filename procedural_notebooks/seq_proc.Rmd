@@ -2,15 +2,15 @@
 title: "Processing sequences fall 2018"
 output: html_notebook
 params:
-  seq:  SEQ04
+  seq:  SEQ07
   
 ---
 Changed the names of the sequences to allow for the sequencing ids that Sarah has used.
 
 ```{r setup}
+library(tidyverse)
 source("../genomics/scripts/lab_helpers.R")
 lab <- read_db("Laboratory")
-library(readr)
 ```
 See the jupyter notebook seq_processing for the amphiprion side of this protocol.  Start there.
 
