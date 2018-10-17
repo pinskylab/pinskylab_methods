@@ -1,10 +1,10 @@
 ---
-title: "add seqs to pcr pools"
+title: "change dive num for split dives"
 output:
   pdf_document: default
 params: 
-  type: "anemones"
-  id: "anem_table_id"
+  type: "diveinfo"
+  id: "dive_table_id"
   db: "Leyte"
   first: NA
   last: NA
@@ -24,24 +24,19 @@ db <- read_db(params$db)
 dat <- db %>% tbl(params$type) %>% collect()
 ```
 Find the range of rows to be changed
-# 3 rows have an old anem id but no anem_id, fixing in the database on 2018-10-15, MRS
 ```{r change}
 dat <- db %>% 
   tbl(params$type) %>% 
   collect()
 
 change <- dat %>% 
-  filter(anem_id == 3122) %>% 
-  mutate(correction = "Y", 
-    corr_date = "2018-10-16", 
-    corr_editor = "MRS", 
-    corr_message = "Changed old_anem_id from 1250 to 1218 because 1250 was seen elsewhere during the same dive and 1218 is closer to where 3122 was mapped.", 
-    old_anem_id = 1218)
+  filter(dive_table_id == 588 | dive_table_id == 324) %>% 
+  mutate(corr_message = paste(corr_message, "changed dive_num to reflect split", sep = ", "), 
+         dive_num = ifelse(dive_table_id == 324, 40.1, dive_num), 
+         dive_num = ifelse(dive_table_id == 588, 40.2, dive_num))
 
 dat <- change_rows(dat, change, params$id)
 
-test <- dat %>% 
-  filter(anem_id == 3122)
 ```
 
 
