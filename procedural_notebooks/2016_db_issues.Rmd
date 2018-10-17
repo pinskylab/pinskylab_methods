@@ -1,0 +1,346 @@
+---
+title: "2016 leyte database issues"
+output: html_notebook
+---
+```{r setup}
+source("../genomics/scripts/lab_helpers.R")
+library(tidyverse)
+```
+
+
+On 2018-10-16, when I was using the skeleton of our field type-o checking code against data in the database I found that a few tag_ids are repeated on rows they shouldn't be.  When I tried to get to the bottom of it by checking the data sheet, I saw that the fish in the fish table do not match the rows on the data sheet.
+For example anem_table_id 7531.
+
+```{r example}
+leyte <- write_db("Leyte")
+
+prob <- leyte %>% 
+  tbl("clownfish") %>% 
+  filter(anem_table_id == 7531) %>% 
+  collect() %>% 
+  arrange(fin_id)
+```
+
+I propose to download the db for 2016 and compare it to a processed version of the excel doc to see the differences.  Process the excel doc using the github 2016 release of leyteBuildDb.
+
+```{r get db version}
+dive_db <- leyte %>% 
+  tbl("diveinfo") %>% 
+  collect() %>% 
+  filter(grepl("2016", date))
+
+anem_db <- leyte %>% 
+  tbl("anemones") %>% 
+  filter(dive_table_id %in% dive_db$dive_table_id) %>% 
+  collect()
+
+clown_db <- leyte %>% 
+  tbl("clownfish") %>% 
+  filter(anem_table_id %in% anem_db$anem_table_id) %>% 
+  collect()
+```
+
+```{r get excel version}
+excel_file = "~/Downloads/GPSsurveys2016_20170719MRS.xlsx"
+dive_xl <- readxl::read_excel(excel_file, sheet = "DiveInfo", col_names=TRUE)
+
+clown_xl <- readxl::read_excel(excel_file, sheet = "Clownfish", col_names=TRUE)
+
+# convert any capitalized column names to lower case
+names(dive_xl) <- str_to_lower(names(dive_xl))
+names(clown_xl) <- str_to_lower(names(clown_xl))
+
+# remove extra rows
+clown_xl <- clown_xl[!is.na(clown_xl$divenum), ]
+
+# remove dates that excel adds to times
+clown_xl <- clown_xl %>% 
+  separate(obstime, into = c("baddate", "obstime"), sep = " ") %>%
+  select(-contains("bad")) 
+
+# change column names to match db
+
+# add extra columns for db if they don't exist
+x <- try(select(clown_xl, depth_ft))
+if("try-error" %in% class(x)){
+  clown_xl <- rename(clown_xl, depth_ft = ft)
+}
+x <- try(select(clown_xl, depth_m))
+if("try-error" %in% class(x)){
+  clown_xl <- rename(clown_xl, depth_m = depth)
+}
+x <- try(select(clown_xl, anem_id))
+if("try-error" %in% class(x)){
+  clown_xl <- rename(clown_xl, anem_id = anemid)
+}
+x <- try(select(clown_xl, old_anem_id))
+if("try-error" %in% class(x)){
+  clown_xl <- rename(clown_xl, old_anem_id = oldanemid)
+}
+x <- try(select(clown_xl, anem_sample_id))
+if("try-error" %in% class(x)){
+  clown_xl <- rename(clown_xl, anem_sample_id = anemsampleid)
+}
+
+x <- try(select(clown_xl, id)) # does the column id exist?
+if("try-error" %in% class(x)){ # if id doesn't exist
+  clown_xl$anem_table_id <- 1:nrow(clown_xl) # make an anem_table_id column
+}else{
+  clown_xl <- rename(clown_xl, anem_table_id = id) # if there wasn't an error, id exists and needs to be renamed to anem_table_id
+}
+
+# create a summary table for number of fish
+summary <- clown_xl %>%
+  select(anem_table_id, contains("size"), -contains("spp2size")) %>% 
+  gather(contains("size"), key = "fish", value = "size") %>% 
+  filter(!is.na(size)) %>% 
+  group_by(anem_table_id) %>% 
+  summarise(num_fish = n())
+
+# add calculation back into surv
+clown_xl <- left_join(clown_xl, summary, by = "anem_table_id")
+
+clown_xl$collector <- as.character(clown_xl$collector)
+
+# convert surveynum to dive_table_id
+
+# what date range is this survey?
+
+if (year == "16"){
+  dive_xl <- filter(dive_xl, date < "2016-12-30" & date > "2016-01-01")
+}
+
+dive <- dive_db %>% 
+  # takes the dive numbers from that specific year and the dive_table_ids that span years
+  select(dive_num, dive_table_id, gps, date) %>% 
+  filter(grepl("2016", date)) %>% 
+  rename(divenum = dive_num)
+  
+clown_xl <- left_join(clown_xl, dive, by = c("divenum","gps")) # attaches dive_table_ids for this years dive nums
+
+# update anem_table_id to reflect previous data
+  # adjust for existing id in db
+  # idmax <- max(anem_db$anem_table_id)
+  # clown_xl$anem_table_id <- 1:nrow(clown_xl) + idmax # populate id column
+  # rm(y, idmax)
+
+
+
+# clown_xl$anem_id <- as.character(clown_xl$anem_id)
+
+# select the columns in the order of the db
+anem_xl <- select(clown_xl, anem_table_id, dive_table_id, obstime, collector, gps, depth_m, depth_ft, anemspp, anemdia, 
+                  # anemobs, 
+                  old_anem_id, anem_id, anem_sample_id, spp, num_fish, notes)
+```
+Which anems are in the xl that are not in the db?
+```{r}
+anem_xl <- anem_xl %>% 
+  rename(obs_time = obstime, 
+         anem_spp = anemspp)
+test <- anti_join(anem_xl, anem_db, by = c("obstime" = "obs_time", "anemspp" = "anem_spp", "anem_id", "old_anem_id"))
+```
+```{r}
+
+
+############################################################################
+# anem is now ready for anem table of database and there is a anem_table_id assigned to each row
+############################################################################
+# make one row for each fish, depends on year
+if (year <= "13"){
+ fish <- clown_xl %>% 
+    select(-contains("spp2")) %>%  # remove second species
+    select(anem_table_id:anem_id, depth_m:dive_table_id, everything()) %>% 
+    gather(key, value, -anem_table_id:-spp) %>% 
+    mutate(anem_key = substr(key,nchar(key), nchar(key))) %>% # create a fish identifier for each anem_table_id (more than one fish per anem)
+    mutate(key = substr(key, 1, nchar(key)-1)) %>% # remove numbers from all column names
+    filter(!is.na(value))  # remove blank value
+}
+if (year == "14" | year == "16"){
+  fish <- clown_xl %>% 
+    select(-contains("spp2")) %>% # remove second species 
+    select(anem_table_id:spp, notes:dive_table_id, everything()) %>% 
+    gather(key, value, -anem_table_id:-dive_table_id) %>% 
+    mutate(anem_key = substr(key,nchar(key), nchar(key))) %>% # create a fish identifier for each anem_table_id (more than one fish per anem)
+    mutate(key = substr(key, 1, nchar(key)-1)) %>% # remove numbers from all column names
+    filter(!is.na(value))  # remove blank value
+  
+}
+if (year == "15"){
+  if (substr(excel_file, 21,22) == "01"){
+  fish <- clown_xl %>% 
+    select(-contains("spp2")) %>% # remove second species 
+    select(divenum:spp, notes:dive_table_id, everything()) %>% 
+    gather(key, value, -divenum:-dive_table_id) %>% 
+    mutate(anem_key = substr(key,nchar(key), nchar(key))) %>% # create a fish identifier for each anem_table_id (more than one fish per anem)
+    mutate(key = substr(key, 1, nchar(key)-1)) %>% # remove numbers from all column names
+    filter(!is.na(value))  # remove blank value
+  }
+}
+if (year == "15"){
+  if (substr(excel_file, 21,22) == "05"){
+    fish <- clown_xl %>% 
+      select(-contains("spp2")) %>% # remove second species 
+      select(anem_table_id:spp, notes:dive_table_id, everything()) %>% 
+      gather(key, value, -anem_table_id:-dive_table_id) %>% 
+      mutate(anem_key = substr(key,nchar(key), nchar(key))) %>% # create a fish identifier for each anem_table_id (more than one fish per anem)
+      mutate(key = substr(key, 1, nchar(key)-1)) %>% # remove numbers from all column names
+      filter(!is.na(value))  # remove blank value
+  }
+}
+
+fish <- spread(fish, key = key, value = value) # place size, col, id, rna in own columns
+
+# turn spp2 fish into their own rows as well, depends on year
+if (year <= "13"){
+  spp2 <- clown_xl %>% 
+  select(anem_table_id:anem_id, spp2:dive_table_id) %>% # reduce number of columns
+  select(anem_table_id:anem_id, depth_m:dive_table_id, contains("spp2")) %>% # rearrange columns
+  gather(key, value, -anem_table_id:-spp2) %>% # # make one row for each nonAPCL fish
+  mutate(key = gsub("spp2", "", key)) %>% # remove the 2 from the spp but not from size2
+  mutate(anem_key = substr(key,nchar(key), nchar(key))) %>% # create a fish identifier for each anem_table_id (more than one fish per anem)
+  mutate(key = substr(key, 1, nchar(key)-1)) %>% # remove numbers from all column names
+  filter(!is.na(value))  # remove blank value
+}
+if (year == "14" | year == "16"){
+  spp2 <- clown_xl %>% 
+    select(anem_table_id:anem_sample_id, spp2:dive_table_id) %>% # reduce number of columns
+    select(anem_table_id:anem_sample_id, notes:dive_table_id, contains("spp2")) %>% # rearrange columns
+    gather(key, value, -anem_table_id:-spp2) %>% # # make one row for each nonAPCL fish
+    mutate(key = gsub("spp2", "", key)) %>% # remove the 2 from the spp but not from size2
+    mutate(anem_key = substr(key,nchar(key), nchar(key))) %>% # create a fish identifier for each anem_table_id (more than one fish per anem)
+    mutate(key = substr(key, 1, nchar(key)-1)) %>% # remove numbers from all column names
+    filter(!is.na(value))  # remove blank value
+}
+if (year == "15"){
+  if (substr(excel_file, 21,22) == "01"){
+  spp2 <- clown_xl %>% 
+    select(divenum:anem_sample_id, spp2:dive_table_id) %>% # reduce number of columns
+    select(divenum:anem_sample_id, notes:dive_table_id, contains("spp2")) %>% # rearrange columns
+    gather(key, value, -divenum:-spp2) %>% # # make one row for each nonAPCL fish
+    mutate(key = gsub("spp2", "", key)) %>% # remove the 2 from the spp but not from size2
+    mutate(anem_key = substr(key,nchar(key), nchar(key))) %>% # create a fish identifier for each anem_table_id (more than one fish per anem)
+    mutate(key = substr(key, 1, nchar(key)-1)) %>% # remove numbers from all column names
+    filter(!is.na(value))  # remove blank value
+  }
+}
+if (year == "15"){
+  if (substr(excel_file, 21,22) == "05"){
+    spp2 <- clown_xl %>% 
+      select(anem_table_id:anem_sample_id, spp2:dive_table_id) %>% # reduce number of columns
+      select(anem_table_id:anem_sample_id, notes:dive_table_id, contains("spp2")) %>% # rearrange columns
+      gather(key, value, -anem_table_id:-spp2) %>% # # make one row for each nonAPCL fish
+      mutate(key = gsub("spp2", "", key)) %>% # remove the 2 from the spp but not from size2
+      mutate(anem_key = substr(key,nchar(key), nchar(key))) %>% # create a fish identifier for each anem_table_id (more than one fish per anem)
+      mutate(key = substr(key, 1, nchar(key)-1)) %>% # remove numbers from all column names
+      filter(!is.na(value))  # remove blank value
+  }
+}
+    
+
+spp2 <- spread(spp2, key = key, value = value) # place size, col, id, rna in own columns
+
+# make sure columns are in same order as clown_xl
+spp2$col <- NA
+spp2$id <- NA
+spp2$tagid <- NA
+spp2$recap <- NA
+spp2 <- rename(spp2, spp = spp2)
+spp2 <- select(spp2, anem_table_id:anem_sample_id, spp,  notes:anem_key, col, id, recap, size, tagid)
+
+# January 2015 we did not collect tissue samples so there is no id column
+if (substr(excel_file, 18, 19) == "15"){
+  if (substr(excel_file, 21,22) == "01"){
+    fish$id <- NA
+  }
+}
+
+# join two tables
+fish <- rbind(fish, spp2)
+
+# add fish table id and other columns
+fish$fish_table_id <- 1:nrow(fish)
+fish$sample_id <- NA
+for (i in 1:nrow(fish)){
+  if (!is.na(fish$id[i])){
+    fish$sample_id[i] <- paste("APCL", year, "_", formatC(as.numeric(fish$id[i]), width = 3, format = "d", flag = "0"), sep = "")
+  }
+}
+fish$capid <- NA
+x <- try(select(fish, recap))
+if("try-error" %in% class(x)){
+  fish$recap <- NA
+}
+x <- try(select(fish, tagid))
+if("try-error" %in% class(x)){
+  fish$tagid <- NA
+}
+
+fish <- rename(fish, color = col)
+
+# update fish_table_id 
+# populate id column
+if (year == "12"){
+  fish$fish_table_id <- fish$fish_table_id
+}else{
+  # adjust for existing id in db
+  y <- dbReadTable(leyte, "clownfish")
+  idmax <- max(y$fish_table_id)
+  fish$fish_table_id <- 1:nrow(fish) + idmax # populate id column
+  rm(y, idmax)
+}
+
+fish$id <- as.character(fish$id)
+fish$sample_id <- as.character(fish$sample_id)
+fish$tagid <- as.character(fish$tagid)
+
+# select columns to match db
+fish <- select(fish, fish_table_id, anem_table_id, spp, size, id, sample_id, color, capid, recap, tagid, notes, collector)
+
+# ##########################################################################
+# # Write to DB                       BE CAREFUL
+# ##########################################################################
+# 
+# # First time only
+# dbWriteTable(leyte, "anemones", anem, overwrite = T, row.names = F)
+# dbWriteTable(leyte, "clownfish", fish, overwrite = T, row.names = F)
+# 
+# 
+############## ANEMONES ###########################
+# # pull dive table from db
+# exist <- dbReadTable(leyte, "anemones")
+# exist$anem_id <- as.character(exist$anem_id)
+# 
+# # anti_join, what is in y that is not already in x
+# # what is in the new pit that is not already in the database
+# new <- anti_join(anem, exist, copy = T)
+# new <- distinct(new)
+# 
+# # Add new dives to db *** note if you want to overwrite or append *****
+# dbWriteTable(leyte, "anemones", new, overwrite = F, append = T, row.names = F)
+####################################################
+
+############ CLOWNFISH #############################
+# # pull dive table from db
+# exist <- dbReadTable(leyte, "clownfish")
+# exist$tagid <- as.character(exist$tagid)
+# exist$recap <- as.character(exist$recap)
+# 
+# # anti_join, what is in y that is not already in x
+# # what is in the new pit that is not already in the database
+# new <- anti_join(fish, exist, copy = T)
+# new <- distinct(new)
+# 
+# # Add new dives to db *** note if you want to overwrite or append *****
+# dbWriteTable(leyte, "clownfish", new, overwrite = F, append = T, row.names = F)
+
+####################################################
+
+# dbDisconnect(leyte)
+# 
+# rm(summary, clown_xl, dive, excel_file, x, fish, spp2, summary, anem, exist, new, i, year)
+# rm(leyte)
+```
+
+
+
