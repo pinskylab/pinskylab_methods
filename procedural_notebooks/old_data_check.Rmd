@@ -407,10 +407,10 @@ test <- pit %>%
 
 # look at the fish associated with that anem
 test2 <- clown %>% 
-  filter(anem_table_id == 7531) %>% 
+  filter(anem_table_id == 7491) %>% 
   arrange(fin_id)
 sight <- clown_sight %>% 
-  filter(anem_table_id == 7531) %>% 
+  filter(anem_table_id == 7491) %>% 
   arrange(fin_id)
 test2 <- rbind(test2, sight)
 
