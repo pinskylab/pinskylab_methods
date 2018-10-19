@@ -1,10 +1,10 @@
 ---
-title: "change dive num for split dives"
+title: "change anem_table_id for same anem"
 output:
-  pdf_document: default
+  html_notebook: default
 params: 
-  type: "diveinfo"
-  id: "dive_table_id"
+  type: "clownfish"
+  id: "fish_table_id"
   db: "Leyte"
   first: NA
   last: NA
@@ -25,17 +25,15 @@ dat <- db %>% tbl(params$type) %>% collect()
 ```
 Find the range of rows to be changed
 ```{r change}
-dat <- db %>% 
-  tbl(params$type) %>% 
-  collect()
+change <- dat %>%
+  filter(anem_table_id == 7492) %>% 
+  mutate(anem_table_id = 7491, 
+    correction = "Y", 
+    corr_editor = "MRS", 
+    corr_date = "2018-10-19", 
+    corr_message = "Changed anem_table_id from 7492 to 7491 because these fish were on anem_id 2422 seen at 10:56 on 2016-05-31")
 
-change <- dat %>% 
-  filter(dive_table_id == 588 | dive_table_id == 324) %>% 
-  mutate(corr_message = paste(corr_message, "changed dive_num to reflect split", sep = ", "), 
-         dive_num = ifelse(dive_table_id == 324, 40.1, dive_num), 
-         dive_num = ifelse(dive_table_id == 588, 40.2, dive_num))
-
-dat <- change_rows(dat, change, params$id)
+dat <- change_rows(dat, change, "fish_table_id")
 
 ```
 
@@ -49,7 +47,7 @@ backup <- leyte %>%
 
 write_rds(backup, path = paste0("~/Documents/db_backups/", Sys.Date(), "_", params$type, ".Rdata"))
 
-# dbWriteTable(write, params$type, dat, row.names = F, overwrite = T, append = F)
+# dbWriteTable(write, params$type, dat, row.names = F, overwrite = T)
 # dbDisconnect(write)
 ```
 
