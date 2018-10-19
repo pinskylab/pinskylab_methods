@@ -32,6 +32,11 @@ clown <- leyte %>%
   filter(anem_table_id %in% anem$anem_table_id) %>% 
   collect()
 
+clown_sight <- leyte %>% 
+  tbl("clown_sightings") %>% 
+  filter(anem_table_id %in% anem$anem_table_id) %>% 
+  collect()
+
 pit <- leyte %>% 
   tbl("pitscan") %>% 
   collect()
@@ -367,36 +372,49 @@ write_rds(backup, path = "~/Documents/db_backups/clownfish.Rdata")
 ```
 # make sure that pit tags with N only occur once on the data sheet
 ```{r}
+clown <- leyte %>% 
+  tbl("clownfish") %>% 
+  collect()
+
 multi <- clown %>% 
-  filter(recap != "Y", 
+  filter(recap == "N" | is.na(recap), 
     !is.na(tag_id)) %>% 
   group_by(tag_id) %>% 
   summarise(tag_count = n()) %>% 
   filter(tag_count > 1)
 
+knitr::kable(multi)
+
 # 10 tags don't look like recaps but don't have a y
-recaps <- clown %>% 
+bad_recaps <- clown %>% 
   filter(tag_id %in% multi$tag_id,
     recap == "N" | is.na(recap)) %>% 
   arrange(tag_id) %>% 
   select(fish_table_id, anem_table_id, sample_id, fin_id, recap, tag_id)
 
 # attach obs time and dive_table_id
-recaps <- left_join(recaps, select(anem, anem_table_id, dive_table_id, obs_time))
+bad_recaps <- left_join(bad_recaps, select(anem, anem_table_id, dive_table_id, obs_time))
 # attach date
-recaps <- left_join(recaps, select(dive, dive_table_id, date)) 
-recaps <- recaps %>% 
+bad_recaps <- left_join(bad_recaps, select(dive, dive_table_id, date)) 
+bad_recaps <- bad_recaps %>% 
   select(-dive_table_id)
+kable(bad_recaps)
 
 # look at the pitscan table for those times
 test <- pit %>% 
-  filter(date %in% recaps$date) %>% 
+  filter(date %in% bad_recaps$date) %>% 
   arrange(date, time)
 
 # look at the fish associated with that anem
 test2 <- clown %>% 
   filter(anem_table_id == 7531) %>% 
   arrange(fin_id)
+sight <- clown_sight %>% 
+  filter(anem_table_id == 7531) %>% 
+  arrange(fin_id)
+test2 <- rbind(test2, sight)
+
+# 9 fish were seen on this anemone on the data sheet but only 7 are in the database and one line is just a repeated tag
 
 
 # one fish was captured and the tag was scanned but the fish escaped before the tag could be implanted so the next fish got the tag
