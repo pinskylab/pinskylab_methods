@@ -62,7 +62,6 @@ cd /local/shared/pinsky_lab/sequencing/hiseq_2016_10_25_SEQ17
     7.  In amphiprion, in the directory you made in the previous step, paste the link
 
 -   Repeat for all lanes
-
 -   Count raw reads (optional) - that is an L behind the wc
 
 ``` bash
@@ -83,9 +82,9 @@ zcat XXXXX.fastq.gz | grep -c "^AAACGA"
 1.  Update where files are saved on amphiprion in the sequencing table of the sql database, enter data by hand
 
 2.  Make a working directory
-    -   make separate pool directories to keep the process radtags output separate
 
--   EXAMPLE - please don't make folders in my michelles folder
+    -   make separate pool directories to keep the process radtags output separate
+    -   EXAMPLE - please don't make folders in my michelles folder
 
 ``` r
 mkdir /local/home/michelles/02-apcl-ddocent/17seq
@@ -101,16 +100,105 @@ mkdir lane1 lane2
 
 1.  Create an index file in R
 
-[create\_index.R](https://github.com/stuartmichelle/Genetics/blob/master/code/create_index.R). Upload the resulting file to amphiprion into the logs directory. 7. Create a names file in R using the script [create\_names.R](https://github.com/stuartmichelle/Genetics/blob/master/code/create_names.R). Upload the resulting files to amphiprion into the logs directory. 8. Copy barcodes file in your logs directory from the logs directory of the last sequencing run only if you used the same barcodes, don't include barcodes you didn't use.
+``` r
+# read baits table
+baits <- lab %>%
+  tbl("baits") %>%
+  collect() %>%
+  select(baits_id, seq)
 
-[Return to analysis protocol](./0.hiseq_ddocent.md)
+# read PCR table
+pcr <- lab %>% 
+  tbl("pcr") %>% 
+  collect() %>% 
+  filter(SEQ %in% params$seq) %>% 
+  select(pcr_id, bait_id, index)
+
+# join pcr_id and index to seq id
+pools <- left_join(pcr, baits, by = c("bait_id" = "baits_id")) %>% 
+  select(seq, pcr_id, index)
+
+# pull in the barcodes for illumina indexes
+index <- lab %>% 
+  tbl("illumina") %>% 
+  collect()
+
+# join the barcodes to the seq and pcr ids
+pools <- left_join(pools, index, by = c("index" = "index_num")) %>% 
+  select(seq, pcr_id, index_code)
+
+# create a list of the multiple seqs
+seqs <- select(pools, seq) %>% 
+  distinct()
+for(i in seq(seqs$seq)){
+  x <- pools %>% 
+  filter(seq == seqs$seq[i]) %>% 
+  select(pcr_id, index_code)
+
+# write the files for amphiprion
+# readr::write_tsv(x, path = paste0("index-", seqs$seq[i], ".tsv"), col_names = F)
+}
+```
+
+1.  Create a names file in R
+    The names have to be species, underscore and then the sample identifier, so APCL\_L5432 for ligation\_id L5432
+
+``` r
+# read the ligations
+ligs <- lab %>% 
+  tbl("ligation") %>% 
+  filter(pool %in% pools$pcr_id) %>% 
+  select(ligation_id, barcode_num, pool) %>% 
+  collect()
+
+# read the barcodes
+barcode <- lab %>% 
+  tbl("barcodes") %>% 
+  collect()
+
+# join the ligation_id and pool ids to the barcodes
+ligs <- left_join(ligs, barcode, by = "barcode_num")
+
+# join the ligs to the seq_ids
+ligs <- left_join(ligs, pools, by = c("pool" = "pcr_id")) %>% 
+  # adjust the ligation name for dDocent
+  mutate(name = paste0("APCL_", ligation_id)) %>% 
+  select(seq, pool, name, barcode) %>% 
+# reduce the pool to only a number
+    mutate(pool = substr(pool, 2,5))
+
+# for seq04, the seq column is empty.  Replace it.
+ligs <- ligs %>% 
+  mutate(seq = params$seq)
+
+# write files for amphiprion
+# create a list of the multiple seqs
+names <- select(ligs, pool) %>% 
+  distinct()
+
+# loop through all of the pools
+for(i in seq(names$pool)){
+  x <- ligs %>% 
+  filter(pool == names$pool[i]) %>% 
+  select(name, barcode)
+
+# write the files for amphiprion
+readr::write_tsv(x, path = paste0("names_", names$pool[i], ".tsv"), col_names = F)
+}
+```
+
+1.  Copy barcodes file in your logs directory from the logs directory of the last sequencing run only if you used the same barcodes, don't include barcodes you didn't use.
+
+``` bash
+cp /local/home/michelles/02-apcl-ddocent/16seq/logs/barcodes /local/home/michelles/02-apcl-ddocent/17seq/logs/barcodes
+```
 
 Barcode splitter
 ================
 
 -   takes about 8 hours for 2 lanes and 192 samples
 
-    -   If this is a paired end sequencing run, the inputs of process radtags will be different from the ones listed below. A paired end run hasn’t been done in long enough time that a discussion should be had before proceeding. If the current run is of single end reads, proceed with confidence.
+-   If this is a paired end sequencing run, the inputs of process radtags will be different from the ones listed below. A paired end run hasn’t been done in long enough time that a discussion should be had before proceeding. If the current run is of single end reads, proceed with confidence.
 
 Process radtags
 ===============
