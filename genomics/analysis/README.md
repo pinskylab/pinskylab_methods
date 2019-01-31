@@ -3,4 +3,6 @@
 
 <br>
 ## Files ending in .nb.html are R-notebooks that are intended to be downloaded and then can either be viewed in a web browser for the same view you had in github with the .md or can be opened in RStudio and the raw code that generated the document is available.  
+
+<br>
 **This is helpful when you want to take a protocol, find and replace some file names to make it your own, and run the analysis/protocol on your own.**
