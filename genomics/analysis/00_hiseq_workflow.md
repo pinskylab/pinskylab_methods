@@ -5,9 +5,7 @@ Processing HiSEQ data
 -   [Barcode splitter](#barcode-splitter)
 -   [Process radtags](#process-radtags)
 -   [Rename the output of process\_radtags](#rename-the-output-of-process_radtags)
--   [Trim and map reads using dDocent](#trim-and-map-reads-using-ddocent)
--   [Call SNPs](#call-snps)
--   [Filter output to refine data](#filter-output-to-refine-data)
+-   [Once all of these steps are complete, move to the callSNPs\_template file.](#once-all-of-these-steps-are-complete-move-to-the-callsnps_template-file.)
     -   [Footnote: Details of process\_radtags options](#footnote-details-of-process_radtags-options)
 
 This method is designed to import and process hiseq output through calling SNPs.
@@ -359,20 +357,8 @@ rm -r Pool1
 rm -r bcsplit/
 ```
 
-Trim and map reads using dDocent
-================================
-
--   takes about 3 hours
-
-Call SNPs
-=========
-
--   takes about 3-4 days depending on how many threads are used
-
-Filter output to refine data
-============================
-
--   takes about 4 hours
+Once all of these steps are complete, move to the callSNPs\_template file.
+==========================================================================
 
 ### Footnote: Details of process\_radtags options
 
