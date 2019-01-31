@@ -4,7 +4,7 @@ Calling SNPs on all APCL seqs as of 20181127
 -   [Find and replace each 20181127 with the current date and replace the "template" in this call\_SNPs document filename with your analysis date.](#find-and-replace-each-20181127-with-the-current-date-and-replace-the-template-in-this-call_snps-document-filename-with-your-analysis-date.)
     -   [Make a folder to hold samples and intermediate files](#make-a-folder-to-hold-samples-and-intermediate-files)
     -   [Symlink the sample files into the folder](#symlink-the-sample-files-into-the-folder)
-    -   [Remove the \* file with fetch](#remove-the-file-with-fetch)
+    -   [Remove the \* file with fetch or an sftp program](#remove-the-file-with-fetch-or-an-sftp-program)
         -   [Removing this is important, don't skip it](#removing-this-is-important-dont-skip-it)
     -   [Make a directory at home to store this notebook and filtering files](#make-a-directory-at-home-to-store-this-notebook-and-filtering-files)
 -   [Trim](#trim)
@@ -59,8 +59,8 @@ ln -s /data/apcl/31seq/samples/APCL_*.F.fq.gz /data/apcl/all_samples/20181127
 ls /data/apcl/all_samples/20181127
 ```
 
-Remove the \* file with fetch
------------------------------
+Remove the \* file with fetch or an sftp program
+------------------------------------------------
 
 ##### Removing this is important, don't skip it
 
