@@ -326,6 +326,38 @@ Rename the output of process\_radtags
 =====================================
 
 -   takes a few minutes
+-   In order to make the popmap, dDocent looks for the "\_" in a name and everything before that is the pop name.
+-   dDocent requires that the name follow the format of Population\_sample info, so the naming scheme of L4532 has to be converted to APCL\_L4532 as an example for the clownfish project. When creating the names file, make sure to account for this.
+-   Rename the files using the names file in the logs directory - the names file is the sample name tab separated from the barcode assigned to that sample. This command line must be run from within the **Pool directory** containing the sample files.
+
+``` bash
+cd /local/home/michelles/02-apcl-ddocent/17seq/Pool1/
+sh rename.for.dDocent_se_gz ../logs/names_12
+```
+
+If final barcode is not getting assigned, nano the names file, get rid of the final end of line character (go to the end and backspace), and re-run. It will look like it might not be working but “ls” will show that the final file was not renamed.
+
+Move the named samples into the samples directory
+
+``` bash
+cd /local/home/michelles/02-apcl-ddocent/17seq/Pool1/
+
+mv APCL* ../samples/
+```
+
+Here is an example of 1 pool being renamed, moved and the pool directories and bcsplit directories deleted:
+
+``` bash
+sh rename.for.dDocent_se_gz ../logs/names_61
+
+mv A* ../samples/
+
+cd ..
+
+rm -r Pool1
+
+rm -r bcsplit/
+```
 
 Trim and map reads using dDocent
 ================================
