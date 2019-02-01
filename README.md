@@ -3,7 +3,7 @@ Methods used by many of us in the lab
 
 ### field  
 
-This folder has been replaced by the repository [field] (https://github.com/pinskylab/field) for easier RStudio connection.  Maps are made using the repository [Phils_GIS_R] (https://github.com/pinskylab/Phils_GIS_R).  The folder in this methods repository contains old scripts used in the Philippines by the Leyte team to input and process data sheets.  It also contains data from the temperature loggers and GPS data.
+This folder has been replaced by the repository [field](https://github.com/pinskylab/field) for easier RStudio connection.  Maps are made using the repository [Phils_GIS_R](https://github.com/pinskylab/Phils_GIS_R).  The folder in this methods repository contains old scripts used in the Philippines by the Leyte team to input and process data sheets.  It also contains data from the temperature loggers and GPS data.
 
 ### genomics  
 
