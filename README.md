@@ -16,3 +16,7 @@ This folder contains protocols for general lab management such as how to create 
 ### procedural_notebooks  
 
 This folder contains a series of R notebooks that *hopefully* carry the reader through both the computing end of lab protocols (i.e. pulling data from the database and planning labwork) through the laboratory end of the protocols (i.e. step by step procedures in the lab).  These notebooks generate PDF documents that can be added to one's lab notebook, customized for the labwork done that day.
+
+### cookbook.md
+
+This file gives tips and tricks for how Pinsky Lab Members have overcome obstacles related to data science.  The struggle is real!
