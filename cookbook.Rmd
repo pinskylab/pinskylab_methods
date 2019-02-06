@@ -1,0 +1,35 @@
+---
+title: "Pinsky Lab Cookbook"
+output: 
+  github_document: 
+    toc: TRUE
+  html_notebook:
+    toc: TRUE
+---
+
+This document exists to share institutional knowledge for obstacles that are commonly run into by Pinsky Lab Members.  The struggle is real!
+
+# How to add undergrads to the Pinsky Lab github.
+1. Make sure the undergrad has signed up for github and note whatever email they used to sign up.
+1. Create the repository on github, this should be the project that they are working on.
+1. Invite the undergrad as a collaborator.
+
+# How to get RStudio and github to talk to each other
+1. Create a repository on github, copy the URL.
+1. Create a new project in RStudio and paste in the URL from github
+
+# How to move an existing project on github into RStudio
+1. Copy the URL from github for your repository.
+1. On your computer, add "_old" to the end of the name of your folder.
+1. Create a new project in Rstudio and paste in the URL from github with the normal folder name.
+1. Open the "_old" folder, copy all, open the new folder, paste all.  
+
+# How to transfer ownership of a repository from personal to pinskylab in github
+1. Click on the repository in github
+1. Click on "settings" in the upper middle right.
+1. Scroll down to click on "transfer ownership".
+
+# How to save an R plot as a pdf (when using ggplot)
+1. ggsave("filename.pdf") - will save the last plot created into working directory
+1. ggsave(plot, "filename.pdf") - will save the object called plot into the working directory.  
+1. ggsave(plot, here::here("plots", "filename.pdf")) - will save the object called plot into the plots folder that is closest to your working directory.
