@@ -1,0 +1,19 @@
+---
+title: "Make stock solution of `r params$final_conc`M NaCl"
+params:
+  final_conc: 4.45
+  final_vol_L: 0.25
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+Formula to calculate amount to add:
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+paste("58.44 g/mol * ", params$final_conc, " mol/L * ", params$final_vol_L, " L", sep = "")
+```
+
+1. Place `r params$final_vol_L * 400`mL MQ water in a schott bottle.  
+2. Add `r 58.44 * params$final_conc * params$final_vol_L`g NaCl.  
+3. Fill to `r params$final_vol_L`L with MQ water.  
+4. Autoclave immediately in order to get the salt to go into solution.

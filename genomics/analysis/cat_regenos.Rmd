@@ -1,0 +1,129 @@
+---
+title: "Find regenos and cat their sequences so that we have max data"
+output: html_notebook
+params:
+  seq:  SEQ07
+  dir:  07seq
+---
+
+Samples that have been sequenced more than once in an attempt to get better data:
+```{r setup}
+library(readr)
+source("../genomics/scripts/lab_helpers.R")
+lab <- read_db("Laboratory")
+```
+
+Find the regenos
+```{r}
+
+# all ligations
+ligs <- lab %>% 
+  tbl("ligation") %>% 
+  collect()
+
+# attach sample ids
+sample_ids <- samp_from_lig(ligs)
+ligs <- left_join(ligs, sample_ids, by = "ligation_id")
+
+# sample_ids that have been ligated more than once
+regenos <- ligs %>% 
+  filter(!is.na(retained)) %>% 
+  group_by(sample_id) %>% 
+  summarise(num_seq = n()) %>% 
+  filter(num_seq > 1, !is.na(sample_id))
+
+# sample_id, ligation_id, pool, and read count for regenotyped samples
+reg <- ligs %>% 
+  filter(sample_id %in% regenos$sample_id, 
+    !is.na(retained)) %>% 
+  select(sample_id, ligation_id, pool, retained) %>% 
+  arrange(sample_id) 
+
+# pull in pools and seq numbers
+pools <- lab %>%
+  tbl("pcr") %>% 
+  collect() %>% 
+  select(pcr_id, SEQ)
+
+# attach seq number to regenotyped sample info
+reg <- left_join(reg, pools, by = c("pool" = "pcr_id")) 
+reg <- reg %>% 
+  filter(!is.na(SEQ))
+
+# which samples from this sequencing run are regenotypes?
+this_run <- reg %>%
+  filter(SEQ == params$seq) %>% 
+  mutate(ligation_id = paste0("APCL_", ligation_id))
+
+write_csv(data.frame(this_run$ligation_id), path = paste0("regenos_from_", params$seq, ".csv"), col_names = F)
+
+print(paste(nrow(this_run), "samples from this run have been regenotyped", sep = " "))
+
+# how many of those haven't been cat'd yet?  Are in SEQ 30 or 31
+reg_this <- reg %>%
+  filter(sample_id %in% this_run$sample_id)
+
+#begin constructing the file of command lines ####
+write_file("#!/bin/bash", path = "cat_regenos.sh", append = F)
+write_file("\n", path = "cat_regenos.sh", append = T)
+
+# loop through the regenotyped files
+for (i in 1:nrow(regenos))  {
+x <- reg %>%
+  filter(sample_id == regenos$sample_id[i]) %>% 
+  arrange(SEQ)
+if (grepl(params$seq, list(x$SEQ))){
+  x <- x %>% 
+    mutate(SEQ = paste0(substr(SEQ, 4,5), "seq"))
+  if (nrow(x) == 2){
+    # construct the pieces for the line of code
+  y <- paste0("/data/apcl/", x$SEQ[1], "/samples/APCL_", x$ligation_id[1], ".F.fq.gz")
+  z <- paste0("/data/apcl/", x$SEQ[2], "/samples/APCL_", x$ligation_id[2], ".F.F.fq.gz")
+  a <- paste0("/data/apcl/", params$dir, "/samples/",  "APCL_",x$ligation_id[1], ".", x$ligation_id[2], ".F.fq.gz")
+  b <- paste("cat", y, z, ">", a, sep = " ")
+  write_file(b, path = "cat_regenos.sh", append = T)
+  write_file("\n", path = "cat_regenos.sh", append = T)
+  }
+  if (nrow(x) == 3){
+    # construct the pieces for the line of code
+  y <- paste0("/data/apcl/", x$SEQ[1], "/samples/APCL_", x$ligation_id[1], ".F.fq.gz")
+  z <- paste0("/data/apcl/", x$SEQ[2], "/samples/APCL_", x$ligation_id[2], ".F.fq.gz")
+  c <- paste0("/data/apcl/", x$SEQ[3], "/samples/APCL_", x$ligation_id[3], ".F.F.fq.gz")
+  a <- paste0("/data/apcl/", params$dir, "/samples/",  "APCL_", x$ligation_id[1], ".", x$ligation_id[2], ".", x$ligation_id[3], ".F.fq.gz")
+  b <- paste("cat", y, z, c, ">", a, sep = " ")
+  write_file(b, path = "cat_regenos.sh", append = T)
+  write_file("\n", path = "cat_regenos.sh", append = T)
+  }
+}
+}
+```
+Write command lines to move the individual files from the general population into side folders
+```{r}
+# Only moving files that are from this seq
+
+# begin constructing the file of command lines
+write_file("#!/bin/bash", path = "move_regenos.sh", append = F)
+write_file("\n", path = "move_regenos.sh", append = T)
+
+# loop through the regenotyped files
+for (i in 1:nrow(regenos))  {
+  x <- reg %>%
+    filter(sample_id == regenos$sample_id[i],
+           SEQ == params$seq
+    )
+  # only change samples affected by current seq
+  if (nrow(x) > 0){
+    x <- x %>% 
+      mutate(SEQ = paste0(substr(SEQ, 4,5), "seq"))
+    for (j in 1:nrow(x)){
+      # construct the pieces for the line of code
+      y <- paste0("/data/apcl/", x$SEQ[j], "/samples/APCL_", x$ligation_id[j], "*")
+      a <- paste0("/data/apcl/", x$SEQ[j], "/samples/regenos/")
+      b <- paste("mv", y, a, sep = " ")
+      write_file(b, path = "move_regenos.sh", append = T)
+      write_file("\n", path = "move_regenos.sh", append = T)
+    }
+  }
+}
+```
+

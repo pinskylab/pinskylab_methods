@@ -1,0 +1,103 @@
+---
+title: "Low Concentration Digest of"
+author: "D5581-D5675"
+output:
+  html_document: default
+  html_notebook: default
+  pdf_document:
+    latex_engine: xelatex
+---
+
+```{r}
+
+```
+
+*This protocol assumes that you have read and understand the manufacturer’s instructions attached below.  Please read the full manufacturer’s instructions before using this abbreviated protocol.*
+
+
+Digest recipe 50µL rxn - use digest sheet in PCR worksheet, double check math:
+(https://docs.google.com/spreadsheets/d/1LGt2WziwmGoJMluBcwmKfhZrGjZOlJLkVHf59-5cOV4/edit?usp=sharing) or the R code below
+
+Fill in the number of samples and the code will do the rest.
+```{r}
+plate <- "D5581-D5675"
+num_samples <- 93
+
+```
+```{r echo=FALSE, message=FALSE}
+source("../genomics/scripts/lab_helpers.R")
+library(knitr)
+library(kableExtra)
+setup <- data.frame(NA)
+setup <- setup %>% 
+  mutate(number_samples = num_samples, 
+    error = 1.1 * num_samples, 
+    reaction_size = 50, 
+    enzyme1_conc = 100000, 
+    enzyme2_conc = 10000, 
+    mstr_mx_ppt_vol = 20, 
+    unts_ech_enzyme = 20) %>% 
+  select(-NA.)
+kable(setup) %>%
+  kable_styling() %>%
+  add_header_above(c("Setup" = 7))
+
+per_sample <- data.frame(NA)
+per_sample <- per_sample %>% 
+  mutate(uL_sample = 30, 
+    ul_enzyme1 = (setup$unts_ech_enzyme/50 * setup$reaction_size)/(setup$enzyme1_conc/500), 
+    ul_enzyme2 = (setup$unts_ech_enzyme/50 * setup$reaction_size)/(setup$enzyme2_conc/500), 
+    ul_buffer = setup$reaction_size/10, 
+    ul_pH2O = 50 - sum(uL_sample, ul_enzyme1, ul_enzyme2, ul_buffer)) %>% 
+  select(-NA.)
+kable(per_sample) %>%
+  kable_styling() %>%
+  add_header_above(c("Per Sample" = 5))
+
+m_mix <- data.frame(NA)
+m_mix <- m_mix %>% 
+  mutate(ul_enzyme1 = per_sample$ul_enzyme1 * setup$error, 
+    ul_enzyme2 = per_sample$ul_enzyme2 * setup$error,
+    ul_pH2O = per_sample$ul_pH2O * setup$error, 
+    ul_buffer = per_sample$ul_buffer * setup$error, 
+    total_volume = sum(ul_enzyme1, ul_enzyme2, ul_pH2O, ul_buffer)) %>% 
+  select(-NA.)
+kable(m_mix) %>%
+  kable_styling() %>%
+  add_header_above(c("Master Mix" = 5))
+
+divide <- data.frame(NA)
+divide <- divide %>% 
+  mutate(wells_8 = m_mix$total_volume/8)
+if(divide$wells_8 > 200){
+  divide <- divide %>% 
+    mutate(wells_16 = m_mix$total_volume/16)
+  if(divide$wells_16 > 200){
+    divide <- divide %>% 
+    mutate(wells_24 = m_mix$total_volume/24)
+    if(divide$wells_24 > 200){
+      divide <- divide %>% 
+        mutate(wells_32 = m_mix$total_volume/32)
+    }
+  }
+}
+divide <- select(divide, -NA.)
+kable(divide) %>%
+  kable_styling() %>%
+  add_header_above(c("Divide" = ncol(divide)))
+
+```
+
+
+#####################################################################################
+
+
+- Make the master mix recipe in 15mL falcon tube by following the amounts on the spreadsheet above
+
+- split the master mix into 8 wells
+- use a multichannel pipet to pipet 20µL of master mix into each sample well.
+  - Do not add the master mix to all of the wells and then add the sample.  Because you are working with active enzymes, they should be the last things added to the master mix and the last step of plate preparation.
+  
+- Incubate PstI and MluCI at 37˚ for one to four hours - No benefit from incubating MluCI longer than one hour, PstI is active 2-4 hours, don’t need to heat kill digests.
+
+- Clean and quantify the digests.
