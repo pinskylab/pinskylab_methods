@@ -2,8 +2,8 @@
 title: "Find regenos and cat their sequences so that we have max data"
 output: html_notebook
 params:
-  seq:  SEQ04
-  dir:  04seq
+  seq:  SEQ07
+  dir:  07seq
 ---
 
 Samples that have been sequenced more than once in an attempt to get better data:
@@ -13,6 +13,7 @@ source("../genomics/scripts/lab_helpers.R")
 lab <- read_db("Laboratory")
 ```
 
+Find the regenos
 ```{r}
 
 # all ligations
@@ -98,6 +99,7 @@ if (grepl(params$seq, list(x$SEQ))){
 ```
 Write command lines to move the individual files from the general population into side folders
 ```{r}
+# Only moving files that are from this seq
 
 # begin constructing the file of command lines
 write_file("#!/bin/bash", path = "move_regenos.sh", append = F)
@@ -106,9 +108,11 @@ write_file("\n", path = "move_regenos.sh", append = T)
 # loop through the regenotyped files
 for (i in 1:nrow(regenos))  {
   x <- reg %>%
-    filter(sample_id == regenos$sample_id[i])
+    filter(sample_id == regenos$sample_id[i],
+           SEQ == params$seq
+    )
   # only change samples affected by current seq
-  if (grepl(params$seq, list(x$SEQ))){
+  if (nrow(x) > 0){
     x <- x %>% 
       mutate(SEQ = paste0(substr(SEQ, 4,5), "seq"))
     for (j in 1:nrow(x)){

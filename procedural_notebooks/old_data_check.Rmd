@@ -14,8 +14,6 @@ source("../genomics/scripts/lab_helpers.R")
 
 check database data
 ```{r get data}
-problem <- tibble()
-
 leyte <- write_db("Leyte")
 
 dive <- leyte %>% 
@@ -374,6 +372,7 @@ write_rds(backup, path = "~/Documents/db_backups/clownfish.Rdata")
 ```{r}
 clown <- leyte %>% 
   tbl("clownfish") %>% 
+  filter(anem_table_id %in% anem$anem_table_id) %>% 
   collect()
 
 multi <- clown %>% 
@@ -399,6 +398,7 @@ bad_recaps <- left_join(bad_recaps, select(dive, dive_table_id, date))
 bad_recaps <- bad_recaps %>% 
   select(-dive_table_id)
 kable(bad_recaps)
+```
 
 # look at the pitscan table for those times
 test <- pit %>% 
@@ -407,10 +407,10 @@ test <- pit %>%
 
 # look at the fish associated with that anem
 test2 <- clown %>% 
-  filter(anem_table_id == 7491) %>% 
+  filter(anem_table_id == 7471) %>% 
   arrange(fin_id)
 sight <- clown_sight %>% 
-  filter(anem_table_id == 7491) %>% 
+  filter(anem_table_id == 7471) %>% 
   arrange(fin_id)
 test2 <- rbind(test2, sight)
 
@@ -443,7 +443,6 @@ write_rds(backup, path = "~/Documents/db_backups/clownfish.Rdata")
 
 # the rest of the fish have weird shadow versions of themselves.
 
-```
 
 # if multi is not zero rows, there is a type-o in one of the rows for each tag listed, double check these. (the recent anti_join(pit, tag_ids) should have also flagged this)
 
@@ -468,6 +467,23 @@ problem
 
 
 # # do we have any tags that are scanned as Y and only appear once - compare to db? - # Doesn't seem to be working as of 3/15/18; pulls out 986112100172598 and 986112100172301, both of which were scanned in 2017 when connect directly to database and check...
+```{r}
+y_list <- clown %>% 
+  filter(recap == "Y") %>% 
+  select(tag_id)
+
+test <- clown %>% 
+  filter(tag_id %in% y_list$tag_id) %>% 
+  group_by(tag_id) %>% 
+  summarise(count = n()) %>% 
+  filter(count <= 1)
+  
+
+# these 3 fish have notes in the database, is ok they are on this list.
+
+
+```
+
 # load("data/fish_db.Rdata")
 # 
 # # what are past tags?
