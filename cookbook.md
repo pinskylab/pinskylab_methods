@@ -5,7 +5,8 @@ Pinsky Lab Cookbook
 -   [How to get RStudio and github to talk to each other](#how-to-get-rstudio-and-github-to-talk-to-each-other)
 -   [How to move an existing project on github into RStudio](#how-to-move-an-existing-project-on-github-into-rstudio)
 -   [How to transfer ownership of a repository from personal to pinskylab in github](#how-to-transfer-ownership-of-a-repository-from-personal-to-pinskylab-in-github)
--   [How to save an R plot as a pdf (when using ggplot)](#how-to-save-an-r-plot-as-a-pdf-when-using-ggplot)
+-   [How to save an R plot as a pdf (when using ggplot) - 3 different ways](#how-to-save-an-r-plot-as-a-pdf-when-using-ggplot---3-different-ways)
+-   [How to connect to one script in someone else's github repo](#how-to-connect-to-one-script-in-someone-elses-github-repo)
 
 This document exists to share institutional knowledge for obstacles that are commonly run into by Pinsky Lab Members. The struggle is real!
 
@@ -37,9 +38,35 @@ How to transfer ownership of a repository from personal to pinskylab in github
 2.  Click on "settings" in the upper middle right.
 3.  Scroll down to click on "transfer ownership".
 
-How to save an R plot as a pdf (when using ggplot)
-==================================================
+How to save an R plot as a pdf (when using ggplot) - 3 different ways
+=====================================================================
 
-1.  ggsave("filename.pdf") - will save the last plot created into working directory
-2.  ggsave(plot, "filename.pdf") - will save the object called plot into the working directory.
-3.  ggsave(plot, here::here("plots", "filename.pdf")) - will save the object called plot into the plots folder that is closest to your working directory.
+-   Save the last plot created into working directory.
+
+``` r
+ggplot2::ggsave("filename.pdf")
+```
+
+-   Save the object called plot into the working directory.
+
+``` r
+ggplot2::ggsave(plot, "filename.pdf")
+```
+
+-   Save the object called plot into the plots folder that is closest to your working directory.
+
+``` r
+ggplot2::ggsave(plot, here::here("plots", "filename.pdf"))
+```
+
+How to connect to one script in someone else's github repo
+==========================================================
+
+1.  Go to the webpage that contains the script.
+2.  Click on RAW and then copy the URL.
+3.  In R:
+
+``` r
+script <- RCurl::getURL("https://raw.githubusercontent.com/pinskylab/pinskylab_methods/master/genomics/scripts/field_helpers.R", ssl.verifypeer = FALSE)
+eval(parse(text = script))
+```
