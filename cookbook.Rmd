@@ -55,4 +55,15 @@ eval(parse(text = script))
 ```
 
 # How to calculate sequencing coverage
-[Check out this pdf](https://github.com/pinskylab/pinskylab_methods/blob/master/genomics/coverage_calculation.pdf)
+The calculation is slightly different if you are doing RADSeq vs. whole genome sequencing.
+
+For whole genome sequencing, number of base pairs is important.
+To determine the number of runs needed for whole genome sequencing:
+
+$${number~of~individuals~*~number~of~bp~in~the~genome~*~coverage~*~}\frac{1}{number~of~bp~per~read}~*~\frac{1}{number~of~reads~per~run}~=~number~of~runs$$
+
+For ddRADSeq or other partial sequencing techniques where the sequencer always starts at the beginning of the contig of interest, number of reads replaces basepair numbers.  To determine the number of runs:
+
+$${number~of~individuals~*~coverage~*~}\frac{1}{number~of~bp~per~read}~*~\frac{1}{number~of~reads~per~run}~=~number~of~runs$$
+Also, [check out this pdf](https://github.com/pinskylab/pinskylab_methods/blob/master/genomics/coverage_calculation.pdf)  
+
