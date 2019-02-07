@@ -7,6 +7,7 @@ Pinsky Lab Cookbook
 -   [How to transfer ownership of a repository from personal to pinskylab in github](#how-to-transfer-ownership-of-a-repository-from-personal-to-pinskylab-in-github)
 -   [How to save an R plot as a pdf (when using ggplot) - 3 different ways](#how-to-save-an-r-plot-as-a-pdf-when-using-ggplot---3-different-ways)
 -   [How to connect to one script in someone else's github repo](#how-to-connect-to-one-script-in-someone-elses-github-repo)
+-   [How to calculate sequencing coverage](#how-to-calculate-sequencing-coverage)
 
 This document exists to share institutional knowledge for obstacles that are commonly run into by Pinsky Lab Members. The struggle is real!
 
@@ -70,3 +71,8 @@ How to connect to one script in someone else's github repo
 script <- RCurl::getURL("https://raw.githubusercontent.com/pinskylab/pinskylab_methods/master/genomics/scripts/field_helpers.R", ssl.verifypeer = FALSE)
 eval(parse(text = script))
 ```
+
+How to calculate sequencing coverage
+====================================
+
+[Check out this pdf](https://github.com/pinskylab/pinskylab_methods/blob/master/genomics/coverage_calculation.pdf)

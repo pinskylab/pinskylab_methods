@@ -54,3 +54,5 @@ script <- RCurl::getURL("https://raw.githubusercontent.com/pinskylab/pinskylab_m
 eval(parse(text = script))
 ```
 
+# How to calculate sequencing coverage
+[Check out this pdf](https://github.com/pinskylab/pinskylab_methods/blob/master/genomics/coverage_calculation.pdf)
