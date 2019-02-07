@@ -79,9 +79,10 @@ The calculation is slightly different if you are doing RADSeq vs. whole genome s
 
 For whole genome sequencing, number of base pairs is important. To determine the number of runs needed for whole genome sequencing:
 
-$${number~of~individuals~\*~number~of~bp~in~the~genome~\*~coverage~\*~}\\frac{1}{number~of~bp~per~read}~\*~\\frac{1}{number~of~reads~per~run}~=~number~of~runs$$
+![{number~of~individuals~\*~number~of~bp~in~the~genome~\*~coverage~\*~}\\frac{1}{number~of~bp~per~read}~\*~\\frac{1}{number~of~reads~per~run}~=~number~of~runs](https://latex.codecogs.com/png.latex?%7Bnumber~of~individuals~%2A~number~of~bp~in~the~genome~%2A~coverage~%2A~%7D%5Cfrac%7B1%7D%7Bnumber~of~bp~per~read%7D~%2A~%5Cfrac%7B1%7D%7Bnumber~of~reads~per~run%7D~%3D~number~of~runs "{number~of~individuals~*~number~of~bp~in~the~genome~*~coverage~*~}\frac{1}{number~of~bp~per~read}~*~\frac{1}{number~of~reads~per~run}~=~number~of~runs")
 
 For ddRADSeq or other partial sequencing techniques where the sequencer always starts at the beginning of the contig of interest, number of reads replaces basepair numbers. To determine the number of runs:
 
-$${number~of~individuals~\*~coverage~\*~}\\frac{1}{number~of~bp~per~read}~\*~\\frac{1}{number~of~reads~per~run}~=~number~of~runs$$
+![{number~of~individuals~\*~coverage~\*~}\\frac{1}{number~of~bp~per~read}~\*~\\frac{1}{number~of~reads~per~run}~=~number~of~runs](https://latex.codecogs.com/png.latex?%7Bnumber~of~individuals~%2A~coverage~%2A~%7D%5Cfrac%7B1%7D%7Bnumber~of~bp~per~read%7D~%2A~%5Cfrac%7B1%7D%7Bnumber~of~reads~per~run%7D~%3D~number~of~runs "{number~of~individuals~*~coverage~*~}\frac{1}{number~of~bp~per~read}~*~\frac{1}{number~of~reads~per~run}~=~number~of~runs")
+
  Also, [check out this pdf](https://github.com/pinskylab/pinskylab_methods/blob/master/genomics/coverage_calculation.pdf)

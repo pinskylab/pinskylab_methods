@@ -3,6 +3,7 @@ title: "Pinsky Lab Cookbook"
 output: 
   github_document: 
     toc: TRUE
+    pandoc_args: --webtex
   html_notebook:
     toc: TRUE
 ---
