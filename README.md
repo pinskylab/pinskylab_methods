@@ -3,7 +3,7 @@ Methods used by many of us in the lab
 
 ### field  
 
-This folder contains scripts used in the Philippines by the Leyte team to input and process data sheets.  It also contains data from the temperature loggers and GPS data.
+This folder has been replaced by the repository [field](https://github.com/pinskylab/field) for easier RStudio connection.  Maps are made using the repository [Phils_GIS_R](https://github.com/pinskylab/Phils_GIS_R).  The folder in this methods repository contains old scripts used in the Philippines by the Leyte team to input and process data sheets.  It also contains data from the temperature loggers and GPS data.
 
 ### genomics  
 
@@ -13,6 +13,6 @@ This folder contains subfolders and guides to help lab members working with DNA 
 
 This folder contains protocols for general lab management such as how to create backups.
 
-### procedural_notebooks  
+### cookbook.md
 
-This folder contains a series of R notebooks that *hopefully* carry the reader through both the computing end of lab protocols (i.e. pulling data from the database and planning labwork) through the laboratory end of the protocols (i.e. step by step procedures in the lab).  These notebooks generate PDF documents that can be added to one's lab notebook, customized for the labwork done that day.
+This file gives tips and tricks for how Pinsky Lab Members have overcome obstacles related to data science.  The struggle is real!

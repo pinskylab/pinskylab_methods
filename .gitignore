@@ -4,9 +4,9 @@
 .Ruserdata
 .DS_Store
 .gitignore
-methods.Rproj
 .httr-oauth
 *.icloud
 .httr-oauth-SUSPENDED
 .Rhistory 2
 .Rhistory 3
+cookbook.nb.html

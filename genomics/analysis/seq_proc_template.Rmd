@@ -1,0 +1,377 @@
+---
+title: "Processing sequences fall 2018"
+output: html_notebook
+params:
+  seq:  SEQ07
+  
+---
+Changed the names of the sequences to allow for the sequencing ids that Sarah has used.
+
+```{r setup}
+library(tidyverse)
+source("../genomics/scripts/lab_helpers.R")
+lab <- read_db("Laboratory")
+```
+See the jupyter notebook seq_processing for the amphiprion side of this protocol.  Start there.
+
+###Create an index file for the Pools that is tab separated **done**
+
+```{r}
+# read baits table
+baits <- lab %>%
+  tbl("baits") %>%
+  collect() %>%
+  select(baits_id, seq)
+
+# read PCR table
+pcr <- lab %>% 
+  tbl("pcr") %>% 
+  collect() %>% 
+  filter(SEQ %in% params$seq) %>% 
+  select(pcr_id, bait_id, index)
+
+# join pcr_id and index to seq id
+pools <- left_join(pcr, baits, by = c("bait_id" = "baits_id")) %>% 
+  select(seq, pcr_id, index)
+
+# pull in the barcodes for illumina indexes
+index <- lab %>% 
+  tbl("illumina") %>% 
+  collect()
+
+# join the barcodes to the seq and pcr ids
+pools <- left_join(pools, index, by = c("index" = "index_num")) %>% 
+  select(seq, pcr_id, index_code)
+
+# create a list of the multiple seqs
+seqs <- select(pools, seq) %>% 
+  distinct()
+for(i in seq(seqs$seq)){
+  x <- pools %>% 
+  filter(seq == seqs$seq[i]) %>% 
+  select(pcr_id, index_code)
+
+# write the files for amphiprion
+# readr::write_tsv(x, path = paste0("index-", seqs$seq[i], ".tsv"), col_names = F)
+}
+```
+
+##Move the files from the laptop to amphiprion using the fetch program, place the index files in the log folder for each seq ** done**  
+See Michelle if you need a serial number for Fetch
+
+
+###Create a names file for each pool **done**
+The names have to be species, underscore and then the sample identifier, so APCL_L5432 for ligation_id L5432
+```{r}
+# read the ligations
+ligs <- lab %>% 
+  tbl("ligation") %>% 
+  filter(pool %in% pools$pcr_id) %>% 
+  select(ligation_id, barcode_num, pool) %>% 
+  collect()
+
+# read the barcodes
+barcode <- lab %>% 
+  tbl("barcodes") %>% 
+  collect()
+
+# join the ligation_id and pool ids to the barcodes
+ligs <- left_join(ligs, barcode, by = "barcode_num")
+
+# join the ligs to the seq_ids
+ligs <- left_join(ligs, pools, by = c("pool" = "pcr_id")) %>% 
+  # adjust the ligation name for dDocent
+  mutate(name = paste0("APCL_", ligation_id)) %>% 
+  select(seq, pool, name, barcode) %>% 
+# reduce the pool to only a number
+    mutate(pool = substr(pool, 2,5))
+
+# for seq04, the seq column is empty.  Replace it.
+ligs <- ligs %>% 
+  mutate(seq = params$seq)
+
+# write files for amphiprion
+# create a list of the multiple seqs
+names <- select(ligs, pool) %>% 
+  distinct()
+
+# loop through all of the pools
+for(i in seq(names$pool)){
+  x <- ligs %>% 
+  filter(pool == names$pool[i]) %>% 
+  select(name, barcode)
+
+# write the files for amphiprion
+readr::write_tsv(x, path = paste0("names_", names$pool[i], ".tsv"), col_names = F)
+}
+
+```
+###Move the files from the laptop to amphiprion using the fetch program, place the names files in the log folder for each seq **done**
+
+
+
+
+
+###Concatenate the results in the bcsplit folder - takes about a minute **done**
+
+```{r}
+library(readr)
+for (j in seqs$seq){
+  y <- pools %>% 
+    filter(seq == j)
+  # write_file("#!/bin/bash", path = paste0(j,"_cat_all.sh"), append = F)
+  # add a line return
+  # write_file("\n", path = paste0(j,"_cat_all.sh"), append = T)
+  for (i in seq(y$pcr_id)){
+    z <- formatC(i, width = 2, flag = 0)
+    # generate the code
+    x <- paste("cat", paste0("./lane1/", y$pcr_id[i], "-read-1.fastq.gz"), paste0("./lane2/", y$pcr_id[i], "-read-1.fastq.gz"), ">",  paste0("../", z, "Pool/", y$pcr_id[i], ".fastq.gz"), sep = " ")
+    # add the code to the file
+    # write_file(x, path = paste0(j,"_cat_all.sh"), append = T)  
+    # add a line return
+    # write_file("\n", path = paste0(j,"_cat_all.sh"), append = T)
+  }  
+}
+
+```
+
+
+### create scripts for all 48 pools to process radtags **done**
+
+```{r}
+#assign the correct pool directory to each pool
+
+pools <- pools %>% 
+  arrange(seq, pcr_id) %>% 
+  mutate(pool_dir = rep(1:12, 4), 
+         pool_dir = formatC(pool_dir, width = 2, flag = 0), 
+         pool_dir = paste0(pool_dir, "Pool"))
+
+## write files
+library(readr)
+# create first line of new file
+for (i in seq(pools$seq)){
+  # write_file("#!/bin/bash", path = paste0(pools$pcr_id[i], "_process.sh"), append = F)
+  # add a line return
+  # write_file("\n", path = paste0(pools$pcr_id[i], "_process.sh"), append = T)
+  # generate the code
+  x <- paste("process_radtags -b ./logs/barcodes -c -q --renz_1 pstI --renz_2 mluCI -i gzfastq --adapter_1 ACACTCTTTCCCTACACGACGCTCTTCCGATCT -f", paste0("./", pools$pool_dir[i], "/", pools$pcr_id[i], ".fastq.gz"),  "-o", paste0("./", pools$pool_dir[i], "/"), sep = " ")
+  # add the code to the file
+  # write_file(x, path = paste0(pools$pcr_id[i], "_process.sh"), append = T)  
+}
+
+```
+###Move the scripts to amphiprion into the seq scripts folder with fetch 
+With fetch you can also highlight all of the scripts and click get info, execute instead of having to type in the chmod u+x command for each file.
+
+#process_radtags - use esc-R or ctrl-\ to "find and replace" in nano - takes about 2.5 hours for 4 pools and 192 samples
+
+From the seq folder (18SEQ for example), run the process scripts, can run all 4 in separate windows (or all 48?)
+
+# write a script to generate command line to run process radtags scripts
+```{r}
+for (j in seqs$seq){
+  y <- pools %>% 
+    filter(seq == j)
+  write_file("#!/bin/bash", path = paste0(j,"_process_all.sh"), append = F)
+  # add a line return
+  write_file("\n", path = paste0(j,"_process_all.sh"), append = T)
+  for (i in y$pcr_id){
+    # generate the code
+    x <- paste("nohup", paste0("./scripts/", i, "_process.sh &"), sep = " ")
+    # add the code to the file
+    write_file(x, path = paste0(j,"_process_all.sh"), append = T)  
+    # add a line return
+    write_file("\n", path = paste0(j,"_process_all.sh"), append = T)
+  }  
+}
+
+```
+
+
+started the last one at 9:45pm on Monday 9/24/2018 - should take about 5 hours
+done before 6am on Tuesday
+
+
+Write text for moving files
+```{r}
+for (j in seqs$seq){
+  y <- pools %>% 
+    filter(seq == j)
+  write_file("#!/bin/bash", path = paste0(j,"_move_radlogs.sh"), append = F)
+  # add a line return
+  write_file("\n", path = paste0(j,"_move_radlogs.sh"), append = T)
+  for (i in seq(y$pcr_id)){
+    z <- formatC(i, width = 2, flag = 0)
+    # generate the code
+    x <- paste("mv", paste0(z, "Pool/process_radtags.log"), paste0("./logs/process", y$pcr_id[i], ".log"), sep = " ")
+    # add the code to the file
+    write_file(x, path = paste0(j,"_move_radlogs.sh"), append = T)  
+    # add a line return
+    write_file("\n", path = paste0(j,"_move_radlogs.sh"), append = T)
+  }  
+}
+
+```
+
+
+
+Which samples failed?
+```{r}
+upligs <- lab %>%
+  tbl("ligation") %>% 
+  filter(pool %in% current$pcr_id) %>% 
+  mutate(total_reads = as.numeric(total_reads), 
+    lack_rad_tag = as.numeric(lack_rad_tag), 
+    low_quality = as.numeric(low_quality), 
+    retained = as.numeric(retained)) %>% 
+  collect()
+
+
+hist(upligs$total_reads, breaks = 100)
+
+# zoom in to the lower end 
+zoom <- upligs %>% 
+  filter(total_reads < 200000)
+hist(zoom$total_reads, breaks = 10)
+
+low <- upligs %>% 
+  mutate(total_reads = as.numeric(total_reads)) %>% 
+  filter(total_reads < 100000) %>% 
+  select(ligation_id)
+
+
+
+summary(upligs)
+
+maximum <- upligs %>% 
+  filter(retained > 1000000)
+
+total <- upligs %>% 
+  summarise(sum = sum(total_reads))
+
+```
+
+
+
+## Rename the process radtags output to sample names
+write renaming text
+```{r}
+library(readr)
+for (j in seqs$seq){
+  y <- pools %>% 
+    filter(seq == j) %>% 
+    arrange(pcr_id)
+  write_file("#!/bin/bash", path = paste0(j,"_all_rename.sh"), append = F)
+  # add a line return
+  write_file("\n", path = paste0(j,"_all_rename.sh"), append = T)
+  for (i in seq(y$pcr_id)){
+    z <- formatC(i, width = 2, flag = 0)
+    c <- substr(y$pcr_id[i], 2, 5)
+    # generate the code
+    a <- paste("cd", paste0(z, "Pool/"), sep = " ")
+    # add the code to the file
+    write_file(a, path = paste0(j,"_all_rename.sh"), append = T)  
+    # add a line return
+    write_file("\n", path = paste0(j,"_all_rename.sh"), append = T)
+    x <- paste("sh rename.for.dDocent_se_gz",  paste0("../logs/names_", c, ".tsv"), sep = " ")
+    # add the code to the file
+    write_file(x, path = paste0(j,"_all_rename.sh"), append = T)  
+    # add a line return
+    write_file("\n", path = paste0(j,"_all_rename.sh"), append = T)
+    write_file("mv APCL* ../samples/", path = paste0(j,"_all_rename.sh"), append = T)
+    write_file("\n", path = paste0(j,"_all_rename.sh"), append = T)
+  write_file("cd ..", path = paste0(j,"_all_rename.sh"), append = T)  
+  write_file("\n", path = paste0(j,"_all_rename.sh"), append = T)
+    
+  }  
+}
+
+```
+
+
+
+
+
+## Trim and map the reads
+michelles 2018-09-25 07:25:10 samples $ dDocent
+dDocent 2.5.5 
+
+Contact jpuritz@uri.edu with any problems 
+
+ 
+Checking for required software
+/local/home/michelles/14_programs/dDocent/dDocent: line 84: [: 1.0-r82: integer expression expected
+
+All required software is installed!
+
+**dDocent run started Tue Sep 25 07:25:15 EDT 2018 **
+
+576 individuals are detected. Is this correct? Enter yes or no and press [ENTER]
+yes
+Proceeding with 576 individuals
+dDocent detects 40 processors available on this system.
+Please enter the maximum number of processors to use for this analysis.
+30
+dDocent detects 252 gigabytes of maximum memory available on this system.
+Please enter the maximum memory to use for this analysis in gigabytes
+For example, to limit dDocent to ten gigabytes, enter 10
+This option does not work with all distributions of Linux.  If runs are hanging at variant calling, enter 0
+Then press [ENTER]
+150
+
+Do you want to quality trim your reads?
+Type yes or no and press [ENTER]?
+yes
+
+Do you want to perform an assembly?
+Type yes or no and press [ENTER].
+no
+
+Reference contigs need to be in a file named reference.fasta
+
+Do you want to map reads?  Type yes or no and press [ENTER]
+yes
+BWA will be used to map reads.  You may need to adjust -A -B and -O parameters for your taxa.
+Would you like to enter a new parameters now? Type yes or no and press [ENTER]
+yes
+Please enter new value for A (match score).  It should be an integer.  Default is 1.
+1
+Please enter new value for B (mismatch score).  It should be an integer.  Default is 4.
+4
+Please enter new value for O (gap penalty).  It should be an integer.  Default is 6.
+6
+Do you want to use FreeBayes to call SNPs?  Please type yes or no and press [ENTER]
+no
+
+Please enter your email address.  dDocent will email you when it is finished running.
+Don't worry; dDocent has no financial need to sell your email address to spammers.
+stuart620@gmail.com        
+
+
+At this point, all configuration information has been entered and dDocent may take several hours to run.
+It is recommended that you move this script to a background operation and disable terminal input and output.
+All data and logfiles will still be recorded.
+To do this:
+Press control and Z simultaneously
+Type 'bg' without the quotes and press enter
+Type 'disown -h' again without the quotes and press enter
+
+Now sit back, relax, and wait for your analysis to finish
+
+Finished at 9:47am same day
+
+Once trimming is done, prepare to call snps
+Symlink the files into the analysis directory
+
+In the APCL_analysis directory, create a new analysis folder
+mkdir 21-03seq
+
+In all of the XXseq/sample directories, symlink the files to the 21-03seq directory
+
+ln -s APCL* ../../APCL_analysis/21-03seq/
+
+
+
+Wait for seq 19-21 to be ready 
+
