@@ -89,43 +89,12 @@ STACKS adds a strange \_1 or \_2 character to the end of processed reads, this l
 ``` bash
 cd /data/apcl/all_samples/20181127
 mkdir trim_reports
-    
-    NAMES=( `cat "namelist" `)
-    STACKS=$(cat namelist| parallel --load 75% --joblog ./trim_reports/stacksF.log "gunzip -c {}.F.fq.gz | head -1" | mawk '$0 !~ /\/1$/ && $0 !~ /\/1[ ,   ]/ && $0 !~ / 1:.*[A-Z]*/' | wc -l )
-    
-    if [ $STACKS -gt 0 ]; then
-        
-        echo "Removing the _1 character and replacing with /1 in the name of every sequence"
-        cat namelist | parallel --load 75% --joblog ./trim_reports/stacksF.log "gunzip -c {}.F.fq.gz | sed -e 's:_1$:/1:g' > {}.F.fq"
-        rm -f *.F.fq.gz
-        cat namelist | parallel --load 75% --joblog ./trim_reports/stacksF.log "gzip {}.F.fq"
-    fi
 
-    if [ -f "${NAMES[@]:(-1)}".R.fq.gz ]; then
-    
-        STACKS=$(cat namelist| parallel --load 75% --joblog ./trim_reports/stacksR.log "gunzip -c {}.R.fq.gz | head -1" | mawk '$0 !~ /\/2$/ && $0 !~ /\/2[ ,   ]/ && $0 !~ / 2:.*[A-Z]*/'| wc -l )
+trim_reads(){
+fastp -i $1.F.fq.gz -o $1.R1.fq.gz --cut_by_quality5 20 --cut_by_quality3 20 --cut_window_size 5 --cut_mean_quality 15 -q 15 -u 50  --length_required 104 -j $1.json -h $1.html &> $1.trim.log
+mv $1.html ./trim_reports  && mv $1.json ./trim_reports
+}
 
-        if [ $STACKS -gt 0 ]; then
-            echo "Removing the _2 character and replacing with /2 in the name of every sequence"
-            cat namelist | parallel --load 75% --joblog ./trim_reports/stacksR.log "gunzip -c {}.R.fq.gz | sed -e 's:_2$:/2:g' > {}.R.fq"
-            rm -f *.R.fq.gz
-            cat namelist | parallel --load 75% --joblog ./trim_reports/stacksR.log "gzip {}.R.fq"
-        fi
-    fi
-
-
-
-    #cat namelist | parallel --load 75% --joblog ./trim_reports/trim.log  "gunzip -c {}.F.fq.gz | head -2 | tail -1 >> lengths.txt"
-    #MLen=$(mawk '{ print length() | "sort -rn" }' lengths.txt| head -1)
-  #MLen=$(($MLen / 2))
-    #TW="--length_required $MLen"
-    # MRS changed this portion of the code to be hard coded for 104.  All of our contigs are ~211 and 104 is 1/2 of that.
-    
-    trim_reads(){ 
-    fastp -i $1.F.fq.gz -o $1.R1.fq.gz --cut_by_quality5 20 --cut_by_quality3 20 --cut_window_size 5 --cut_mean_quality 15 -q 15 -u 50  --length_required 104 -j $1.json -h $1.html &> $1.trim.log
-    mv $1.html ./trim_reports  && mv $1.json ./trim_reports
-    }
-    
 export -f trim_reads
 cat namelist | parallel --env trim_reads --load 75% --joblog ./trim_reports/trimreads.log trim_reads {}
 ```
