@@ -62,12 +62,13 @@ How to connect amphiprion Rstudio server to existing github repo
 ----------------------------------------------------------------
 
 1.  Follow githubs directions for setting up [SSH keys](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/).
-2.  On the command line on amphiprion, type the SSH connection.
-3.  Open the the project file in the RStudio server for amphiprion in your web browser. If you need the webaddress for the RStudio server, email Michelle.
+2.  On the command line on amphiprion, type the SSH connection:
 
 ``` bash
 git clone git@github.com:user_name/repo_name.git
 ```
+
+1.  Open the the project file in the RStudio server for amphiprion in your web browser. If you need the webaddress for the RStudio server, email Michelle.
 
 Plots
 =====
