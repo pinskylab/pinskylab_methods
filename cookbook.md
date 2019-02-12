@@ -8,6 +8,8 @@ Pinsky Lab Cookbook
     -   [How to transfer ownership of a repository from personal to pinskylab in github](#how-to-transfer-ownership-of-a-repository-from-personal-to-pinskylab-in-github)
     -   [How to connect to one script in someone else's github repo](#how-to-connect-to-one-script-in-someone-elses-github-repo)
     -   [How to connect amphiprion Rstudio server to existing github repo](#how-to-connect-amphiprion-rstudio-server-to-existing-github-repo)
+-   [R](#r)
+    -   [[How to install an older verison of a package](https://support.rstudio.com/hc/en-us/articles/219949047-Installing-older-versions-of-packages) than the one currently installed.](#how-to-install-an-older-verison-of-a-package-than-the-one-currently-installed.)
 -   [Plots](#plots)
     -   [How to save an R plot as a pdf (when using ggplot) - 3 different ways](#how-to-save-an-r-plot-as-a-pdf-when-using-ggplot---3-different-ways)
 -   [Sequencing](#sequencing)
@@ -69,6 +71,22 @@ git clone git@github.com:user_name/repo_name.git
 ```
 
 1.  Open the the project file in the RStudio server for amphiprion in your web browser. If you need the webaddress for the RStudio server, email Michelle.
+
+R
+=
+
+[How to install an older verison of a package](https://support.rstudio.com/hc/en-us/articles/219949047-Installing-older-versions-of-packages) than the one currently installed.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+``` r
+devtools::install_version("ggplot2", version = "0.9.1", repos = "http://cran.us.r-project.org")
+
+packageurl <- "https://github.com/thomasp85/gganimate/archive/v0.1.1.tar.gz"
+install.packages(packageurl, repos=NULL, type="source")
+
+packageloc <- "~/Downloads/gganimate-0.1.1/"
+install.packages(packageloc, repos = NULL, type="source")
+```
 
 Plots
 =====
