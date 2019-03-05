@@ -111,3 +111,15 @@ For ddRADSeq or other partial sequencing techniques where the sequencer always s
 $${number~of~individuals~*~coverage~*~}\frac{1}{number~of~bp~per~read}~*~\frac{1}{number~of~reads~per~run}~=~number~of~runs$$
 Also, [check out this pdf](https://github.com/pinskylab/pinskylab_methods/blob/master/genomics/coverage_calculation.pdf)  
 
+# Video Conferencing
+## google hangout for lab meetings
+[HERE](https://hangouts.google.com/call/lgyfvg5ysbhhbhyjpdmj447mcqe)
+
+## How to set up the ENR 145 TV for video conference.
+-   Turn on the computer (on the shelf below the TV)
+-   Switch the source using the input button on the remote to HDMI1 (the top port is broken as of March 2019, so you may have to move the cord to the bottom port)
+-   Log in to the DEENR admin or Online user account. You can find the password on our Pinsky Lab Meeting Google Sheet.
+-   Open chrome and navigate to the fish baste link. You can find the link on our Pinksy Lab Meeting Google Sheet. Other video conferencing software is also available.
+-   Be sure to log out of Skype/Google/etc when you're done. 
+-   Log out of the Windows user account.
+-   Turn off computer and TV.
