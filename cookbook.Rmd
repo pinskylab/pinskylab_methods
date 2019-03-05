@@ -48,7 +48,8 @@ git clone git@github.com:user_name/repo_name.git
 1. Open the the project file in the RStudio server for amphiprion in your web browser.  If you need the webaddress for the RStudio server, email Michelle.  
 
 # R
-## [How to install an older verison of a package](https://support.rstudio.com/hc/en-us/articles/219949047-Installing-older-versions-of-packages) than the one currently installed.  
+## How to install an older verison of a package than the one currently installed.   
+Based on this [article](https://support.rstudio.com/hc/en-us/articles/219949047-Installing-older-versions-of-packages)  
 ```{r eval=FALSE}
 devtools::install_version("ggplot2", version = "0.9.1", repos = "http://cran.us.r-project.org")
 
