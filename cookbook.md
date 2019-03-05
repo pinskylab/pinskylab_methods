@@ -14,7 +14,9 @@ Pinsky Lab Cookbook
     -   [How to save an R plot as a pdf (when using ggplot) - 3 different ways](#how-to-save-an-r-plot-as-a-pdf-when-using-ggplot---3-different-ways)
 -   [Sequencing](#sequencing)
     -   [How to calculate sequencing coverage](#how-to-calculate-sequencing-coverage)
-
+-   [Misc](#misc)
+    -   [How to set up the ENR 145 TV for video conference](#how-to-set-up-the-ENR-145-TV-for-video-conference)
+    
 This document exists to share institutional knowledge for obstacles that are commonly run into by Pinsky Lab Members. The struggle is real!
 
 Github
@@ -131,3 +133,17 @@ For ddRADSeq or other partial sequencing techniques where the sequencer always s
 ![{number~of~individuals~\*~coverage~\*~}\\frac{1}{number~of~bp~per~read}~\*~\\frac{1}{number~of~reads~per~run}~=~number~of~runs](https://latex.codecogs.com/png.latex?%7Bnumber~of~individuals~%2A~coverage~%2A~%7D%5Cfrac%7B1%7D%7Bnumber~of~bp~per~read%7D~%2A~%5Cfrac%7B1%7D%7Bnumber~of~reads~per~run%7D~%3D~number~of~runs "{number~of~individuals~*~coverage~*~}\frac{1}{number~of~bp~per~read}~*~\frac{1}{number~of~reads~per~run}~=~number~of~runs")
 
  Also, [check out this pdf](https://github.com/pinskylab/pinskylab_methods/blob/master/genomics/coverage_calculation.pdf)
+ 
+ Misc
+=
+
+How to set up the ENR 145 TV for video conference.
+------------------------------------------------------------------------------
+-   Turn on the computer (on the shelf below the TV)
+-   Switch the source using the input button on the remote to HDMI1 (the top port is broken as of March 2019, so you may have to move the cord to the bottom port)
+-   Log in to the DEENR admin or Online user account. You can find the password on our Pinsky Lab Meeting Google Sheet.
+-   Open chrome and navigate to the fish baste link. You can find the link on our Pinksy Lab Meeting Google Sheet. Other video conferencing software is also available.
+-   Be sure to log out of Skype/Google/etc when you're done. 
+-   Log out of the Windows user account.
+-   Turn off computer and TV.
+
