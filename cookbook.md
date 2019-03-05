@@ -9,7 +9,7 @@ Pinsky Lab Cookbook
     -   [How to connect to one script in someone else's github repo](#how-to-connect-to-one-script-in-someone-elses-github-repo)
     -   [How to connect amphiprion Rstudio server to existing github repo](#how-to-connect-amphiprion-rstudio-server-to-existing-github-repo)
 -   [R](#r)
-    -   [[How to install an older verison of a package](https://support.rstudio.com/hc/en-us/articles/219949047-Installing-older-versions-of-packages) than the one currently installed.](#how-to-install-an-older-verison-of-a-package-than-the-one-currently-installed.)
+    -   [How to install an older verison of a package than the one currently installed.](#how-to-install-an-older-verison-of-a-package-than-the-one-currently-installed.)
 -   [Plots](#plots)
     -   [How to save an R plot as a pdf (when using ggplot) - 3 different ways](#how-to-save-an-r-plot-as-a-pdf-when-using-ggplot---3-different-ways)
 -   [Sequencing](#sequencing)
@@ -75,8 +75,10 @@ git clone git@github.com:user_name/repo_name.git
 R
 =
 
-[How to install an older verison of a package](https://support.rstudio.com/hc/en-us/articles/219949047-Installing-older-versions-of-packages) than the one currently installed.
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+How to install an older verison of a package than the one currently installed.
+------------------------------------------------------------------------------
+
+Based on this [article](https://support.rstudio.com/hc/en-us/articles/219949047-Installing-older-versions-of-packages)
 
 ``` r
 devtools::install_version("ggplot2", version = "0.9.1", repos = "http://cran.us.r-project.org")
