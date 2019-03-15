@@ -7,7 +7,7 @@ Approximate Bayesian Computation (ABC) is a powerful statistical framework that 
 First, I generated a joint SFS of my observed data using Arelquin (<http://cmpg.unibe.ch/software/arlequin35/>). You may need to format your data for Arlequin (*.arp file) before starting a Arlequin project to create the SFS. The Arlequin manual is [here](http://cmpg.unibe.ch/software/arlequin35/man/Arlequin35.pdf) and contains useful information on how to generate SFSs. The SFS output file(s) will have a '.obs' extension, for example 'PADEadults\_zeros\_jointMAFpop1_0.obs'.
 
 ### **An example observed joint SFS file (PADEadults\_zeros\_jointMAFpop1_0.obs)**:
-	> head(obs) # observed joint SFS file of two populations containing 271 and 195 indivdiuals, respectively
+	> head(obs) # observed joint SFS file of two populations containing 135 and 97 indivdiuals, respectively
 	     d0_0 d0_1 d0_2 d0_3 d0_4 d0_5 d0_6 d0_7 d0_8 d0_9 d0_10 d0_11 d0_12 d0_13
 	d1_0    0    0    0    0    0    0    0    0    0    0     0     0     0     0
 	d1_1    0    0    0    0    0    0    0    0    0    0     0     0     0     0
