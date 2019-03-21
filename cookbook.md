@@ -19,7 +19,9 @@ Pinsky Lab Cookbook
 -   [Video Conferencing](#video-conferencing)
     -   [google hangout for lab meetings](#google-hangout-for-lab-meetings)
     -   [How to set up the ENR 145 TV for video conference.](#how-to-set-up-the-enr-145-tv-for-video-conference.)
-
+-   Zotero
+     -  [Change keyboard shortcut in Google Docs](https://forums.zotero.org/discussion/comment/328345#Comment_328345)
+     
 This document exists to share institutional knowledge for obstacles that are commonly run into by Pinsky Lab Members. The struggle is real!
 
 Github
