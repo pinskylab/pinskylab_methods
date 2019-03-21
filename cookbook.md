@@ -9,6 +9,7 @@ Pinsky Lab Cookbook
     -   [How to connect to one script in someone else's github repo](#how-to-connect-to-one-script-in-someone-elses-github-repo)
     -   [How to connect amphiprion Rstudio server to existing github repo](#how-to-connect-amphiprion-rstudio-server-to-existing-github-repo)
     -   [How to use the command line to connect your current folder to an existing github repo.](#how-to-use-the-command-line-to-connect-your-current-folder-to-an-existing-github-repo.)
+    -   [If you made a commit that won't push to Github (too large files or something else)...](#if-you-made-a-commit-that-wont-push-to-github-too-large-files-or-something-else...)
 -   [R](#r)
     -   [How to install an older verison of a package than the one currently installed.](#how-to-install-an-older-verison-of-a-package-than-the-one-currently-installed.)
 -   [Plots](#plots)
@@ -95,6 +96,16 @@ git pull origin master
 # put to the remote
 git push origin master
 ```
+
+If you made a commit that won't push to Github (too large files or something else)...
+-------------------------------------------------------------------------------------
+
+-   Make a copy of your new files/versions and put the copy in a different folder, like your Desktop.
+-   on the command line, type git reset --hard origin/master
+
+    -   replace master with whatever branch you are working on if it is not the master.
+    -   This command restores your local version of the repository to be identical with the web version.
+    -   You still need to figure out what to do with the new versions that won't push to github.
 
 R
 =
