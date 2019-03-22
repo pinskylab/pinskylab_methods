@@ -10,6 +10,8 @@ Pinsky Lab Cookbook
     -   [How to connect amphiprion Rstudio server to existing github repo](#how-to-connect-amphiprion-rstudio-server-to-existing-github-repo)
     -   [How to use the command line to connect your current folder to an existing github repo.](#how-to-use-the-command-line-to-connect-your-current-folder-to-an-existing-github-repo.)
     -   [If you made a commit that won't push to Github (too large files or something else)...](#if-you-made-a-commit-that-wont-push-to-github-too-large-files-or-something-else...)
+    -   [Roll back a git repository to a previous commit](https://stackoverflow.com/questions/4372435/how-can-i-rollback-a-github-repository-to-a-specific-commit/4372501#4372501)
+
 -   [R](#r)
     -   [How to install an older verison of a package than the one currently installed.](#how-to-install-an-older-verison-of-a-package-than-the-one-currently-installed.)
 -   [Plots](#plots)
@@ -19,7 +21,9 @@ Pinsky Lab Cookbook
 -   [Video Conferencing](#video-conferencing)
     -   [google hangout for lab meetings](#google-hangout-for-lab-meetings)
     -   [How to set up the ENR 145 TV for video conference.](#how-to-set-up-the-enr-145-tv-for-video-conference.)
-
+-   Zotero
+     -  [Change keyboard shortcut in Google Docs](https://forums.zotero.org/discussion/comment/328345#Comment_328345)
+     
 This document exists to share institutional knowledge for obstacles that are commonly run into by Pinsky Lab Members. The struggle is real!
 
 Github
