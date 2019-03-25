@@ -2,6 +2,7 @@
 
 Repositories | Description
 -----------------|---------------------------------
+[Lab Meetings](https://github.com/pinskylab/Lab_meetings) | A repo to hold documents related to Pinsky Lab meetings 
 [Clownfish Tail Color](https://github.com/pinskylab/Clown_Fish_Tail_Color_Darrow) | **Anthony's analysis of tail color photos**
 [Clownfish Persistence](https://github.com/pinskylab/Clownfish_persistence) | Allison
 [Clownfish Genomics](https://github.com/pinskylab/genomics) | **Michelle's seq data processing and analysis**
@@ -36,7 +37,6 @@ Repositories | Description
 [How to submit proposal to CINAR](https://github.com/pinskylab/CINAR) | **Michelle's directions to prep for CINAR submission** 
 [Leyte database maintenance](https://github.com/pinskylab/leyteBuildDB) | Michelle's repo that updates the Leyte database
 [Pinskylab Methods](https://github.com/pinskylab/pinskylab_methods) | **you are here** 
-[Lab Meetings](https://github.com/pinskylab/Lab_meetings) | A repo to hold documents related to Pinsky Lab meetings 
 [Summer Flounder db maint](https://github.com/pinskylab/pade) | **Michelle's repo to update the summer flounder database** 
 [Docs for Cross Spp Grant Sub](https://github.com/pinskylab/cross_spp_quote) |  Michelle's docs for cross species grant submission 
 [Docs for Coastal SEES](https://github.com/pinskylab/coastalsees) | **Becca's docs for Coastal SEES**
