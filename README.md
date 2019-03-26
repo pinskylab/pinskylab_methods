@@ -24,7 +24,8 @@ Repositories | Description
 [Project Velocity](https://github.com/pinskylab/project_velocity) | **Jim's projections of climate velocities to 2100** 
 [Synchrony](https://github.com/pinskylab/cnhFishSynchrony) | Joyce's research on fish, fishing, and synchrony 
 [Coral Adaptation](https://github.com/pinskylab/coral-adaptation) | **Lisa's coral adaptative capacity model** 
-[Colonization Extinction](https://github.com/pinskylab/colonizationExtinction) |  Malin's colonization and extinction dynamics in NA continental shelf communities  [Portfolio Effect](https://github.com/pinskylab/Portfolio-Effect) | **Allison's portfolio effect ideas** 
+[Colonization Extinction](https://github.com/pinskylab/colonizationExtinction) |  Malin's colonization and extinction dynamics in NA continental shelf communities. 
+[Portfolio Effect](https://github.com/pinskylab/Portfolio-Effect) | **Allison's portfolio effect ideas** 
 [Coral Eco-Evo](https://github.com/pinskylab/ecoevo_coral) | <Ed's eco-evo models for coral adaptation to climate change. 
 [Border Crossing](https://github.com/pinskylab/borderCrossing) | **Malin**
 [Biome Variability](https://github.com/pinskylab/biomeVariability) |  Joyce's analysis of global variation in tempe/precip and relationship to plants
