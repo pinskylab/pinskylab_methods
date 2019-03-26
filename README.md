@@ -26,7 +26,7 @@ Repositories | Description
 [Coral Adaptation](https://github.com/pinskylab/coral-adaptation) | **Lisa's coral adaptative capacity model** 
 [Colonization Extinction](https://github.com/pinskylab/colonizationExtinction) |  Malin's colonization and extinction dynamics in NA continental shelf communities. 
 [Portfolio Effect](https://github.com/pinskylab/Portfolio-Effect) | **Allison's portfolio effect ideas** 
-[Coral Eco-Evo](https://github.com/pinskylab/ecoevo_coral) | <Ed's eco-evo models for coral adaptation to climate change. 
+[Coral Eco-Evo](https://github.com/pinskylab/ecoevo_coral) | Ed's eco-evo models for coral adaptation to climate change. 
 [Border Crossing](https://github.com/pinskylab/borderCrossing) | **Malin**
 [Biome Variability](https://github.com/pinskylab/biomeVariability) |  Joyce's analysis of global variation in tempe/precip and relationship to plants
 [Global Fish Genetics](https://github.com/pinskylab/globalFishGenetics) | **Malin's analysis of global marine patterns of fish genetic diversity** 
