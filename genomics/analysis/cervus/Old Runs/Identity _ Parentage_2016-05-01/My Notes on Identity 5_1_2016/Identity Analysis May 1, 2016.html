@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/><meta name="exporter-version" content="Evernote Mac 6.6.1 (453373)"/><meta name="keywords" content="cervus, identity, Pinsky"/><meta name="altitude" content="23.20393943786621"/><meta name="author" content="Michelle Stuart"/><meta name="created" content="2016-05-01 14:18:33 +0000"/><meta name="latitude" content="40.49286951652759"/><meta name="longitude" content="-74.42969508258919"/><meta name="source" content="desktop.mac"/><meta name="updated" content="2016-05-09 03:02:18 +0000"/><title>Identity Analysis May 1, 2016</title></head><body>
+<div>SEQ03, SEQ04, SEQ05, SEQ07, SEQ08, SEQ09 were run through dDocent (started <a style="color:#69aa35;" href="evernote:///view/154400311/s5/0cb22034-1a1c-4b2c-9d0c-eaf4436d2376/0cb22034-1a1c-4b2c-9d0c-eaf4436d2376/">2015-12-11 Friday</a>), ran as dDocent, had gone in to the code and changed -n to 4. On Dec 27, examined finished files for errors - <a style="color:#69aa35;" href="evernote:///view/154400311/s5/23a915cd-265a-49f3-a56a-7cdbddf9b98e/23a915cd-265a-49f3-a56a-7cdbddf9b98e/">2015-12-27 Sunday</a>.  In subsequent dDocent runs, it was discovered that some instances quit early with an unusually small output file.  The December 11th run was never examined for these errors and could be missing data.</div>
+<div><br/></div>
+<div>Filtered the output to reduce the number of SNPS, </div>
+<div><a style="color:#69aa35;" href="evernote:///view/154400311/s5/025f5269-cc44-40d4-98c7-4b692c6b36c7/025f5269-cc44-40d4-98c7-4b692c6b36c7/">Filtering February 29, 2016 - SNP.DP10g95maf05.HWE - 1012 loci</a>. </div>
+<div><br/></div>
+<div>Once converted to the gene <span style="font-family: 'Arial Black';"><span style="font-family: Arial;">pop file <b><span style="font-style: normal; font-variant: normal; font-weight: normal;">'DP10g95maf2.genepop’, which is currently stored in </span></b></span></span>Google Drive - /Pinsky Lab/Cervus/Identity &amp; Parentage_2016-05-01, processed with the R script process_genepop.R to create the output file 2016-05-01_noregeno.genepop stored in the directory Google Drive/Pinsky Lab/Cervus/Identity &amp; Parentage_2016-05-01.</div>
+<div><br/></div>
+<div>The new gene pop has been renamed and has all regenotyped samples removed.</div>
+<div><br/></div>
+<div>This gene pop was converted in Cervus and an allele analysis was run.</div>
+<ul>
+<li>Yes Header Row</li>
+<li>Yes Read Locus Names</li>
+<li>ID in column 2</li>
+<li>First allele in column 3</li>
+<li>Type in number of loci from conversion (1012)</li>
+<li>Save as “….._AF"</li>
+<li>Leave all the output option boxes checked</li>
+</ul>
+<div> </div>
+<div>Then an identity analysis was run</div>
+<ul>
+<li>Genotype file should be autofilled</li>
+<li>Yes Header Row</li>
+<li>Id in column 2</li>
+<li>First allele in column 3</li>
+<li>Do not test sexes separately</li>
+<li>Allele freq data should be autofilled</li>
+<li>Save as “…._ID"</li>
+<li>Fill in minimum number of matching loci (80% of total = 810)</li>
+<li>allow fuzzy matching with 10% mismatch (10% of total = 101)</li>
+<li>don’t show all comparisons</li>
+</ul>
+<div>885 individuals were compared at 1012 loci.</div>
+<div><br/></div>
+<div>Cerves created an output file with 27 pairs of individuals.  </div>
+<div>This file was read into R to determine likelihood of matches using the identity_analysis.R script. </div>
+<div><br/></div>
+<div>Ran through identity_analysis script in R. Kept all sample IDs for pairs that were captured more than 250m apart.</div>
+<div><br/></div>
+<div>Hand deleted the lines of the gene pop for samples that were determined to be a pair (were caught less than 250m apart) and of the pair, had the fewest loci.</div>
+<div><br/></div>
+<div>Renamed the gene pop 2016-05-01_norecap.genepop and imported into cervus for parentage analysis - <a style="color:#69aa35;" href="evernote:///view/154400311/s5/f156297c-0bf9-47be-a503-52b02cbf115c/f156297c-0bf9-47be-a503-52b02cbf115c/">Notes on Cervus Parentage analysis</a></div>
+<div><br/></div>
+<div><br/></div>
+<div>
+<div><br/></div>
+</div>
+<div><br/></div>
+</body></html>

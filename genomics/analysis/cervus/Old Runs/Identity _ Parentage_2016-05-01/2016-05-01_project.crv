@@ -1,0 +1,175 @@
+[ProgramInfo]
+ProgramName=Cervus
+ProgramVersion=3.0
+FileVersion=3.0.7.0
+
+[Registration]
+UserName=
+UserCompany=
+Code=
+
+[FileInfo]
+FileName=C:\Users\Pinsky\Desktop\Michelle\Identity & Parentage_2016-05-01\2016-05-01_project.crv
+FileType=.crv
+CreationDate=5/1/2016 6:30:58 PM
+
+[GenotypeFile]
+FileName=C:\Users\Pinsky\Desktop\Michelle\Identity & Parentage_2016-05-01\2016-05-01_convert_2.csv
+HeaderRow=1
+ReadLocusNames=1
+FirstAlleleColumnNumber=3
+IDColumnNumber=2
+NLoci=1012
+PropLociTyped=0
+ColumnsPerLocus=2
+SexColumn=0
+UnknownSexLabel=
+
+[CodecFile]
+FileName=
+HeaderRow=1
+UseSameCodingForAllLoci=1
+GenotypeFileName=C:\Users\Pinsky\Desktop\Michelle\Identity & Parentage_2016-05-01\2016-05-01_convert_2.csv
+
+[AlleleFrequencySummaryFile]
+FileName=C:\Users\Pinsky\Desktop\Michelle\Identity_2016-05-01\2016-05-01_AF.txt
+DoHardyWeinberg=1
+HWMinExpectedFrequency=5
+UseYatesCorrection=1
+UseBonferroniCorrection=1
+DoNullAllele=1
+
+[AlleleFrequencyDataFile]
+FileName=C:\Users\Pinsky\Desktop\Michelle\Identity & Parentage_2016-05-01\2016-05-01_AF.alf
+HeaderRow=1
+
+[SimulationParameters]
+AnalysisType=
+NOffspring=10000
+NCandidateMales=0
+PropCandidateMalesSampled=0
+NCandidateFemales=0
+PropCandidateFemalesSampled=0
+PropLociTyped=0
+PropLociMistyped=0.01
+MinTypedLoci=0
+CriticalStatisticName=Delta
+TruncateAtZero=1
+RelaxedConfidence=80
+StrictConfidence=95
+SimulateInbreeding=0
+ParentRelatedness=0
+InbreedingRate=0
+AlwaysTestSelfing=0
+SimulateFemaleRelatives=0
+FemalePropRelatives=0
+FemaleRelatedTo=Offspring
+FemaleRelatedness=0
+SimulateMaleRelatives=0
+MalePropRelatives=0
+MaleRelatedTo=Offspring
+MaleRelatedness=0
+UseCorrectedLikelihoods=1
+UseMistypingRateAsLikelihoodErrorRate=1
+LikelihoodErrorRate=0.01
+
+[SimulationSummaryFile]
+FileName=
+
+[SimulationDataFile]
+FileName=C:\Users\Pinsky\Desktop\Michelle\Old Runs\DP10maf2_04-MAR-16\DP10maf2_04-MAR-16_PS.sim
+
+[SimulationOutput]
+RepeatSimulation=0
+NRepeats=1
+ApplyPreviousSimulationData=0
+GenerateTables=0
+SaveRawStatisticScores=0
+GenerateHistograms=0
+NCategories=0
+MinStatistic=0
+MaxStatistic=0
+
+[PreviousSimulationDataFile]
+FileName=
+
+[ParentageParameters]
+AnalysisType=Parent pair (sexes unknown)
+UseSimulationParameters=1
+CalculateConfidenceLevels=1
+AlwaysTestSelfing=0
+MinTypedLoci=303
+UseCorrectedLikelihoods=1
+UseMistypingRateAsLikelihoodErrorRate=0
+LikelihoodErrorRate=0.001
+CriticalStatisticName=LOD
+TruncateAtZero=0
+
+[OffspringFile]
+FileName=C:\Users\Pinsky\Desktop\Michelle\Identity & Parentage_2016-05-01\2016-05-01_juveniles.csv
+HeaderRow=0
+OffspringIDColumnNumber=1
+IncludesKnownParents=0
+KnownParentIDColumnNumber=0
+IncludesCandidateParents=0
+CandidateParentIDColumnNumber=0
+
+[CandidateFemaleFile]
+FileName=C:\Users\Pinsky\Desktop\Michelle\Identity & Parentage_2016-05-01\2016-05-01_adults.csv
+HeaderRow=0
+CandidateParentFormat=One column for all offspring
+OffspringIDColumnNumber=0
+CandidateParentIDColumnNumber=1
+
+[CandidateMaleFile]
+FileName=
+HeaderRow=0
+CandidateParentFormat=One column for all offspring
+OffspringIDColumnNumber=0
+CandidateParentIDColumnNumber=1
+
+[ParentageSummaryFile]
+FileName=C:\Users\Pinsky\Desktop\Michelle\Identity & Parentage_2016-05-01\2016-05-01_PR.txt
+
+[ParentageDataFile]
+FileName=C:\Users\Pinsky\Desktop\Michelle\Identity & Parentage_2016-05-01\2016-05-01_PR.csv
+OutputType=The most-likely parent
+SortedBy=Joint LOD score
+IncludeNonExclusionProbabilities=0
+
+[IdentityParameters]
+TestSexesSeparately=0
+MinMatchingLoci=810
+AllowFuzzyMatching=1
+MaxMismatchingLoci=101
+ShowAllComparisons=0
+
+[IdentitySummaryFile]
+FileName=C:\Users\Pinsky\Desktop\Michelle\Identity_2016-05-01\2016-05-01_ID.txt
+
+[IdentityDataFile]
+FileName=C:\Users\Pinsky\Desktop\Michelle\Identity_2016-05-01\2016-05-01_ID.csv
+
+[ConversionSourceFile]
+FileName=C:\Users\Pinsky\Desktop\Michelle\Identity & Parentage_2016-05-01\2016-05-01_norecap.genepop
+HeaderRow=0
+AlleleIDLength=2
+UseFirstIDAsPopulationName=0
+PopulationColumnNumber=0
+IDColumnNumber=0
+MumIDColumnNumber=0
+DadIDColumnNumber=0
+FirstAlleleColumnNumber=0
+NLoci=0
+ContainsAlleleFrequencyData=0
+
+[ConversionSourceAlleleFrequencyDataFile]
+FileName=
+HeaderRow=0
+
+[ConversionDestinationFile]
+FileName=C:\Users\Pinsky\Desktop\Michelle\Identity & Parentage_2016-05-01\2016-05-01_convert_2.csv
+WriteAlleleFrequencyData=0
+AlleleIDLength=2
+WritePopulationNames=0
+

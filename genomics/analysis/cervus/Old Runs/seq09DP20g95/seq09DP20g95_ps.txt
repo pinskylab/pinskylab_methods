@@ -1,0 +1,201 @@
+Cervus 3.0.7 - (c) Copyright Tristan Marshall 1998-2014
+Distributed by Field Genetics Ltd - www.fieldgenetics.com
+Licensed for non-commercial use only
+
+Simulation of parentage analysis completed 12/28/2015 1:13:26 PM
+
+
+**** Summary statistics ****
+
+
+Single parent:
+
+Level       Confidence (%)  Critical LOD    Assignments        Assignment Rate  
+Strict               95.00          999.00                  0                  0%
+Relaxed              80.00          999.00                  0                  0%
+Unassigned                                               4000                100%
+Total                                                    4000                100%
+
+Parent pair (sexes unknown):
+
+Level       Confidence (%)  Critical LOD    Assignments        Assignment Rate  
+Strict               95.00          999.00                  0                  0%
+Relaxed              80.00          999.00                  0                  0%
+Unassigned                                               2000                100%
+Total                                                    2000                100%
+
+
+**** Files ****
+
+Input
+  Allele frequency file:          seq09DP20g95_af.alf
+
+Output
+  Simulation summary file:        seq09DP20g95_ps.txt
+  Simulation data file:           seq09DP20g95_ps.sim
+  LOD distributions folder:       seq09DP20g95_ps
+
+
+**** Loci ****
+
+       1  dDocent_Contig_78761
+       2  dDocent_Contig_21548
+       3  dDocent_Contig_13667
+       4  dDocent_Contig_179113
+       5  dDocent_Contig_45159
+       6  dDocent_Contig_13832
+       7  dDocent_Contig_7811
+       8  dDocent_Contig_68601
+       9  dDocent_Contig_15733
+      10  dDocent_Contig_198107
+      11  dDocent_Contig_6343
+      12  dDocent_Contig_30233
+      13  dDocent_Contig_23249
+      14  dDocent_Contig_71842
+      15  dDocent_Contig_25915
+      16  dDocent_Contig_18793
+      17  dDocent_Contig_14686
+      18  dDocent_Contig_17353
+      19  dDocent_Contig_198867
+      20  dDocent_Contig_95068
+      21  dDocent_Contig_132842
+      22  dDocent_Contig_126120
+      23  dDocent_Contig_31150
+      24  dDocent_Contig_1670
+      25  dDocent_Contig_82715
+      26  dDocent_Contig_123433
+      27  dDocent_Contig_6319
+      28  dDocent_Contig_67441
+      29  dDocent_Contig_58785
+      30  dDocent_Contig_99316
+      31  dDocent_Contig_486
+      32  dDocent_Contig_9123
+      33  dDocent_Contig_92706
+      34  dDocent_Contig_41338
+      35  dDocent_Contig_42964
+      36  dDocent_Contig_182961
+      37  dDocent_Contig_42492
+      38  dDocent_Contig_183842
+      39  dDocent_Contig_61776
+      40  dDocent_Contig_174999
+      41  dDocent_Contig_21482
+      42  dDocent_Contig_136637
+      43  dDocent_Contig_113786
+      44  dDocent_Contig_39267
+      45  dDocent_Contig_92915
+      46  dDocent_Contig_76419
+      47  dDocent_Contig_104457
+      48  dDocent_Contig_23784
+      49  dDocent_Contig_45137
+      50  dDocent_Contig_81218
+      51  dDocent_Contig_76878
+      52  dDocent_Contig_35104
+      53  dDocent_Contig_43634
+      54  dDocent_Contig_112713
+      55  dDocent_Contig_50045
+      56  dDocent_Contig_148449
+      57  dDocent_Contig_537
+      58  dDocent_Contig_51967
+      59  dDocent_Contig_19887
+      60  dDocent_Contig_25264
+      61  dDocent_Contig_59276
+      62  dDocent_Contig_8543
+      63  dDocent_Contig_81859
+      64  dDocent_Contig_132141
+      65  dDocent_Contig_128539
+      66  dDocent_Contig_2197
+      67  dDocent_Contig_10093
+
+
+**** Simulation parameters ****
+
+Input
+  Number of offspring:                                      2000
+  Number of candidate parents:                              1000
+  Proportion of candidate parents sampled:                     0.1000
+    Number of parent pairs:                               499500
+
+  Proportion of loci typed:                                    0.86000000
+  Proportion of loci mistyped:                                 0.01000000
+  Error rate in likelihood calculations:                       0.01000000
+  Minimum number of typed loci:                               34
+
+Output
+  Confidence determined using:                               LOD
+  Relaxed confidence level:                                   80.00%
+  Strict confidence level:                                    95.00%
+
+
+**** LOD distributions ****
+
+
+Single parent:
+
+Identity of most likely candidate               N        Mean LOD    Standard Deviation
+True parent                                           0        0.00                0.00
+Non-parent (true parent pair sampled)                 0        0.00                0.00
+Non-parent (one true parent sampled)                  0        0.00                0.00
+Non-parent (neither true parent sampled)              0        0.00                0.00
+None                                               4000
+Total                                              4000
+
+Parent pair (sexes unknown):
+
+Identity of most likely candidate               N        Mean LOD    Standard Deviation
+True parent pair                                      0        0.00                0.00
+Non-parent pair (true parent pair sampled)            0        0.00                0.00
+Non-parent pair (one true parent sampled)             0        0.00                0.00
+Non-parent pair (neither true parent sampled)         0        0.00                0.00
+None                                               2000
+Total                                              2000
+
+
+**** Breakdown of parentage assignments ****
+
+
+Single parent:
+
+Identity of most likely candidate               Confidence level
+                                                Strict          Relaxed         Most likely   
+True parent                                           0 (  0%)        0 (  0%)        0 (  0%)  
+Non-parent (true parent pair sampled)                 0 (  0%)        0 (  0%)        0 (  0%)  
+Non-parent (one true parent sampled)                  0 (  0%)        0 (  0%)        0 (  0%)  
+Non-parent (neither true parent sampled)              0 (  0%)        0 (  0%)        0 (  0%)  
+Total assignments                                     0               0               0         
+No assignment made                                 4000            4000            4000         
+Total tests                                        4000            4000            4000         
+
+Parent pair (sexes unknown):
+
+Identity of most likely candidate               Confidence level
+                                                Strict          Relaxed         Most likely   
+True parent pair                                      0 (  0%)        0 (  0%)        0 (  0%)  
+Non-parent pair (true parent pair sampled)            0 (  0%)        0 (  0%)        0 (  0%)  
+Non-parent pair (one true parent sampled)             0 (  0%)        0 (  0%)        0 (  0%)  
+Non-parent pair (neither true parent sampled)         0 (  0%)        0 (  0%)        0 (  0%)  
+Total assignments                                     0               0               0         
+No assignment made                                 2000            2000            2000         
+Total tests                                        2000            2000            2000         
+
+
+**** Tables of confidence levels for assignment of most likely candidate ****
+
+
+Single parent:
+
+
+Parent pair (sexes unknown):
+
+
+
+**** Tables of confidence levels for elimination of all sampled candidates ****
+
+
+Single parent:
+
+
+Parent pair (sexes unknown):
+
+
+
+********************************************************************************

@@ -1,0 +1,1447 @@
+Cervus 3.0.7 - (c) Copyright Tristan Marshall 1998-2014
+Distributed by Field Genetics Ltd - www.fieldgenetics.com
+Licensed for non-commercial use only
+
+Allele frequency analysis completed 12/28/2015 1:00:29 PM
+
+
+**** Summary statistics ****
+
+
+Locus       k    N        HObs   HExp   PIC    NE-1P  NE-2P  NE-PP  NE-I   NE-SI  HW   F(Null)
+dDocent_Contig_78761    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_21548    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_13667    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_179113    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_45159    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_13832    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_7811    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_68601    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_15733    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_198107    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_6343    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_30233    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_23249    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_71842    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_25915    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_18793    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_14686    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_17353    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_198867    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_95068    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_132842    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_126120    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_31150    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_1670    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_82715    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_123433    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_6319    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_67441    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_58785    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_99316    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_486    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_9123    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_92706    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_41338    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_42964    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_182961    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_42492    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_183842    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_61776    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_174999    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_21482    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_136637    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_113786    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_39267    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_92915    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_76419    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_104457    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_23784    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_45137    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_81218    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_76878    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_35104    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_43634    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_112713    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_50045    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_148449    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_537    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_51967    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_19887    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_25264    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_59276    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_8543    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_81859    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_132141    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_128539    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_2197    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+dDocent_Contig_10093    0        0  0.000  0.000  0.000  1.000  1.000  1.000  1.000  1.000   ND       ND
+
+Number of individuals:                                       990
+Number of loci:                                               67
+Mean number of alleles per locus:                              0.000
+Mean proportion of loci typed:                                 0.0000
+Mean expected heterozygosity:                                  0.0000
+Mean polymorphic information content (PIC):                    0.0000
+Combined non-exclusion probability (first parent):             1.00000000
+Combined non-exclusion probability (second parent):            1.00000000
+Combined non-exclusion probability (parent pair):              1.00000000
+Combined non-exclusion probability (identity):                 1.00000000
+Combined non-exclusion probability (sib identity):             1.00000000
+
+
+**** Files ****
+
+Input
+  Genotype data file:             seq09DP20g95.csv
+
+Output
+  Summary text file:              seq09DP20g95_af.txt
+  Allele frequency file:          seq09DP20g95_af.alf
+
+
+**** Loci ****
+
+       1  dDocent_Contig_78761
+       2  dDocent_Contig_21548
+       3  dDocent_Contig_13667
+       4  dDocent_Contig_179113
+       5  dDocent_Contig_45159
+       6  dDocent_Contig_13832
+       7  dDocent_Contig_7811
+       8  dDocent_Contig_68601
+       9  dDocent_Contig_15733
+      10  dDocent_Contig_198107
+      11  dDocent_Contig_6343
+      12  dDocent_Contig_30233
+      13  dDocent_Contig_23249
+      14  dDocent_Contig_71842
+      15  dDocent_Contig_25915
+      16  dDocent_Contig_18793
+      17  dDocent_Contig_14686
+      18  dDocent_Contig_17353
+      19  dDocent_Contig_198867
+      20  dDocent_Contig_95068
+      21  dDocent_Contig_132842
+      22  dDocent_Contig_126120
+      23  dDocent_Contig_31150
+      24  dDocent_Contig_1670
+      25  dDocent_Contig_82715
+      26  dDocent_Contig_123433
+      27  dDocent_Contig_6319
+      28  dDocent_Contig_67441
+      29  dDocent_Contig_58785
+      30  dDocent_Contig_99316
+      31  dDocent_Contig_486
+      32  dDocent_Contig_9123
+      33  dDocent_Contig_92706
+      34  dDocent_Contig_41338
+      35  dDocent_Contig_42964
+      36  dDocent_Contig_182961
+      37  dDocent_Contig_42492
+      38  dDocent_Contig_183842
+      39  dDocent_Contig_61776
+      40  dDocent_Contig_174999
+      41  dDocent_Contig_21482
+      42  dDocent_Contig_136637
+      43  dDocent_Contig_113786
+      44  dDocent_Contig_39267
+      45  dDocent_Contig_92915
+      46  dDocent_Contig_76419
+      47  dDocent_Contig_104457
+      48  dDocent_Contig_23784
+      49  dDocent_Contig_45137
+      50  dDocent_Contig_81218
+      51  dDocent_Contig_76878
+      52  dDocent_Contig_35104
+      53  dDocent_Contig_43634
+      54  dDocent_Contig_112713
+      55  dDocent_Contig_50045
+      56  dDocent_Contig_148449
+      57  dDocent_Contig_537
+      58  dDocent_Contig_51967
+      59  dDocent_Contig_19887
+      60  dDocent_Contig_25264
+      61  dDocent_Contig_59276
+      62  dDocent_Contig_8543
+      63  dDocent_Contig_81859
+      64  dDocent_Contig_132141
+      65  dDocent_Contig_128539
+      66  dDocent_Contig_2197
+      67  dDocent_Contig_10093
+
+
+**** Locus dDocent_Contig_78761 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_21548 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_13667 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_179113 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_45159 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_13832 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_7811 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_68601 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_15733 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_198107 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_6343 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_30233 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_23249 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_71842 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_25915 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_18793 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_14686 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_17353 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_198867 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_95068 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_132842 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_126120 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_31150 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_1670 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_82715 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_123433 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_6319 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_67441 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_58785 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_99316 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_486 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_9123 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_92706 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_41338 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_42964 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_182961 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_42492 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_183842 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_61776 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_174999 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_21482 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_136637 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_113786 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_39267 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_92915 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_76419 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_104457 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_23784 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_45137 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_81218 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_76878 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_35104 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_43634 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_112713 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_50045 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_148449 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_537 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_51967 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_19887 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_25264 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_59276 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_8543 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_81859 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_132141 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_128539 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_2197 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+**** Locus dDocent_Contig_10093 ****
+
+Allele  Count    Hets     Homs     Freq    Freq with null
+
+Number of individuals typed:                                   0
+  Heterozygotes:                                               0
+  Homozygotes:                                                 0
+Number of alleles:                                             0
+Expected heterozygosity:                                       0.0000
+Polymorphic information content (PIC):                         0.0000
+Average non-exclusion probability (first parent):              1.0000
+Average non-exclusion probability (second parent):             1.0000
+Average non-exclusion probability (parent pair):               1.0000
+Average non-exclusion probability (identity):                  1.0000
+Average non-exclusion probability (sib identity):              1.0000
+Hardy-Weinberg equilibrium test:                        Not done
+Null allele frequency estimate:                         Not done
+
+
+********************************************************************************

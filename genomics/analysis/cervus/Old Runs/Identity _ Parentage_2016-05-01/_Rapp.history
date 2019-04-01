@@ -1,0 +1,81 @@
+setwd('/Users/michelle/Google Drive/Pinsky Lab/Cervus/Identity & Parentage_2016-05-01')
+# Mr. Whitmore#
+setwd('/Users/michelle/Google Drive/Pinsky Lab/Cervus/Identity & Parentage_2016-05-01')#
+source('/Users/michelle/Google Drive/Pinsky Lab/Cervus/Michelle\'s R codes/Genetics/code')#
+genfile <- '/Users/michelle/Google Drive/Pinsky Lab/Cervus/Identity & Parentage_2016-05-01/2016-05-01_norecap.genepop'
+library(RCurl)#
+dat <- readGenepop(genfile)
+library(RCurl)
+dat <- readGenepop(genfile)
+source('/Users/michelle/Google Drive/Pinsky Lab/Cervus/Michelle\'s R codes/Genetics/code/readGenepop_space.R')
+source('/Users/michelle/Google Drive/Pinsky Lab/Cervus/Michelle\'s R codes/Genetics/code/readGenepop_space.R')
+dat <- readGenepop(genfile)
+mykey <- '1Rf_dFJ5WK-vTTsIT_kHHOcFrKzQtMFtKiuXiFw1lh9Y' # for Sample_Data sheet
+gssampdat <- gs_key(mykey)
+gs_auth(new_user = TRUE) # run this if having authorization problems
+mykey <- '1Rf_dFJ5WK-vTTsIT_kHHOcFrKzQtMFtKiuXiFw1lh9Y' # for Sample_Data sheet
+gssampdat <- gs_key(mykey)
+library(googlesheets)
+mykey <- '1Rf_dFJ5WK-vTTsIT_kHHOcFrKzQtMFtKiuXiFw1lh9Y' # for Sample_Data sheet
+gssampdat <- gs_key(mykey)
+gs_auth(new_user = TRUE) # run this if having authorization problems
+dat
+head(dat)
+dat[1:10, 1:10]
+str(dat)
+# insert sample ID to match with samples sheet#
+for(i in 1:nrow(dat)){#
+	if(nchar(dat$names[i]) == 15){#
+		dat$SampleID[i] <- substr(dat$names[i], 1, 10)#
+	}#
+	else{#
+		dat$SampleID[i] <- substr(dat$names[i], 12, 21)#
+	}#
+}
+dat$SampleID
+# insert sample ID to match with samples sheet#
+for(i in 1:nrow(dat)){#
+	if(nchar(dat$names[i]) == 15){#
+		dat$SampleID[i] <- substr(dat$names[i], 1, 10)#
+	}#
+	else{#
+		dat$SampleID[i] <- substr(dat$names[i], 16, 25)#
+	}#
+}
+dat$SampleID
+# insert sample ID to match with samples sheet#
+for(i in 1:nrow(dat)){#
+	if(nchar(dat$names[i]) == 15){#
+		dat$SampleID[i] <- substr(dat$names[i], 1, 10)#
+	}#
+	else{#
+		dat$SampleID[i] <- substr(dat$names[i], 17, 26)#
+	}#
+}
+dat$SampleID
+sampledata
+library(googlesheets)#
+# gs_auth(new_user = TRUE) # run this if having authorization problems#
+mykey <- '1Rf_dFJ5WK-vTTsIT_kHHOcFrKzQtMFtKiuXiFw1lh9Y' # for Sample_Data sheet#
+gssampdat <- gs_key(mykey)#
+sampledata <- gs_read(gssampdat, ws='Samples')
+names(sampledata)
+?merge
+?merge
+age <- merge(dat[,c('names', 'SampleID')], sampledata[,c('Sample_ID', 'Age')], by.x = "SampleID")
+names(dat)
+age <- merge(dat[,c('names', 'SampleID')], sampledata[,c('Sample_ID', 'Age')], by.x = "SampleID", by.y = "Sample_ID")
+age
+juveniles <- is.na(age$Age)
+juveniles
+names(age)
+age
+juveniles <- age$names[is.na(age$Age)]
+juveniles
+# write.table(juveniles, file=(paste(Sys.Date(), 'juveniles.csv', sep = '_')), row.names = FALSE, col.names = FALSE, quote = FALSE)
+# write.table(juveniles, file=(paste(Sys.Date(), 'juveniles.csv', sep = '_')), row.names = FALSE, col.names = FALSE, quote = FALSE)
+setwd('/Users/michelle/Google Drive/Pinsky Lab/Cervus/Identity & Parentage_2016-05-01')
+write.table(juveniles, file=(paste(Sys.Date(), 'juveniles.csv', sep = '_')), row.names = FALSE, col.names = FALSE, quote = FALSE)
+adults <- age$names[!is.na(age$Age)]
+adults
+write.table(adults, file=(paste(Sys.Date(), 'adults.csv', sep = '_')), row.names = FALSE, col.names = FALSE, quote = FALSE)

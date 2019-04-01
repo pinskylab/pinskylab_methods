@@ -1,0 +1,347 @@
+Cervus 3.0.7 - (c) Copyright Tristan Marshall 1998-2014
+Distributed by Field Genetics Ltd - www.fieldgenetics.com
+Licensed for non-commercial use only
+
+Parentage analysis completed 1/5/2016 10:20:29 PM
+
+
+**** Summary statistics ****
+
+
+Single parent:
+
+Level       Confidence (%)  Critical LOD    Assignments        Assignment Rate  
+                                            Observed Expected  Observed Expected
+Strict               95.00            1.50      184 (     11)      18%    (  1%)
+Relaxed              80.00           -2.00      282 (     12)      28%    (  1%)
+Unassigned                                      722 (    992)      72%    ( 99%)
+Total                                          1004 (   1004)     100%    (100%)
+
+Parent pair (sexes unknown):
+
+Level       Confidence (%)  Critical LOD    Assignments        Assignment Rate  
+                                            Observed Expected  Observed Expected
+Strict               95.00          999.00        0 (      0)       0%    (  0%)
+Relaxed              80.00          999.00        0 (      0)       0%    (  0%)
+Unassigned                                      502 (    502)     100%    (100%)
+Total                                           502 (    502)     100%    (100%)
+
+
+**** Number of individuals tested ****
+
+Offspring (total):                                           502
+  Tested (typed at 80 or more loci):                         502
+  Not tested (typed at fewer than 80 loci):                    0
+
+Candidate parents (total):                                   467
+  Tested (typed at 80 or more loci):                         467
+  Not tested (typed at fewer than 80 loci):                    0
+  Average number of candidate parents per offspring:         467
+  Average proportion of sampled candidate parents:             1.0000
+
+Average candidate parent pairs per offspring:             108811
+
+
+**** Files ****
+
+Input
+  Offspring file:                 04_Jan_16_juve.txt
+  Candidate parent file:          04_Jan_16_adult.txt
+  Genotype file:                  DP20g95_CONV.csv
+  Allele frequency file:          DP20g95_AF.alf
+  Simulation data file:           DP20g95_PS.sim
+
+Output
+  Parentage summary file:         DP20g95_PR.txt
+  Parentage data file:            DP20g95_PR.csv
+
+
+**** Loci ****
+
+       1  dDocent_Contig_276_132
+       2  dDocent_Contig_276_157
+       3  dDocent_Contig_435_196
+       4  dDocent_Contig_435_199
+       5  dDocent_Contig_435_200
+       6  dDocent_Contig_486_21
+       7  dDocent_Contig_537_31
+       8  dDocent_Contig_816_25
+       9  dDocent_Contig_816_26
+      10  dDocent_Contig_1670_166
+      11  dDocent_Contig_1915_36
+      12  dDocent_Contig_1915_78
+      13  dDocent_Contig_1915_99
+      14  dDocent_Contig_1915_114
+      15  dDocent_Contig_1915_141
+      16  dDocent_Contig_2197_47
+      17  dDocent_Contig_2519_196
+      18  dDocent_Contig_2519_198
+      19  dDocent_Contig_2519_200
+      20  dDocent_Contig_4000_21
+      21  dDocent_Contig_4000_67
+      22  dDocent_Contig_4000_96
+      23  dDocent_Contig_4000_111
+      24  dDocent_Contig_4453_28
+      25  dDocent_Contig_4453_36
+      26  dDocent_Contig_4453_92
+      27  dDocent_Contig_4546_159
+      28  dDocent_Contig_4769_163
+      29  dDocent_Contig_4769_164
+      30  dDocent_Contig_4896_124
+      31  dDocent_Contig_4896_130
+      32  dDocent_Contig_6302_76
+      33  dDocent_Contig_6302_85
+      34  dDocent_Contig_6302_175
+      35  dDocent_Contig_6302_180
+      36  dDocent_Contig_6319_31
+      37  dDocent_Contig_6343_173
+      38  dDocent_Contig_6841_37
+      39  dDocent_Contig_6841_39
+      40  dDocent_Contig_6841_40
+      41  dDocent_Contig_6841_133
+      42  dDocent_Contig_6841_134
+      43  dDocent_Contig_7072_24
+      44  dDocent_Contig_7072_193
+      45  dDocent_Contig_7372_32
+      46  dDocent_Contig_7372_44
+      47  dDocent_Contig_7372_64
+      48  dDocent_Contig_7372_186
+      49  dDocent_Contig_7705_108
+      50  dDocent_Contig_7705_114
+      51  dDocent_Contig_7705_117
+      52  dDocent_Contig_7811_158
+      53  dDocent_Contig_8543_125
+      54  dDocent_Contig_8929_17
+      55  dDocent_Contig_8929_20
+      56  dDocent_Contig_8929_21
+      57  dDocent_Contig_8929_60
+      58  dDocent_Contig_8929_63
+      59  dDocent_Contig_8929_65
+      60  dDocent_Contig_9042_144
+      61  dDocent_Contig_9042_145
+      62  dDocent_Contig_9123_163
+      63  dDocent_Contig_10093_96
+      64  dDocent_Contig_10661_136
+      65  dDocent_Contig_10661_139
+      66  dDocent_Contig_11237_144
+      67  dDocent_Contig_11237_146
+      68  dDocent_Contig_11237_197
+      69  dDocent_Contig_11409_155
+      70  dDocent_Contig_11409_159
+      71  dDocent_Contig_13667_96
+      72  dDocent_Contig_13667_100
+      73  dDocent_Contig_13832_82
+      74  dDocent_Contig_14127_48
+      75  dDocent_Contig_14127_57
+      76  dDocent_Contig_14686_76
+      77  dDocent_Contig_15113_15
+      78  dDocent_Contig_15113_65
+      79  dDocent_Contig_15113_67
+      80  dDocent_Contig_15113_123
+      81  dDocent_Contig_15733_169
+      82  dDocent_Contig_16531_106
+      83  dDocent_Contig_16531_180
+      84  dDocent_Contig_16531_190
+      85  dDocent_Contig_17353_178
+      86  dDocent_Contig_18793_16
+      87  dDocent_Contig_19887_9
+      88  dDocent_Contig_20825_75
+      89  dDocent_Contig_20825_165
+      90  dDocent_Contig_21362_8
+      91  dDocent_Contig_21362_161
+      92  dDocent_Contig_21482_146
+      93  dDocent_Contig_21548_52
+      94  dDocent_Contig_21657_158
+      95  dDocent_Contig_21657_175
+      96  dDocent_Contig_21657_180
+      97  dDocent_Contig_22325_193
+      98  dDocent_Contig_22325_195
+      99  dDocent_Contig_23249_192
+     100  dDocent_Contig_23784_204
+     101  dDocent_Contig_23828_52
+     102  dDocent_Contig_23828_79
+     103  dDocent_Contig_23828_117
+     104  dDocent_Contig_24387_77
+     105  dDocent_Contig_24387_96
+     106  dDocent_Contig_24387_97
+     107  dDocent_Contig_24387_100
+     108  dDocent_Contig_24417_28
+     109  dDocent_Contig_24417_38
+     110  dDocent_Contig_24887_54
+     111  dDocent_Contig_24887_74
+     112  dDocent_Contig_25264_110
+     113  dDocent_Contig_25915_126
+     114  dDocent_Contig_26085_18
+     115  dDocent_Contig_26085_23
+     116  dDocent_Contig_26085_42
+     117  dDocent_Contig_26085_54
+     118  dDocent_Contig_28743_76
+     119  dDocent_Contig_28743_77
+     120  dDocent_Contig_28743_106
+     121  dDocent_Contig_29835_39
+     122  dDocent_Contig_29835_40
+     123  dDocent_Contig_29835_114
+     124  dDocent_Contig_29835_127
+     125  dDocent_Contig_29835_134
+     126  dDocent_Contig_29835_170
+     127  dDocent_Contig_29835_188
+     128  dDocent_Contig_30173_77
+     129  dDocent_Contig_30233_26
+     130  dDocent_Contig_31150_57
+     131  dDocent_Contig_32391_25
+     132  dDocent_Contig_32391_162
+     133  dDocent_Contig_35104_112
+     134  dDocent_Contig_39028_45
+     135  dDocent_Contig_39028_176
+     136  dDocent_Contig_39267_94
+     137  dDocent_Contig_41338_197
+     138  dDocent_Contig_41966_31
+     139  dDocent_Contig_41966_106
+     140  dDocent_Contig_41966_133
+     141  dDocent_Contig_42492_52
+     142  dDocent_Contig_42964_37
+     143  dDocent_Contig_43634_199
+     144  dDocent_Contig_44574_41
+     145  dDocent_Contig_44574_152
+     146  dDocent_Contig_45137_102
+     147  dDocent_Contig_45159_88
+     148  dDocent_Contig_45159_90
+     149  dDocent_Contig_45847_168
+     150  dDocent_Contig_47987_57
+     151  dDocent_Contig_47987_124
+     152  dDocent_Contig_47987_125
+     153  dDocent_Contig_47987_164
+     154  dDocent_Contig_48524_130
+     155  dDocent_Contig_48524_134
+     156  dDocent_Contig_50045_187
+     157  dDocent_Contig_51967_191
+     158  dDocent_Contig_51980_75
+     159  dDocent_Contig_51980_191
+     160  dDocent_Contig_52607_68
+     161  dDocent_Contig_52607_178
+     162  dDocent_Contig_52607_189
+     163  dDocent_Contig_52659_22
+     164  dDocent_Contig_52659_131
+     165  dDocent_Contig_52659_135
+     166  dDocent_Contig_52762_26
+     167  dDocent_Contig_52762_63
+     168  dDocent_Contig_52762_191
+     169  dDocent_Contig_55792_20
+     170  dDocent_Contig_57847_60
+     171  dDocent_Contig_57847_129
+     172  dDocent_Contig_57847_158
+     173  dDocent_Contig_58785_87
+     174  dDocent_Contig_59276_44
+     175  dDocent_Contig_60879_125
+     176  dDocent_Contig_60901_12
+     177  dDocent_Contig_60901_60
+     178  dDocent_Contig_60901_165
+     179  dDocent_Contig_61776_44
+     180  dDocent_Contig_65686_117
+     181  dDocent_Contig_65686_166
+     182  dDocent_Contig_66997_36
+     183  dDocent_Contig_66997_48
+     184  dDocent_Contig_66997_73
+     185  dDocent_Contig_66997_109
+     186  dDocent_Contig_66997_119
+     187  dDocent_Contig_66997_159
+     188  dDocent_Contig_66997_162
+     189  dDocent_Contig_67441_72
+     190  dDocent_Contig_68601_151
+     191  dDocent_Contig_69609_38
+     192  dDocent_Contig_69609_77
+     193  dDocent_Contig_69609_103
+     194  dDocent_Contig_70200_132
+     195  dDocent_Contig_70200_183
+     196  dDocent_Contig_71724_77
+     197  dDocent_Contig_71724_110
+     198  dDocent_Contig_71724_127
+     199  dDocent_Contig_71724_143
+     200  dDocent_Contig_71842_20
+     201  dDocent_Contig_76419_127
+     202  dDocent_Contig_76878_88
+     203  dDocent_Contig_78761_74
+     204  dDocent_Contig_81218_42
+     205  dDocent_Contig_81218_154
+     206  dDocent_Contig_81859_141
+     207  dDocent_Contig_81859_205
+     208  dDocent_Contig_82715_177
+     209  dDocent_Contig_87924_133
+     210  dDocent_Contig_87924_170
+     211  dDocent_Contig_88161_54
+     212  dDocent_Contig_88161_202
+     213  dDocent_Contig_91366_80
+     214  dDocent_Contig_91366_176
+     215  dDocent_Contig_92706_173
+     216  dDocent_Contig_92915_168
+     217  dDocent_Contig_93261_99
+     218  dDocent_Contig_93261_117
+     219  dDocent_Contig_93261_130
+     220  dDocent_Contig_93261_186
+     221  dDocent_Contig_93261_192
+     222  dDocent_Contig_95068_189
+     223  dDocent_Contig_96069_85
+     224  dDocent_Contig_96069_136
+     225  dDocent_Contig_96822_40
+     226  dDocent_Contig_96822_41
+     227  dDocent_Contig_96822_187
+     228  dDocent_Contig_98535_11
+     229  dDocent_Contig_98535_180
+     230  dDocent_Contig_99316_155
+     231  dDocent_Contig_104041_47
+     232  dDocent_Contig_104041_91
+     233  dDocent_Contig_104041_108
+     234  dDocent_Contig_104041_133
+     235  dDocent_Contig_104457_195
+     236  dDocent_Contig_105810_51
+     237  dDocent_Contig_105810_77
+     238  dDocent_Contig_107985_36
+     239  dDocent_Contig_107985_45
+     240  dDocent_Contig_107985_96
+     241  dDocent_Contig_112713_138
+     242  dDocent_Contig_112804_45
+     243  dDocent_Contig_112804_47
+     244  dDocent_Contig_113786_159
+     245  dDocent_Contig_116647_48
+     246  dDocent_Contig_116647_50
+     247  dDocent_Contig_123433_31
+     248  dDocent_Contig_126120_195
+     249  dDocent_Contig_128539_156
+     250  dDocent_Contig_132141_15
+     251  dDocent_Contig_132842_191
+     252  dDocent_Contig_136637_29
+     253  dDocent_Contig_146052_152
+     254  dDocent_Contig_146052_158
+     255  dDocent_Contig_148449_186
+     256  dDocent_Contig_174999_93
+     257  dDocent_Contig_179113_38
+     258  dDocent_Contig_182961_85
+     259  dDocent_Contig_183842_124
+     260  dDocent_Contig_191291_42
+     261  dDocent_Contig_191291_144
+     262  dDocent_Contig_191291_167
+     263  dDocent_Contig_191291_178
+     264  dDocent_Contig_198107_22
+     265  dDocent_Contig_198867_134
+
+
+**** Simulation parameters ****
+
+Input
+  Number of offspring:                                     20000
+  Number of candidate parents:                              1000
+  Proportion of candidate parents sampled:                     0.0100
+    Number of parent pairs:                               499500
+
+  Proportion of loci typed:                                    0.75000000
+  Proportion of loci mistyped:                                 0.00100000
+  Error rate in likelihood calculations:                       0.00100000
+  Minimum number of typed loci:                               80
+
+Output
+  Confidence determined using:                               LOD
+  Relaxed confidence level:                                   80.00%
+  Strict confidence level:                                    95.00%
+
+
+********************************************************************************
