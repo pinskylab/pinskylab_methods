@@ -4,6 +4,12 @@ README
 Pinskylab Organization
 ======================
 
+# Lab_meetings
+For Spring 2019, lab meetings are 3:30-4:30pm Tuesdays
+  - Sign up to lead lab meeting [here](https://docs.google.com/spreadsheets/d/18_JSa8KSJNW6-Mgq1gX-2KHS4GESh4NHjKZc1VMXVNo/edit?usp=sharing)
+  - Sign up for a meeting time with Malin [here](https://doodle.com/poll/y9rmwk6dhscxaeii). May 14 is for 6-month checkins.
+  
+
 Methods Repository navigation:
 ------------------------------
 
