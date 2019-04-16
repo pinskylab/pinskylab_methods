@@ -13,7 +13,8 @@ Pinsky Lab Cookbook
     -   [Roll back a git repository to a previous commit](https://stackoverflow.com/questions/4372435/how-can-i-rollback-a-github-repository-to-a-specific-commit/4372501#4372501)
 
 -   [R](#r)
-    -   [How to install an older verison of a package than the one currently installed.](#how-to-install-an-older-verison-of-a-package-than-the-one-currently-installed.)
+    -   [How to install an older verison of a package than the one currently installed.](#how-to-install-an-older-version-of-a-package-than-the-one-currently-installed)
+    -   [Install new version of R in your local directory on Amphiprion using miniconda](#install-new-version-of-R-in-your-local-directory-on-Amphiprion-using-miniconda)
 -   [Plots](#plots)
     -   [How to save an R plot as a pdf (when using ggplot) - 3 different ways](#how-to-save-an-r-plot-as-a-pdf-when-using-ggplot---3-different-ways)
 -   [Sequencing](#sequencing)
@@ -114,7 +115,7 @@ If you made a commit that won't push to Github (too large files or something els
 R
 =
 
-How to install an older verison of a package than the one currently installed.
+How to install an older version of a package than the one currently installed.
 ------------------------------------------------------------------------------
 
 Based on this [article](https://support.rstudio.com/hc/en-us/articles/219949047-Installing-older-versions-of-packages)
@@ -127,6 +128,44 @@ install.packages(packageurl, repos=NULL, type="source")
 
 packageloc <- "~/Downloads/gganimate-0.1.1/"
 install.packages(packageloc, repos = NULL, type="source")
+```
+
+Install new version of R in your local directory on Amphiprion using miniconda
+----------------------------------------------------------------------
+Based on an email from Rob Muldowney to Malin about getting the rstan package to run on Amphiprion
+
+The installation will change your .bashrc file if you allow it which will always open your login in the conda environment.  Personally I don't like this so I recommend backing up the file and then restoring it.  So...
+
+Download: https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+```
+cp .bashrc  .bashrc_orig
+bash https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+(say yes to the .bashrc change)
+cp .bashrc .bashrc_conda
+cp .bashrc_orig .bashrc
+```
+When you want to run conda:
+```
+source .bashrc_conda
+```
+
+While in conda:
+```
+(sudo)apt install R
+```
+Say yes to everthing- this  will install all the necessary dependencies.
+
+When done type R to start R.  This will display some text and give you an R prompt.
+
+While in R:
+```
+install.packages('rstan')
+```
+This will take a while.
+
+When done- while in R:
+```
+library('rstan')
 ```
 
 Plots
