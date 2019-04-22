@@ -24,6 +24,8 @@ Pinsky Lab Cookbook
     -   [How to set up the ENR 145 TV for video conference.](#how-to-set-up-the-enr-145-tv-for-video-conference.)
 -   Zotero
      -  [Change keyboard shortcut in Google Docs](https://forums.zotero.org/discussion/comment/328345#Comment_328345)
+- [Remote access to lab computers](#remote-access-to-lab-computers)
+    - [From a chromebook](#how-to-access-a-lab-computer-from-a-chromebook)
      
 This document exists to share institutional knowledge for obstacles that are commonly run into by Pinsky Lab Members. The struggle is real!
 
@@ -228,3 +230,11 @@ How to set up the ENR 145 TV for video conference.
 -   Be sure to log out of Skype/Google/etc when you're done.
 -   Log out of the Windows user account.
 -   Turn off computer and TV.
+
+Remote access to lab computers
+======
+
+How to access a lab computer from a chromebook
+--------------------------------------------------
+
+
