@@ -82,7 +82,7 @@ How to connect amphiprion Rstudio server to existing github repo
 git clone git@github.com:user_name/repo_name.git
 ```
 
-1.  Open the the project file in the RStudio server for amphiprion in your web browser. If you need the webaddress for the RStudio server, email Michelle.
+1.  Open the the project file in the RStudio server for amphiprion in your web browser. If you need the web address for the RStudio server, email Michelle.
 
 How to use the command line to connect your current folder to an existing github repo.
 --------------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ If you made a commit that won't push to Github (too large files or something els
 -------------------------------------------------------------------------------------
 
 -   Make a copy of your new files/versions and put the copy in a different folder, like your Desktop.
--   on the command line, type git reset --hard origin/master
+-   on the command line, type `git reset --hard origin/master`
 
     -   replace master with whatever branch you are working on if it is not the master.
     -   This command restores your local version of the repository to be identical with the web version.
@@ -136,7 +136,7 @@ Install new version of R in your local directory on Amphiprion using miniconda
 ----------------------------------------------------------------------
 Based on an email from Rob Muldowney to Malin about getting the rstan package to run on Amphiprion
 
-The installation will change your .bashrc file if you allow it which will always open your login in the conda environment.  Personally I don't like this so I recommend backing up the file and then restoring it.  So...
+The installation will change your `.bashrc` file if you allow it which will always open your login in the conda environment.  Personally I don't like this so I recommend backing up the file and then restoring it.  So...
 
 Download: https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 ```
@@ -155,9 +155,9 @@ While in conda:
 ```
 (sudo)apt install R
 ```
-Say yes to everthing- this  will install all the necessary dependencies.
+Say yes to everything- this will install all the necessary dependencies.
 
-When done type R to start R.  This will display some text and give you an R prompt.
+When done type R to start R. This will display some text and give you an R prompt.
 
 While in R:
 ```
