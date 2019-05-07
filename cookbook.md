@@ -1,6 +1,8 @@
 Pinsky Lab Cookbook
 ================
 
+
+
 -   [Github](#github)
     -   [How to add undergrads to the Pinsky Lab github.](#how-to-add-undergrads-to-the-pinsky-lab-github.)
     -   [How to get RStudio and github to talk to each other](#how-to-get-rstudio-and-github-to-talk-to-each-other)
