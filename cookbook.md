@@ -188,4 +188,6 @@ How to set up the ENR 145 TV for video conference.
 -   Open chrome and navigate to the fish baste link. You can find the link on our Pinksy Lab Meeting Google Sheet. Other video conferencing software is also available.
 -   Be sure to log out of Skype/Google/etc when you're done.
 -   Log out of the Windows user account.
--   Turn off computer and TV.
+-   Turn off computer and TV. 
+
+- - 
