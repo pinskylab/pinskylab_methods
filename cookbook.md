@@ -1,6 +1,8 @@
 Pinsky Lab Cookbook
 ================
 
+
+
 -   [Github](#github)
     -   [How to add undergrads to the Pinsky Lab github.](#how-to-add-undergrads-to-the-pinsky-lab-github.)
     -   [How to get RStudio and github to talk to each other](#how-to-get-rstudio-and-github-to-talk-to-each-other)
@@ -13,7 +15,8 @@ Pinsky Lab Cookbook
     -   [Roll back a git repository to a previous commit](https://stackoverflow.com/questions/4372435/how-can-i-rollback-a-github-repository-to-a-specific-commit/4372501#4372501)
 
 -   [R](#r)
-    -   [How to install an older verison of a package than the one currently installed.](#how-to-install-an-older-verison-of-a-package-than-the-one-currently-installed.)
+    -   [How to install an older verison of a package than the one currently installed.](#how-to-install-an-older-version-of-a-package-than-the-one-currently-installed)
+    -   [Install new version of R in your local directory on Amphiprion using miniconda](#install-new-version-of-R-in-your-local-directory-on-Amphiprion-using-miniconda)
 -   [Plots](#plots)
     -   [How to save an R plot as a pdf (when using ggplot) - 3 different ways](#how-to-save-an-r-plot-as-a-pdf-when-using-ggplot---3-different-ways)
 -   [Sequencing](#sequencing)
@@ -23,6 +26,8 @@ Pinsky Lab Cookbook
     -   [How to set up the ENR 145 TV for video conference.](#how-to-set-up-the-enr-145-tv-for-video-conference.)
 -   Zotero
      -  [Change keyboard shortcut in Google Docs](https://forums.zotero.org/discussion/comment/328345#Comment_328345)
+- [Remote access to lab computers](#remote-access-to-lab-computers)
+    - [From a chromebook](#how-to-access-a-lab-computer-from-a-chromebook)
      
 This document exists to share institutional knowledge for obstacles that are commonly run into by Pinsky Lab Members. The struggle is real!
 
@@ -79,7 +84,7 @@ How to connect amphiprion Rstudio server to existing github repo
 git clone git@github.com:user_name/repo_name.git
 ```
 
-1.  Open the the project file in the RStudio server for amphiprion in your web browser. If you need the webaddress for the RStudio server, email Michelle.
+1.  Open the the project file in the RStudio server for amphiprion in your web browser. If you need the web address for the RStudio server, email Michelle.
 
 How to use the command line to connect your current folder to an existing github repo.
 --------------------------------------------------------------------------------------
@@ -105,7 +110,7 @@ If you made a commit that won't push to Github (too large files or something els
 -------------------------------------------------------------------------------------
 
 -   Make a copy of your new files/versions and put the copy in a different folder, like your Desktop.
--   on the command line, type git reset --hard origin/master
+-   on the command line, type `git reset --hard origin/master`
 
     -   replace master with whatever branch you are working on if it is not the master.
     -   This command restores your local version of the repository to be identical with the web version.
@@ -114,7 +119,7 @@ If you made a commit that won't push to Github (too large files or something els
 R
 =
 
-How to install an older verison of a package than the one currently installed.
+How to install an older version of a package than the one currently installed.
 ------------------------------------------------------------------------------
 
 Based on this [article](https://support.rstudio.com/hc/en-us/articles/219949047-Installing-older-versions-of-packages)
@@ -127,6 +132,44 @@ install.packages(packageurl, repos=NULL, type="source")
 
 packageloc <- "~/Downloads/gganimate-0.1.1/"
 install.packages(packageloc, repos = NULL, type="source")
+```
+
+Install new version of R in your local directory on Amphiprion using miniconda
+----------------------------------------------------------------------
+Based on an email from Rob Muldowney to Malin about getting the rstan package to run on Amphiprion
+
+The installation will change your `.bashrc` file if you allow it which will always open your login in the conda environment.  Personally I don't like this so I recommend backing up the file and then restoring it.  So...
+
+Download: https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+```
+cp .bashrc  .bashrc_orig
+bash https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+(say yes to the .bashrc change)
+cp .bashrc .bashrc_conda
+cp .bashrc_orig .bashrc
+```
+When you want to run conda:
+```
+source .bashrc_conda
+```
+
+While in conda:
+```
+(sudo)apt install R
+```
+Say yes to everything- this will install all the necessary dependencies.
+
+When done type R to start R. This will display some text and give you an R prompt.
+
+While in R:
+```
+install.packages('rstan')
+```
+This will take a while.
+
+When done- while in R:
+```
+library('rstan')
 ```
 
 Plots
@@ -188,6 +231,20 @@ How to set up the ENR 145 TV for video conference.
 -   Open chrome and navigate to the fish baste link. You can find the link on our Pinksy Lab Meeting Google Sheet. Other video conferencing software is also available.
 -   Be sure to log out of Skype/Google/etc when you're done.
 -   Log out of the Windows user account.
--   Turn off computer and TV. 
+-   Turn off computer and TV.
 
-- - 
+Remote access to lab computers
+
+How to access a lab computer from a chromebook
+--------------------------------------------------
+
+On lab desktop:
+-   Open Chrome and go to chrome.google.con/remotedesktop
+-   Select "Add to Chrome" and "Add app."
+-   Log onto the Admin account and open the Chrome Remote Desktop app. This will be under "Chrome Apps" in "All Programs."
+-   Two windows will open - go to the smaller of the two that says "Chrome Remote Desktop" and click "Continue" in order to authorize sharing access.
+-   Under "My Computers," click "Enable remote connections."
+
+On chromebook:
+-   Open Chrome Remote Desktop app.
+
