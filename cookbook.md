@@ -189,6 +189,9 @@ How to calculate the distance between two sets of points
 # see ?distVincentyEllipsoid for details
 library(geosphere)
 mat <- distm(list1[,c('longitude','latitude')], list2[,c('longitude','latitude')], fun=distVincentyEllipsoid)
+
+# Create a distance column in meters from a data.frame that has both points 
+loc.df$dist <- distGeo(loc.df[,c('lon1', 'lat1')], loc.df[,c('lon2', 'lat2')])
 ```
 See [script](https://github.com/pinskylab/Phils_GIS_R/blob/master/scripts/calc_distance_matrix.R)
 
