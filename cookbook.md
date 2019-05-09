@@ -183,7 +183,7 @@ R Spatial
 How to calculate the distance between two sets of points
 --------------------------------------------------------
 ``` r
-# create distance matrix between two sets of points (list1, list2) in meters using the function distVincentyEllipsoid
+# create pairwise distance matrix between two sets of points (list1, list2) in meters using the function distVincentyEllipsoid
 # the WGS84 ellipsoid is used by default, as it's the best available global ellipsoid
 # can change the a, b, and f parameters for a desired ellipsoid
 # see ?distVincentyEllipsoid for details
