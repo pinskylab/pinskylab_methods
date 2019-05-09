@@ -17,6 +17,11 @@ Pinsky Lab Cookbook
 -   [R](#r)
     -   [How to install an older verison of a package than the one currently installed.](#how-to-install-an-older-version-of-a-package-than-the-one-currently-installed)
     -   [Install new version of R in your local directory on Amphiprion using miniconda](#install-new-version-of-R-in-your-local-directory-on-Amphiprion-using-miniconda)
+
+-   [R Spatial](#r-spatial)
+    -   [How to calculate the distance between two sets of points.](#how-to-calc-distance-between-points)
+
+    
 -   [Plots](#plots)
     -   [How to save an R plot as a pdf (when using ggplot) - 3 different ways](#how-to-save-an-r-plot-as-a-pdf-when-using-ggplot---3-different-ways)
 -   [Sequencing](#sequencing)
@@ -171,6 +176,21 @@ When done- while in R:
 ```
 library('rstan')
 ```
+
+R Spatial
+=========
+
+How to calculate the distance between two sets of points
+--------------------------------------------------------
+``` r
+# create distance matrix between two sets of points (list1, list2) in meters using the function distVincentyEllipsoid
+# the WGS84 ellipsoid is used by default, as it's the best available global ellipsoid
+# can change the a, b, and f parameters for a desired ellipsoid
+# see ?distVincentyEllipsoid for details
+library(geosphere)
+mat <- distm(list1[,c('longitude','latitude')], list2[,c('longitude','latitude')], fun=distVincentyEllipsoid)
+```
+See [script](https://github.com/pinskylab/Phils_GIS_R/blob/master/scripts/calc_distance_matrix.R)
 
 Plots
 =====
