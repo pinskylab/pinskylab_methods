@@ -271,3 +271,87 @@ On lab desktop:
 On chromebook:
 -   Open Chrome Remote Desktop app.
 
+Ryan's Advice
+---------------------------------------------------
+Analysis
+
+Accessing a PostgreSQL database from R on a Mac
+
+PostgreSQL is a widely used, open-source database, and R is a widely used, open-source statistical program. So it would be natural to put them together, such as when working with data like these. If you work on a Mac, though, it’s not obvious from a web search how to do so.
+Here’s what worked for us:
+```r
+> install.packages(“RPpostgreSQL”) # install R package > require(“RPostgreSQL”) # load it > drv <- dbDriver(“PostgreSQL”) # start the driver for a postgreSQL database > conn = dbConnect(drv, …) # fill in the … with your database connection
+```
+
+These instructions may also be helpful: http://blog.chrischou.org/2010/09/07/install-rpostgresql-in-mac/
+
+Configuring TextMate2 on a Mac for use with R
+-------------------------------------------------------------------
+From Ryan Batt, our postdoc R guru extraordinaire:
+If you're on a Mac and are looking for a new text editor, I recommend TextMate 2. I know many of you know and love RStudio – if it works for you, that's fine, keep using it. I've been using TextMate2 since alpha, and it recently entered beta. It's free and open source. But it's also in development, so there are some less-than-intuitive steps you need to take to get it working nicely. Because I loved TextMate 1 so much, I took those steps. I've compiled a set of instructions that detail the basic adjustments I recommend you make to TextMate 2 in order to do comfortable programming in R. A tip: I recommend making use of the project drawer: control+alt+command+d. From there you can use Git (command+Y), create and edit files, etc, just like you would in Finder. For the other features, I'll let you discover those yourself. One more tip: in the project drawer, select any file and hit the space bar for a nice preview. Very helpful when creating figures. Works for most file/ document types, not just images. Here are the files mentioned below, as a .zip file.
+Basics
+
+Download Textmate2
+Copy from Download folder to Applications (may have to rename or delete Textmate original)
+Give permission to open
+Aesthetics
+
+Add Custom Theme
+
+Copy file "RyanMedium.tmTheme"
+Open TextMate, go to Bundles –> Bundle Editor
+Hit ⌘N (command+N) to create a new bundle
+Name bundle (right panel, in dialog box for Name:), save with ⌘S
+In left panel, Right click bundle name (eg., RyanThme), and click "show info.plist in Finder" (note: can get there library -> app support -> avian -> bundles, right click on bundle, show pack contents)
+Paste file "RyanMedium.tmTheme"
+Set Theme
+
+View –> Theme –> RyanMedium
+Change Font: View –> Font –> Show Fonts –> All Fonts –> Monaco (adjust size with hotkeys in script)
+Prepare for R
+
+Install R Bundle
+
+Go to Preferences (command+,) and ...
+Bundles, install R (check the box)
+Under files, new document type = R
+Send Line/ Selection to R & Step
+
+This is main command, lots of edits, but worth it
+Go to Bundles –> Edit Bundles, then click "R" on the left hand side, then click "Menu Actions" to the right of that
+Click "Run Document / Selection in R" – on the far right, in the "Key Equivalent" dialogue box, hit the little "x" to remove the hotkey (note: we are going to remap this hotkey to a more useful action)
+In the 3rd panel from left, click "Send Selection/Line to", then in the next panel to the right click "R.app & Step"
+Change Key Equivalent to ⌘R
+In the code below that, copy in the code located in the file "RappStep.txt"
+note: I recently added a changed to fix a bug with this command losing focus, the correction was to add this to Line 16: -e 'tell application "TextMate" to activate' \ http://jimbarritt.com/non-random/2010/11/16/using-textmate-with-r/comment-page-1/
+Change Word Characters
+
+Bundles –> Edit Bundles –> Source –> Settings –> ⌘N –> select "Settings"
+In far right panel, as name enter "Character Class: wordCharacters"
+In text editor box, enter this exactly (without the outer "quotes"): "{ wordCharacters = '.'; }"
+note: mind spaces, etc. If something doesn't work, try *not* copying from this document, and typing yourself.
+hit ⌘S to save the edits to the bundle
+Edit R Language Grammar
+
+Specifically, these changes will make sure TextMate recognizes data.table as a data structure, just like matrix or data.frame
+Bundles –> Edit Bundles –> R –> Language Grammars –> R
+Replace bottom text with that in "rLanguageGrammar.txt"
+Save with ⌘S
+note: if you have trouble, make sure you expand the window width when you open the .txt file to avoid any wrapping
+Fix Annoying R Indenting (especially with if(){}else{})
+
+Bundles –> Edit Bundles –> R –> Settings –> ⌘N  –> Settings –> Create
+In the far right, in the dialogue box called "Name:", change to "fixIndent"
+In the far right, in the dialogue box called "Scope Selector:", type "*" (that's an asterisk)
+In the text box at the bottom, enter the following exactly (without the outer quotes): "{ disableIndentCorrections = :true; }"
+⌘S to save
+note: try typing yourself isntead of copy-paste if you have problems
+Ensure that Focus Returns to TextMate after ⌘R
+
+I seem to only need to make this correction in Yosemite, but might be a general fix if you have problem
+Bundles –> Edit Bundles –> R –> Language Grammars –> R –> Send Selection/Line to –> R.app & Step
+In the bottom text box, enter "-e 'tell application "TextMate" to activate' \" (without the "quotes");
+Save with ⌘S
+If you have problems, try copy and pasting the contents of the file RappStep2.txt
+note: I'm not making this change by default b/c the correction doesn't seem to be necessary for all setups
+

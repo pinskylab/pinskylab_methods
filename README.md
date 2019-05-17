@@ -1,9 +1,3 @@
-README
-================
-
-Pinskylab Organization
-======================
-
 Methods Repository navigation:
 ------------------------------
 
