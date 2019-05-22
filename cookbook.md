@@ -13,6 +13,7 @@ Pinsky Lab Cookbook
     -   [How to use the command line to connect your current folder to an existing github repo.](#how-to-use-the-command-line-to-connect-your-current-folder-to-an-existing-github-repo.)
     -   [If you made a commit that won't push to Github (too large files or something else)...](#if-you-made-a-commit-that-wont-push-to-github-too-large-files-or-something-else...)
     -   [Roll back a git repository to a previous commit](https://stackoverflow.com/questions/4372435/how-can-i-rollback-a-github-repository-to-a-specific-commit/4372501#4372501)
+    -   [Call data from a GitHub repo directly into R](#call-data-from-a-github-repo-directly-into-R)
 
 -   [R](#r)
     -   [How to install an older verison of a package than the one currently installed.](#how-to-install-an-older-version-of-a-package-than-the-one-currently-installed)
