@@ -121,6 +121,21 @@ If you made a commit that won't push to Github (too large files or something els
     -   This command restores your local version of the repository to be identical with the web version.
     -   You still need to figure out what to do with the new versions that won't push to github.
 
+Call data from a GitHub repo directly into R
+-------------------------------------------------------------------------------------
+The url was copied by right clicking on "View Raw" for the data file in question and selecting "Copy Link"
+```
+# download the file
+download.file(url = "https://github.com/pinskylab/genomics/blob/master/data/fish-obs.RData?raw=true", destfile = "fish-obs.RData")
+
+# read in the data
+fish_obs <- readRDS("fish-obs.RData")
+
+# delete the file
+file.remove("fish-obs.RData")
+```
+
+
 R
 =
 
