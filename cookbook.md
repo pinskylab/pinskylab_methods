@@ -18,6 +18,7 @@ Pinsky Lab Cookbook
 -   [R](#r)
     -   [How to install an older verison of a package than the one currently installed.](#how-to-install-an-older-version-of-a-package-than-the-one-currently-installed)
     -   [Install new version of R in your local directory on Amphiprion using miniconda](#install-new-version-of-R-in-your-local-directory-on-Amphiprion-using-miniconda)
+    -   [Working with strings](#working-with-strings)
 
 -   [R Spatial](#r-spatial)
     -   [How to calculate the distance between two sets of points.](#how-to-calc-distance-between-points)
@@ -190,7 +191,22 @@ This will take a while.
 
 When done- while in R:
 ```
-library('rstan')
+library('rstan'
+```
+
+Working with strings
+--------------------
+How to find and replace a digit/character combination using stringr (in the tidyverse library).  In this example, we have used parentheses to create 2 groups and we are replacing the whole with only the second group
+```
+library(stringr)
+str_view(fruit, "(..)\\1", match = T)
+
+#test <- "0_5" - should return 5
+test <- "10_15" - should return 15
+
+str_replace(test, "(\\d+\\_)(\\d+)", "\\2")
+
+# Can use str_view(test, "(\\d+\\_)(\\d+)") to see what stringr is seeing.
 ```
 
 R Spatial
