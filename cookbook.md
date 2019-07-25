@@ -293,15 +293,8 @@ Remote access to lab computers
 How to access a lab computer from a chromebook
 --------------------------------------------------
 
-On lab desktop:
--   Open Chrome and go to chrome.google.con/remotedesktop
--   Select "Add to Chrome" and "Add app."
--   Log onto the Admin account and open the Chrome Remote Desktop app. This will be under "Chrome Apps" in "All Programs."
--   Two windows will open - go to the smaller of the two that says "Chrome Remote Desktop" and click "Continue" in order to authorize sharing access.
--   Under "My Computers," click "Enable remote connections."
-
-On chromebook:
--   Open Chrome Remote Desktop app.
+-   Instructions for setting up Chrome Remote Desktop: https://www.laptopmag.com/articles/how-to-set-up-chrome-remote-desktop-on-your-chromebook
+-   Even when syncing is turned off, this program will share your passwords, bookmarks, etc saved to chrome with the lab desktop. In order to keep this private, create your own account on the desktop and go through this process on that account. This way, only you will have access to the chrome app which has all of your shared information on it. Use the administrative account to create a new account for yourself.
 
 Ryan's Advice
 ---------------------------------------------------
