@@ -1,215 +1,239 @@
 ---
 title: "Ordering lab supplies"
 author: "Michelle Stuart"
-date: "6/13/2018"
+date: "6/13/2018, updated `r Sys.Date()`"
+params:
+  num_sample: 4416
+  num_plate: 46
+  num_pool: 92
 output:
   html_document: default
   pdf_document: default
 ---
-```{r echo=FALSE, message=FALSE}
-library(dplyr)
-library(knitr)
+The number of plates is the number of samples divided by 96.  The number of pools is the number of plates times 2.
+
+```{r setup, echo=FALSE, message=FALSE, include=FALSE}
+library(tidyverse)
 ```
 
-I need to order lab supplies.
 
-####Quantification of 7 digest plates
+Calculate a budget for processing samples - there is a 2 plate minimum for the process
+
+####Extract 
+```{r, echo=FALSE}
+(extr <- tibble(qiagen_kits = ceiling((params$num_plate)/12), 
+              tips_300 = 7*(params$num_sample), 
+              plates = (params$num_plate), 
+              seals = (params$num_plate)) %>% 
+   gather(item, quantity))
+```
+
+####Digest 
+```{r, echo=FALSE}
+(digest <- tibble(
+  tips_100 = 2*params$num_sample, 
+  PstI_ul = 0.2*(params$num_sample*1.1), 
+    MluCI_ul = 2*(params$num_sample*1.1),
+    seals = params$num_plate, 
+  plates = params$num_plate
+) %>% 
+   gather(item, quantity))
+
+```
+####Clean plates
+```{r, echo=FALSE}
+(clean <- tibble(
+  vol_samples = 50,
+    ampure_ul = (params$num_sample*1.1)* 1.5 * vol_samples, 
+  ampure_ml = ceiling(ampure_ul/1000),
+    ethanol_ul = 400 * (params$num_sample * 1.1), 
+  ethanol_ml = ceiling(ethanol_ul/1000),
+    tips_300 = params$num_sample * 4,
+    tips_100 = params$num_sample * 3,  
+    seals = params$num_plate, 
+  plates = params$num_plate) %>% 
+   select(-vol_samples) %>% 
+   gather(item, quantity))
+
+```
+####Quantification of digest plates
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
-pico <- data.frame(NA)
-pico <- pico %>% 
-  mutate(
-    num_samples = (96*7)+(8*7),
-    final_vol_pico = 100*num_samples,
+(pico <- tibble(
+  final_vol_pico = 100*params$num_sample,
+  grenier_plate = (params$num_plate + 1),
     vol_1x_TE = 0.995 * final_vol_pico,
-    grenier_plate = ceiling(num_samples/96),
-    pico = final_vol_pico - vol_1x_TE,
-    tips_100 = 2*num_samples,
-    tips_10 = num_samples,
-    foil = grenier_plate, 
-    seals = grenier_plate
+    pico_uL = final_vol_pico - vol_1x_TE,
+    tips_100 = 2*params$num_sample,
+    tips_10 = params$num_sample,
+    foil = params$num_plate, 
+    seals = params$num_plate
   ) %>% 
-  select(-NA., -final_vol_pico, -vol_1x_TE)
-kable(pico)
+  select(-final_vol_pico, -vol_1x_TE) %>% 
+   gather(item, quantity))
+```
+# Prepare adapters
+1uL pure stock goes into 25uL of working stock.  We receive about 250uL of pure stock (it is rehydrated depending on the concentration we recieve, 250 is the low end.)  So if we receive 250uL of pure stock, that is 6250uL of working stock
+
+# Ligation
+```{r, echo=FALSE}
+(lig_prep <- tibble(
+  plates = params$num_plate, 
+  water_ul = 22.2*params$num_sample,
+  robot_time_min = 15 * params$num_plate,
+  robot_time_hr = robot_time_min/60,
+  seals = 2*params$num_plate, # because we seal it at the robot and then seal it again at the reaction
+  P2_ul = 2*params$num_sample, 
+  ligase_ul = 0.8*params$num_sample, 
+  P1_ul =  2*params$num_sample 
+) %>% 
+   gather(item, quantity))
 ```
 
-####Extraction of 8 2018 APCL plates
+# Pool the samples and 2xSPRI
+
 ```{r, echo=FALSE}
-extr <- data.frame(NA)
-extr <- extr %>% 
-  mutate(num_samples = 736, 
-    qiagen = ceiling(num_samples/96), 
-    tips_300 = 7*qiagen, 
-    plates = qiagen, 
-    seals = qiagen) %>%
-  select(-NA.)
+(first_spri <- tibble(
+  vol_samples = 200,
+  num_vials = 4*params$num_pool, 
+    ampure_ul = (num_vials*1.1)* 1.5 * vol_samples, 
+  ampure_ml = ceiling(ampure_ul/1000),
+    ethanol_ul = 400 * (num_vials * 1.1), 
+  ethanol_ml = ceiling(ethanol_ul/1000),
+    tips_300 = num_vials * 4,
+    tips_100 = num_vials * 3,  
+    tubes = num_vials + params$num_pool) %>% 
+   select(-vol_samples, -num_vials)%>% 
+   gather(item, quantity))
+
 ```
 
-####Quantify 8 plates of extracts
 ```{r, echo=FALSE}
-pico2 <- data.frame(NA)
-pico2 <- pico2 %>% 
-  mutate(
-    num_samples = 736,
-    final_vol_pico = 100*num_samples,
-    vol_1x_TE = 0.995 * final_vol_pico,
-    grenier_plate = ceiling(num_samples/96),
-    pico = final_vol_pico - vol_1x_TE,
-    tips_100 = 2*num_samples,
-    tips_10 = num_samples,
-    foil = grenier_plate,
-    seals = grenier_plate
-  ) %>% 
-  select(-NA., -final_vol_pico, -vol_1x_TE)
-pico <- rbind(pico, pico2)
-pico <- pico %>% 
-  summarise(num_samples = sum(num_samples), 
-    grenier_plate = sum(grenier_plate), 
-    pico = sum(pico), 
-    tips_100 = sum(tips_100), 
-    tips_10 = sum(tips_10), 
-    foil = sum(foil), 
-    seals = sum(seals))
-kable(pico)
-rm(pico2)
+(second_spri <- tibble(
+  vol_samples = 45*4,
+    ampure_ul = (params$num_pool*1.1)* 1.5 * vol_samples, 
+  ampure_ml = ceiling(ampure_ul/1000),
+    ethanol_ul = 400 * (params$num_pool * 1.1), 
+  ethanol_ml = ceiling(ethanol_ul/1000),
+    tips_300 = params$num_pool * 4,
+    tips_100 = params$num_pool * 3,  
+    tubes = params$num_pool) %>% 
+   select(-vol_samples)%>% 
+   gather(item, quantity))
+
+```
+# Pippin
+```{r}
+(pippin <- tibble(
+  cassette_num = ceiling(params$num_pool/5),
+  tips_10 = params$num_pool,
+  tips_100 = 3* params$num_pool,
+  tubes = params$num_pool
+) %>% 
+   gather(item, quantity))
 ```
 
-####Digest 8 plates
-```{r, echo=FALSE}
-digest <- data.frame(NA)
-digest <- digest %>% 
-  mutate(
-    num_samples = 736, 
-    plates = ceiling(num_samples/96), 
-    tips_100 = num_samples*2, 
-    PstI = 0.2*(num_samples*1.1), 
-    MluCI = 2*(num_samples*1.1),
-    seals = 2*plates
-    ) %>% 
-  select(-NA.)
+# Primer Prep
+1uL of primer goes into each reaction.  5uL of pure stock goes into each working stock of 100uL.  If there are 300ul of pure stock, that makes 60 vials of 100uL each, for a total of 6000 reactions.
+
+
+# PCR
+```{r}
+(pcr <- tibble(
+  phusion_ul = 0.2*params$num_pool,
+  f_primer = params$num_pool,
+  r_primer = params$num_pool,
+  plates = ceiling(params$num_pool*4/96),
+  tips_10 = 2*params$num_pool*4,
+  seals = plates
+) %>% 
+   gather(item, quantity))
+```
+# Qubit
+```{r}
+(qubit <- tibble(
+  qubit_ul = (params$num_pool)+20
+) %>% 
+  gather(item, quantity))
 ```
 
-####Clean 8 plates
-```{r, echo=FALSE}
-clean <- data.frame(NA)
-clean <- clean %>% 
-  mutate(
-    num_samples = 736, 
-    vol_samples = 50,
-    ampure = (num_samples*1.1)* 1.5 * vol_samples, 
-    ethanol = 400 * (num_samples * 1.1), 
-    tips_300 = num_samples * 4,
-    tips_100 = num_samples * 3, 
-    plates = ceiling(num_samples/96), 
-    seals = plates) %>% 
-  select(-NA.)
+
+# Baits
+There are 4 pools per baits reaction 
+16 reactions:   $3600
+48 reactions:   $5990
+96 reactions:   $9120
+
+```{r}
+(baits <- tibble(
+  baits_rxns = params$num_pool/4
+) %>% 
+   gather(item, quantity))
+
 ```
 
-####Quantify 8 digest plates
+
+
+####Merge these tables into one grocery list
 ```{r, echo=FALSE}
-pico3 <- data.frame(NA)
-pico3 <- pico3 %>% 
-  mutate(
-    num_samples = 736 * 1.1,
-    final_vol_pico = 100*num_samples,
-    vol_1x_TE = 0.995 * final_vol_pico,
-    grenier_plate = ceiling(num_samples/96),
-    pico = final_vol_pico - vol_1x_TE,
-    tips_100 = 2*num_samples,
-    tips_10 = num_samples,
-    foil = grenier_plate, 
-    seals = grenier_plate
-  ) %>% 
-  select(-NA., -final_vol_pico, -vol_1x_TE)
-pico <- rbind(pico, pico3)
-pico <- pico %>% 
-  summarise(num_samples = sum(num_samples), 
-    grenier_plate = sum(grenier_plate), 
-    pico = sum(pico), 
-    tips_100 = sum(tips_100), 
-    tips_10 = sum(tips_10), 
-    foil = sum(foil), 
-    seals = sum(seals))
-kable(pico)
-rm(pico3)
+grocery_list <- rbind(baits, clean, digest, extr, first_spri, lig_prep, pcr, pico, pippin, second_spri, qubit) %>% 
+  group_by(item) %>% 
+  summarise(quantity = sum(quantity))
 ```
-####Merge these 4 tables into one grocery list
-```{r, echo=FALSE}
-# get rid of columns that aren't supplies
-clean <- clean %>%
-  select(-num_samples, -vol_samples) %>% 
-  mutate(method = "clean")
 
-digest <- digest %>% 
-  select(-num_samples) %>% 
-  mutate(method = "digest")
 
-extr <- extr %>% 
-  select(-num_samples) %>% 
-  mutate(method = "extract")
+# Price list
+```{r}
+cost <- read_csv(
+  "
+  item, num_units, cost
+  ampure_ml, 515, 7200
+  baits_rxns, 48, 5990
+  cassette_num, 10, 475
+  ethanol_ml, 4000, 104
+  f_primer, 6000, 20
+  foil, 100, 50 
+  grenier_plate, 40, 70
+  ligase_ul, 250, 256
+  MluCl_ul, 500, 233
+  P1_ul, 6250,65.54
+  P2_ul, 6250,54.73
+  phusion_ul, 100,200
+  pico_uL, 1000,410.97
+  plates, 100,227
+  PstI_ul,500,233
+  qiagen_kits,1,3082
+  qubit_ul,1250,97
+  r_primer,6000,20
+  robot_time_hr, 1, 100
+  seals,100,78.80
+  tips_10,960,126
+  tips_100,960,121
+  tips_300,960,121
+  tubes,500,103
+  water_ul,1000,45"
+) %>% 
+  mutate(cost_per_item = cost/num_units)
+```
 
-pico <- pico %>% 
-  select(-num_samples) %>% 
-  mutate(method = "pico")
+# add cost to grocery
+```{r}
+grocery <- grocery_list %>% 
+  left_join(select(cost, item, cost_per_item), by = "item") %>% 
+  filter(!is.na(cost_per_item)) %>% 
+  mutate(total_cost = cost_per_item * quantity, 
+         cost_per_sample = formatC(total_cost/params$num_sample, digits = 2))
 
-clean <- clean %>% 
-  mutate(PstI = NA, 
-    MluCI = NA, 
-    qiagen = NA, 
-    grenier_plate = NA, 
-    pico = NA, 
-    tips_10 = NA, 
-    foil = NA)
+supplies_total <- grocery %>% 
+  summarise(total_cost_per_sample = sum(cost_per_sample, na.rm = T))
+```
 
-digest <- digest %>% 
-  mutate(ampure = NA, 
-    ethanol = NA, 
-    tips_300 = NA, 
-    qiagen = NA, 
-    grenier_plate = NA, 
-    pico = NA, 
-    tips_10 = NA, 
-    foil = NA)
 
-extr <- extr %>% 
-   mutate(ampure = NA, 
-    ethanol = NA, 
-    grenier_plate = NA, 
-    pico = NA, 
-    tips_10 = NA, 
-    foil = NA, 
-     tips_100 = NA, 
-     PstI = NA, 
-    MluCI = NA)
-
-pico <- pico %>% 
-  mutate(ampure = NA, 
-    ethanol = NA, 
-     PstI = NA, 
-    MluCI = NA,
-    tips_300 = NA, 
-    qiagen = NA, 
-    plates = NA)
-
-total <- rbind(clean, digest, extr, pico)
-
-full <- total %>% 
-  summarise(
-    ampure = sum(ampure, na.rm = T) ,
-      ethanol = sum(ethanol, na.rm = T) ,
-      tips_300 = sum(tips_300, na.rm = T) ,
-      tips_100 = sum(tips_100, na.rm = T) ,
-      plates = sum(plates, na.rm = T) ,
-      seals = sum(seals, na.rm = T) ,
-      PstI = sum(PstI, na.rm = T) ,
-      MluCI = sum(MluCI, na.rm = T) ,
-      qiagen = sum(qiagen, na.rm = T) ,
-      grenier = sum(grenier_plate, na.rm = T) ,
-      pico = sum(pico, na.rm = T),
-      tips_10 = sum(tips_10, na.rm = T) ,
-      foil = sum(foil, na.rm = T)
-    )
-full <- tidyr::gather(full, key = "item", value = "qty")
-kable(full)
+# Cost for sequencing
+```{r eval=FALSE}
+seq <- tibble(
+  samp_per_lane = 576,
+  
+)
 ```
 
