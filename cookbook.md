@@ -23,6 +23,8 @@ Pinsky Lab Cookbook
         else)…](#if-you-made-a-commit-that-wont-push-to-github-too-large-files-or-something-else)
       - [Call data from a GitHub repo directly into
         R](#call-data-from-a-github-repo-directly-into-r)
+      - [Allow others to view html versions of your
+        code.](#allow-others-to-view-html-versions-of-your-code.)
   - [R](#r)
       - [How to install an older version of a package than the one
         currently
@@ -168,6 +170,17 @@ fish_obs <- readRDS("fish-obs.RData")
 # delete the file
 file.remove("fish-obs.RData")
 ```
+
+## Allow others to view html versions of your code.
+
+If you want to share plots with collaborators quickly, one way is using
+an Rmarkdown (Rmd) document and html output. 1. Create a branch called
+gh-pages.  
+2\. Checkout that branch in RStudio.  
+3\. Knit your Rmd to html using output: html\_document or
+html\_notebook. 4. Push your html document to github. 5. Wait for github
+to process the new web page (this could take 5 minutes). 6. Go to
+your-github-username.github.io/your-repo-name/html-file-name.html
 
 # R
 
