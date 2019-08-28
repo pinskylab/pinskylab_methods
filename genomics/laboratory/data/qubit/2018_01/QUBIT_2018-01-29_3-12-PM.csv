@@ -1,5 +1,0 @@
-Name,Date/Time,Assay Conc.,Units,Stock Conc.,Units,Assay Type,Sample Vol (µL),Dilution Factor,Std 1 RFU,Std 2 RFU,Std 3 RFU,Excitation,Green RFU,Far Red RFU
-2:52:48 PM,2018-01-29 2:52:48 PM,<0.50,ng/ml,,,dsDNA HS,,,98.54,49425.48,,BLUE,81.02,
-2:52:39 PM,2018-01-29 2:52:39 PM,4.94,ng/ml,,,dsDNA HS,,,98.54,49425.48,,BLUE,576.26,
-2:52:30 PM,2018-01-29 2:52:30 PM,10.4,ng/ml,,,dsDNA HS,,,98.54,49425.48,,BLUE,1117.61,
-2:52:07 PM,2018-01-29 2:52:07 PM,98.4,ng/ml,19.7,ng/µL,dsDNA HS,1,200.00,98.54,49425.48,,BLUE,10058.24,
