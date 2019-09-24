@@ -153,7 +153,9 @@ git push origin master
       - This command restores your local version of the repository to be
         identical with the web version.
       - You still need to figure out what to do with the new versions
-        that won’t push to github.
+        that won’t push to github.  
+      - Good advice [about the 3 trees of
+        git](https://www.atlassian.com/git/tutorials/undoing-changes/git-reset).
 
 ## Call data from a GitHub repo directly into R
 
@@ -180,7 +182,7 @@ gh-pages.
 3\. Knit your Rmd to html using output: html\_document or
 html\_notebook. 4. Push your html document to github. 5. Wait for github
 to process the new web page (this could take 5 minutes). 6. Go to
-your-github-username.github.io/your-repo-name/html-file-name.html
+your-github-username.github.io/your-repo-name/html-file-name.html.
 
 # R
 
@@ -358,7 +360,8 @@ pdf](https://github.com/pinskylab/pinskylab_methods/blob/master/genomics/coverag
 
 ## How to set up the ENR 145 TV for video conference.
 
-  - Turn on the computer (on the shelf below the TV)
+  - Turn on the computer (on the shelf below the TV)  
+  - Turn on the TV
   - Switch the source using the input button on the remote to HDMI1 (the
     top port is broken as of March 2019, so you may have to move the
     cord to the bottom port)
