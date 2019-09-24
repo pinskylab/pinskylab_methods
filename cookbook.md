@@ -146,7 +146,9 @@ git push origin master
   - Make a copy of your new files/versions and put the copy in a
     different folder, like your Desktop.
 
-  - on the command line, type `git reset --hard origin/master`
+  - on the command line, type `git reset --soft origin/master` or `git
+    reset --mixed` or `git reset --hard` depending on how nuclear you
+    need to go with your reset, “hard” will delete the most information.
     
       - replace master with whatever branch you are working on if it is
         not the master.
