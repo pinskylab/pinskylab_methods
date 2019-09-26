@@ -12,14 +12,17 @@ repository [Phils\_GIS\_R](https://github.com/pinskylab/Phils_GIS_R).
 ### [genomics](https://github.com/pinskylab/genomics)
 
 This folder contains subfolders and guides to help lab members working
-with DNA in the laboratory and also with bioinformatics.
+with bioinformatics.
 
 ### [laboratory](https://github.com/pinskylab/laboratory)
 
+This folder contains subfolders and guides to help lab members working
+in the wet laboratory, especially with sequencing library preparation.
+
 ### [labmgt](https://github.com/pinskylab/pinskylab_methods/tree/master/labmgt)
 
-This folder contains protocols for general lab management such as how to
-create backups.
+This folder contains protocols for general lab management, for example
+how to create backups.
 
 ### [cookbook.md](https://github.com/pinskylab/pinskylab_methods/blob/master/cookbook.md)
 
