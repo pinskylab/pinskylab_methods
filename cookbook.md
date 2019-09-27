@@ -261,6 +261,9 @@ library('rstan')
 Tutorial slides are
 [here](https://speakerdeck.com/yutannihilation/a-graphical-introduction-to-tidyrs-pivot-star).
 
+More info
+[here](http://www.storybench.org/pivoting-data-from-columns-to-rows-and-back-in-the-tidyverse/)
+
 Make sure you are running at least tidyr 1.0.0 to use this version,
 which is an update from spread and gather. This is great if you want to
 convert row values into column headers or column headers into row
