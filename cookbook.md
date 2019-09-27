@@ -32,6 +32,8 @@ Pinsky Lab Cookbook
       - [Install new version of R in your local directory on Amphiprion
         using
         miniconda](#install-new-version-of-r-in-your-local-directory-on-amphiprion-using-miniconda)
+      - [Convert a table from long format to wide format or vice
+        versa](#convert-a-table-from-long-format-to-wide-format-or-vice-versa)
       - [Working with strings](#working-with-strings)
   - [R Spatial](#r-spatial)
       - [How to calculate the distance between two sets of
@@ -253,6 +255,17 @@ When done- while in R:
 ``` r
 library('rstan')
 ```
+
+## Convert a table from long format to wide format or vice versa
+
+Tutorial slides are
+[here](https://speakerdeck.com/yutannihilation/a-graphical-introduction-to-tidyrs-pivot-star).
+
+Make sure you are running at least tidyr 1.0.0 to use this version,
+which is an update from spread and gather. This is great if you want to
+convert row values into column headers or column headers into row
+values. MRS is testing using it to add absence data in presence absence
+data sets.
 
 ## Working with strings
 
