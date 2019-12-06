@@ -370,6 +370,19 @@ reads replaces basepair numbers. To determine the number of runs:
 Also, [check out this
 pdf](https://github.com/pinskylab/pinskylab_methods/blob/master/genomics/coverage_calculation.pdf)
 
+# Bioinformatics
+
+## Saving working environment to preserve versions for future access
+
+Basically, this is creating a version of your machine at the time you are working on your project that someone in the future (maybe you) can use even if you’ve updated your software/packages.  
+- To create a conda environment at the beginning of a project (or now):   
+`conda create -n name_of_project`. 
+- To save your environment to share with other conda users in your present working directory:  
+`conda env create -f filename.yaml`. 
+- To save your environment to share with non-conda users in your present working directory:  
+`pip freeze > filename.txt`
+These saved files can be included in your github repo to share during publication.
+
 # Video Conferencing
 
 ## google hangout for lab meetings
