@@ -47,6 +47,8 @@ Pinsky Lab Cookbook
   - [Sequencing](#sequencing)
       - [How to calculate sequencing
         coverage](#how-to-calculate-sequencing-coverage)
+  - [Bioinformatics](#bioinformatics)
+      - [Saving working environment](#saving-working-environment)
   - [Video Conferencing](#video-conferencing)
       - [google hangout for lab
         meetings](#google-hangout-for-lab-meetings)
@@ -372,7 +374,7 @@ pdf](https://github.com/pinskylab/pinskylab_methods/blob/master/genomics/coverag
 
 # Bioinformatics
 
-## Saving working environment to preserve versions for future access
+## Saving working environment
 
 Basically, this is creating a version of your machine at the time you are working on your project that someone in the future (maybe you) can use even if you’ve updated your software/packages.  
 - To create a conda environment at the beginning of a project (or now):   
