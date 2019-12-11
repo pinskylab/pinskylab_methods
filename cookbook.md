@@ -99,9 +99,6 @@ are commonly run into by Pinsky Lab Members. The struggle is real\!
 1.  Go to the webpage that contains the script.
 2.  Click on RAW and then copy the URL.
 3.  In R:
-
-<!-- end list -->
-
 ``` r
 script <- RCurl::getURL("https://raw.githubusercontent.com/pinskylab/pinskylab_methods/master/genomics/scripts/field_helpers.R", ssl.verifypeer = FALSE)
 eval(parse(text = script))
