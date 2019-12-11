@@ -109,14 +109,10 @@ eval(parse(text = script))
 1.  Follow githubs directions for setting up [SSH
     keys](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/).
 2.  On the command line on amphiprion, type the SSH connection:
-
-<!-- end list -->
-
 ``` bash
 git clone git@github.com:user_name/repo_name.git
 ```
-
-1.  Open the the project file in the RStudio server for amphiprion in
+3.  Open the the project file in the RStudio server for amphiprion in
     your web browser. If you need the web address for the RStudio
     server, email Michelle.
 
@@ -125,9 +121,6 @@ git clone git@github.com:user_name/repo_name.git
 1.  Open command line and navigate to the folder you want to connect to
     your github repo.
 2.  On the command line, type:
-
-<!-- end list -->
-
 ``` bash
 # set the new remote
 git remote add origin url_of_github_repo
