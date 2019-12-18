@@ -1,67 +1,6 @@
 Pinsky Lab Cookbook
 ================
 
-  - [Github](#github)
-      - [How to add undergrads to the Pinsky Lab
-        github.](#how-to-add-undergrads-to-the-pinsky-lab-github.)
-      - [How to get RStudio and github to talk to each
-        other](#how-to-get-rstudio-and-github-to-talk-to-each-other)
-      - [How to move an existing project on github into
-        RStudio](#how-to-move-an-existing-project-on-github-into-rstudio)
-      - [How to transfer ownership of a repository from personal to
-        pinskylab in
-        github](#how-to-transfer-ownership-of-a-repository-from-personal-to-pinskylab-in-github)
-      - [How to connect to one script in someone else’s github
-        repo](#how-to-connect-to-one-script-in-someone-elses-github-repo)
-      - [How to connect amphiprion Rstudio server to existing github
-        repo](#how-to-connect-amphiprion-rstudio-server-to-existing-github-repo)
-      - [How to use the command line to connect your current folder to
-        an existing github
-        repo.](#how-to-use-the-command-line-to-connect-your-current-folder-to-an-existing-github-repo.)
-      - [If you made a commit that won’t push to Github (too large files
-        or something
-        else)…](#if-you-made-a-commit-that-wont-push-to-github-too-large-files-or-something-else)
-      - [Call data from a GitHub repo directly into
-        R](#call-data-from-a-github-repo-directly-into-r)
-      - [Allow others to view html versions of your
-        code.](#allow-others-to-view-html-versions-of-your-code.)
-  - [R](#r)
-      - [How to install an older version of a package than the one
-        currently
-        installed.](#how-to-install-an-older-version-of-a-package-than-the-one-currently-installed.)
-      - [Install new version of R in your local directory on Amphiprion
-        using
-        miniconda](#install-new-version-of-r-in-your-local-directory-on-amphiprion-using-miniconda)
-      - [Convert a table from long format to wide format or vice
-        versa](#convert-a-table-from-long-format-to-wide-format-or-vice-versa)
-      - [Working with strings](#working-with-strings)
-  - [R Spatial](#r-spatial)
-      - [How to calculate the distance between two sets of
-        points](#how-to-calculate-the-distance-between-two-sets-of-points)
-  - [Plots](#plots)
-      - [How to change the angle of your x-axis labels in
-        ggplot](#how-to-change-the-angle-of-your-x-axis-labels-in-ggplot)
-      - [How to save an R plot as a pdf (when using ggplot) - 3
-        different
-        ways](#how-to-save-an-r-plot-as-a-pdf-when-using-ggplot---3-different-ways)
-  - [Sequencing](#sequencing)
-      - [How to calculate sequencing
-        coverage](#how-to-calculate-sequencing-coverage)
-  - [Bioinformatics](#bioinformatics)
-      - [Saving working environment](#saving-working-environment)
-  - [Video Conferencing](#video-conferencing)
-      - [google hangout for lab
-        meetings](#google-hangout-for-lab-meetings)
-      - [How to set up the ENR 145 TV for video
-        conference.](#how-to-set-up-the-enr-145-tv-for-video-conference.)
-  - [Remote access to lab computers](#remote-access-to-lab-computers)
-      - [How to access a lab computer from a
-        chromebook](#how-to-access-a-lab-computer-from-a-chromebook)
-  - [Ryan’s Advice](#ryans-advice)
-      - [Analysis](#analysis)
-      - [Configuring TextMate2 on a Mac for use with
-        R](#configuring-textmate2-on-a-mac-for-use-with-r)
-
 This document exists to share institutional knowledge for obstacles that
 are commonly run into by Pinsky Lab Members. The struggle is real\!
 
@@ -86,7 +25,8 @@ are commonly run into by Pinsky Lab Members. The struggle is real\!
 2.  On your computer, add “\_old” to the end of the name of your folder.
 3.  Create a new project in Rstudio and paste in the URL from github
     with the normal folder name.
-4.  Open the “old” folder, copy all, open the new folder, paste all.
+4.  Open the “old” folder, copy all, open the new folder, paste
+all.
 
 ## How to transfer ownership of a repository from personal to pinskylab in github
 
@@ -98,7 +38,11 @@ are commonly run into by Pinsky Lab Members. The struggle is real\!
 
 1.  Go to the webpage that contains the script.
 2.  Click on RAW and then copy the URL.
-3.  In R:
+3.  In
+R:
+
+<!-- end list -->
+
 ``` r
 script <- RCurl::getURL("https://raw.githubusercontent.com/pinskylab/pinskylab_methods/master/genomics/scripts/field_helpers.R", ssl.verifypeer = FALSE)
 eval(parse(text = script))
@@ -109,18 +53,30 @@ eval(parse(text = script))
 1.  Follow githubs directions for setting up [SSH
     keys](https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/).
 2.  On the command line on amphiprion, type the SSH connection:
+
+<!-- end list -->
+
 ``` bash
 git clone git@github.com:user_name/repo_name.git
 ```
-3.  Open the the project file in the RStudio server for amphiprion in
+
+1.  Open the the project file in the RStudio server for amphiprion in
     your web browser. If you need the web address for the RStudio
     server, email Michelle.
+
+## If RStudio is not recognizing git on your machine
+
+[Try this helpful set of
+steps](https://happygitwithr.com/rstudio-see-git.html)
 
 ## How to use the command line to connect your current folder to an existing github repo.
 
 1.  Open command line and navigate to the folder you want to connect to
     your github repo.
 2.  On the command line, type:
+
+<!-- end list -->
+
 ``` bash
 # set the new remote
 git remote add origin url_of_github_repo
@@ -347,33 +303,22 @@ The calculation is slightly different if you are doing RADSeq vs. whole
 genome sequencing.
 
 For whole genome sequencing, number of base pairs is important. To
-determine the number of runs needed for whole genome sequencing:
+determine the number of runs needed for whole genome
+sequencing:
 
-![{number<sub>of</sub>individuals<sub>\*</sub>number<sub>of</sub>bp<sub>in</sub>the<sub>genome</sub>\*<sub>coverage</sub>\*<sub>}\\frac{1}{number</sub>of<sub>bp</sub>per<sub>read}</sub>\*<sub>\\frac{1}{number</sub>of<sub>reads</sub>per<sub>run}</sub>=<sub>number</sub>of\~runs](https://latex.codecogs.com/png.latex?%7Bnumber~of~individuals~%2A~number~of~bp~in~the~genome~%2A~coverage~%2A~%7D%5Cfrac%7B1%7D%7Bnumber~of~bp~per~read%7D~%2A~%5Cfrac%7B1%7D%7Bnumber~of~reads~per~run%7D~%3D~number~of~runs
+![{number<sub>of</sub>individuals<sub>\*</sub>number<sub>of</sub>bp<sub>in</sub>the<sub>genome</sub>\*<sub>coverage</sub>\*<sub>}\\frac{1}{number</sub>of<sub>bp</sub>per<sub>read}</sub>\*<sub>\\frac{1}{number</sub>of<sub>reads</sub>per<sub>run}</sub>=<sub>number</sub>of~runs](https://latex.codecogs.com/png.latex?%7Bnumber~of~individuals~%2A~number~of~bp~in~the~genome~%2A~coverage~%2A~%7D%5Cfrac%7B1%7D%7Bnumber~of~bp~per~read%7D~%2A~%5Cfrac%7B1%7D%7Bnumber~of~reads~per~run%7D~%3D~number~of~runs
 "{number~of~individuals~*~number~of~bp~in~the~genome~*~coverage~*~}\\frac{1}{number~of~bp~per~read}~*~\\frac{1}{number~of~reads~per~run}~=~number~of~runs")
 
 For ddRADSeq or other partial sequencing techniques where the sequencer
 always starts at the beginning of the contig of interest, number of
-reads replaces basepair numbers. To determine the number of runs:
+reads replaces basepair numbers. To determine the number of
+runs:
 
 ![{number<sub>of</sub>individuals<sub>\*</sub>coverage<sub>\*</sub>}\\frac{1}{number<sub>of</sub>bp<sub>per</sub>read}<sub>\*</sub>\\frac{1}{number<sub>of</sub>reads<sub>per</sub>run}<sub>=</sub>number<sub>of</sub>runs](https://latex.codecogs.com/png.latex?%7Bnumber~of~individuals~%2A~coverage~%2A~%7D%5Cfrac%7B1%7D%7Bnumber~of~bp~per~read%7D~%2A~%5Cfrac%7B1%7D%7Bnumber~of~reads~per~run%7D~%3D~number~of~runs
 "{number~of~individuals~*~coverage~*~}\\frac{1}{number~of~bp~per~read}~*~\\frac{1}{number~of~reads~per~run}~=~number~of~runs")
 
 Also, [check out this
 pdf](https://github.com/pinskylab/pinskylab_methods/blob/master/genomics/coverage_calculation.pdf)
-
-# Bioinformatics
-
-## Saving working environment
-
-Basically, this is creating a version of your machine at the time you are working on your project that someone in the future (maybe you) can use even if you’ve updated your software/packages.  
-- To create a conda environment at the beginning of a project (or now):   
-`conda create -n name_of_project`. 
-- To save your environment to share with other conda users in your present working directory:  
-`conda env create -f filename.yaml`. 
-- To save your environment to share with non-conda users in your present working directory:  
-`pip freeze > filename.txt`
-These saved files can be included in your github repo to share during publication.
 
 # Video Conferencing
 
@@ -421,7 +366,8 @@ PostgreSQL is a widely used, open-source database, and R is a widely
 used, open-source statistical program. So it would be natural to put
 them together, such as when working with data like these. If you work on
 a Mac, though, it’s not obvious from a web search how to do so. Here’s
-what worked for us:
+what worked for
+us:
 
 ``` r
 > install.packages(“RPpostgreSQL”) # install R package > require(“RPostgreSQL”) # load it > drv <- dbDriver(“PostgreSQL”) # start the driver for a postgreSQL database > conn = dbConnect(drv, …) # fill in the … with your database connection
@@ -442,7 +388,7 @@ working nicely. Because I loved TextMate 1 so much, I took those steps.
 I’ve compiled a set of instructions that detail the basic adjustments I
 recommend you make to TextMate 2 in order to do comfortable programming
 in R. A tip: I recommend making use of the project drawer:
-control+alt+command+d. From there you can use Git (command+Y), create
+control+alt+command+d. From there you can use Git (command+Y), create
 and edit files, etc, just like you would in Finder. For the other
 features, I’ll let you discover those yourself. One more tip: in the
 project drawer, select any file and hit the space bar for a nice
