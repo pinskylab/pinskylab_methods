@@ -358,6 +358,8 @@ On chromebook: - Open Chrome Remote Desktop app.
 
 # Using Rutgers Box for storage to use on cluser computers
 
+**Instructions for annotate [here](https://box.rutgers.edu/linux/)**
+
 Hi,
 
 As you may know, storage in box.rutgers.edu is unlimited, but the max size for files stored there is 15 GB (see the bottom portion of this message for a way to deal with that). The pace of data transfer to Box from Amarel’s login nodes isn’t fast (about 10-12 MB/sec), but if you’re not in a rush, it’s a good place to store data long-term.
