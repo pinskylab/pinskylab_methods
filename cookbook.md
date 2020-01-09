@@ -356,6 +356,103 @@ connections.”
 
 On chromebook: - Open Chrome Remote Desktop app.
 
+# Using Rutgers Box for storage to use on cluser computers
+
+Hi,
+
+As you may know, storage in box.rutgers.edu is unlimited, but the max size for files stored there is 15 GB (see the bottom portion of this message for a way to deal with that). The pace of data transfer to Box from Amarel’s login nodes isn’t fast (about 10-12 MB/sec), but if you’re not in a rush, it’s a good place to store data long-term.
+ 
+There are a few different ways to move data to/from box.rutgers.edu. I use a utility named rclone and below I’ve detailed how I set it up and use it from Amarel. You’ll need to open the Firefox browser on Amarel as part of the setup procedure, so connecting via ssh with the -X or -Y option will be needed. Alternatively, if you can’t tunnel a GUI through SSH to your terminal, you can complete the setup within an Amarel Desktop session using OnDemand. This procedure may seem a bit long and complicated. If it seems like you need help, we’d be happy to sit beside you and walk through it with you.
+
+Galen
+ 
+*Setting-up rclone:*
+
+## First, connect to Amarel with X11 tunneling enabled (i.e., using the -X or -Y option). If you’re off-campus, you’ll need to connect to the campus VPN first (see https://soc.rutgers.edu/vpn for details):
+ 
+ssh -Y [NetID]@amarel.rutgers.edu
+ 
+## Launch Firefox on Amarel. Doing this now ensures that this part works before you get too far along in these instructions. Be sure to include the “&” so you can continue using your terminal window.
+ 
+firefox &
+ 
+## When the Firefox browser window appears on your local desktop, it may be unresponsive for a few moments (maybe minutes). Just let it sit there and finish loading. Go back to your terminal window.
+ 
+## Next, load the rclone module by running these commands in your terminal window,
+ 
+module use /projects/community/modulefiles
+module load rclone/1.49.5-188-g8c1edf41-beta-gc56
+ 
+## Setup a new remote connection:
+ 
+rclone config
+ 
+# Enter the letter “n” for new and provide a name for your connection. For this example, I’ve named mine “amarel-box”
+# For the storage type, enter “6" for Box:
+Storage> 6
+ 
+# You’ll be asked for a Box client ID and secret word. Just press “Enter” to leave these fields blank:
+client_id>
+client_secret>
+ 
+# Edit advanced config? (y/n) Choose “No”
+y) Yes
+n) No
+y/n> n
+ 
+# Use auto config? Choose “Yes”
+y) Yes
+n) No
+y/n> y
+ 
+## Now, rclone will be waiting for an access code. You’ll have to go to your Firefox browser window in your OnDemand Desktop session to retrieve it. The http://127.0.0.1:53682/auth page should load automatically (just wait for it).
+ 
+## Firefox will open a Box/rclone “Customer Login Page” (see attached). Displaying the Firefox window on your local machine may be slow. Be patient.
+## When it appears, choose “Use Single Sign On (SSO)” then enter you e-mail address. I used my galen.collier@rutgers.edu address. Then click “Authorize.” You’ll be redirected to the Rutgers Central Authentication Service page where you’ll enter your NetID and password.
+ 
+## If that process is successful, you’ll then see a button in that browser window for “Grant access to Box.” If you see the “Success!” message, you can close that browser window and return to the terminal.
+ 
+## In the terminal, you’ll see that an access token has been provided. Enter “y” to accept that token.
+ 
+## At this point, you’re done and can enter “q” to quit the connection setup.
+ 
+## Now, you’re ready to use rclone for moving file to/from your box.rutgers.edu account. Note: data transfer performance when using rclone will likely be best on the Amarel login nodes. Here are some example commands where the name of my remote Box connection is “amarel-box”:
+ 
+# List directories in top level of your Box (note the “:” at the end)
+rclone lsd amarel-box:
+ 
+# List all the files in your Box (note the “:” at the end)
+rclone ls amarel-box:
+ 
+# To copy a local (Amarel) directory to Box and name it “my-work-dir-backup”:
+rclone copy my-work-dir amarel-box:my-work-dir-backup
+ 
+## There is a full list of rclone commands here: https://rclone.org/commands/
+ 
+
+*The 15 GB file size limit imposed by Box can be accommodated by splitting large files. For example,*
+ 
+## Here’s how I split-up a large file that’s too big for Box into ~10 GB chunks:
+split -b 10GB --additional-suffix=-foo file.txt
+ 
+## Creates a series of smaller files named as follows:
+## xaa-foo xab-foo xac-foo xad-foo xae-foo xaf-foo ...
+ 
+## Generate a SHA512 checksum for verifying file integrity later:
+sha512sum file.txt > file.txt.sha512
+ 
+## Move those files (the split files and the checksum file) to Box using rclone for long-term storage
+## Now, the original can be deleted
+rm file.txt
+ 
+## When ready to use that big file again, move the split files and the checksum back using rclone, then reassemble:
+cat xa* > file.txt
+ 
+## Now check that the reassembled file matches the original:
+sha512sum --check file.txt.sha512
+ 
+This approach requires some scripting to make it a tractable procedure for large collections of big files, but it gets the job done reliably.
+
 # Ryan’s Advice
 
 ## Analysis
