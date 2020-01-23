@@ -13,8 +13,7 @@ repository [Phils\_GIS\_R](https://github.com/pinskylab/Phils_GIS_R).
 
 This folder contains subfolders and guides to help lab members working
 with bioinformatics.  
-    
-    - A guide to how we used ABC with SNPs for summer flounder can be found [here](https://github.com/pinskylab/genomics/blob/master/manuals/Guide%20to%20performing%20ABC%20using%20SNP%20data.md).
+- A guide to how we used ABC with SNPs for summer flounder can be found [here](https://github.com/pinskylab/genomics/blob/master/manuals/Guide%20to%20performing%20ABC%20using%20SNP%20data.md).
 
 ### [laboratory](https://github.com/pinskylab/laboratory)
 
