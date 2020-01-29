@@ -16,6 +16,7 @@ This folder contains subfolders and guides to help lab members working
 with bioinformatics.  
 - [A guide to how we used ABC with SNPs for summer flounder](https://github.com/pinskylab/genomics/blob/master/manuals/Guide%20to%20performing%20ABC%20using%20SNP%20data.md).  
 - [A guide to getting started on the amarel cluster](https://github.com/pinskylab/genomics/blob/master/manuals/Guide%20to%20using%20the%20Amarel%20cluster.md)
+- [A guide to submitting sequencing data to the NCBI SRA](https://github.com/pinskylab/SRA-submission/blob/master/Guide%20to%20NCBI%20SRA.md)
 
 ### [species distribution modeling](https://github.com/pinskylab/SDM-convergence)
 This repo contains data and scripts to analyze data to study species distributions over time.
