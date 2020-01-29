@@ -1,7 +1,8 @@
 README
 ================
 
-## Methods Repository navigation:
+## Methods Repository navigation:  
+- Because our lab spans a broad range of approaches to studying how populations are changing on a changing planet, we have separate repositories to represent each method.  As new projects evolve, new folders are added to those repositories (see [laboratory](https://github.com/pinskylab/laboratory) as an example).
 
 ### [field](https://github.com/pinskylab/field)
 
@@ -15,6 +16,9 @@ This folder contains subfolders and guides to help lab members working
 with bioinformatics.  
 - [A guide to how we used ABC with SNPs for summer flounder](https://github.com/pinskylab/genomics/blob/master/manuals/Guide%20to%20performing%20ABC%20using%20SNP%20data.md).  
 - [A guide to getting started on the amarel cluster](https://github.com/pinskylab/genomics/blob/master/manuals/Guide%20to%20using%20the%20Amarel%20cluster.md)
+
+### [species distribution modeling](https://github.com/pinskylab/SDM-convergence)
+This repo contains data and scripts to analyze data to study species distributions over time.
 
 ### [laboratory](https://github.com/pinskylab/laboratory)
 
