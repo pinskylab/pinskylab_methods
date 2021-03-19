@@ -6,6 +6,19 @@ are commonly run into by Pinsky Lab Members. The struggle is real\!
 
 # Github
 
+## Archiving a Git repo with Zenodo for a publication
+This will likely evolve, but our current approach is to
+
+1. Mint a version in github with the latest state
+2. Clean out all the extraneous stuff
+3. Make sure the Readme is very, very clear about which files were used to create which figures, tables, results, etc., and where to get any data not in the repo.
+4. Mint a publication-ready version and link this to Zenodo (instructions [here](https://guides.github.com/activities/citable-code/))
+
+Some of our examples: 
+- https://github.com/pinskylab/hotWater
+- https://github.com/pinskylab/ClimateAndMSP
+- https://github.com/pinskylab/Clownfish_persistence
+
 ## How to add undergrads to the Pinsky Lab github.
 
 1.  Make sure the undergrad has signed up for github and note whatever
