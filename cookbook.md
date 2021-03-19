@@ -12,7 +12,8 @@ This will likely evolve, but our current approach is to
 1. Mint a version in github with the latest state
 2. Clean out all the extraneous stuff
 3. Make sure the Readme is very, very clear about which files were used to create which figures, tables, results, etc., and where to get any data not in the repo.
-4. Mint a publication-ready version and link this to Zenodo (instructions [here](https://guides.github.com/activities/citable-code/))
+4. Have someone not involved with the project look at the repo and Readme. Is everything very clear?
+5. Mint a publication-ready version and link this to Zenodo (instructions [here](https://guides.github.com/activities/citable-code/))
 
 Some of our examples: 
 - https://github.com/pinskylab/hotWater
