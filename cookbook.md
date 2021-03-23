@@ -9,11 +9,11 @@ are commonly run into by Pinsky Lab Members. The struggle is real\!
 ## Archiving a Git repo with Zenodo for a publication
 This will likely evolve, but our current approach is to
 
-1. Mint a version in github with the latest state
+1. Mint a release in github with the latest state (instructions on making release [here](https://docs.github.com/en/github/administering-a-repository/managing-releases-in-a-repository))
 2. Clean out all the extraneous stuff
 3. Make sure the Readme is very, very clear about which files were used to create which figures, tables, results, etc., and where to get any data not in the repo.
 4. Have someone not involved with the project look at the repo and Readme. Is everything very clear?
-5. Mint a publication-ready version and link this to Zenodo (instructions [here](https://guides.github.com/activities/citable-code/))
+5. Mint a publication-ready release and link this to Zenodo (instructions [here](https://guides.github.com/activities/citable-code/))
 
 Some of our examples: 
 - https://github.com/pinskylab/hotWater
