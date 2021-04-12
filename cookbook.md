@@ -598,18 +598,22 @@ Then, you can:
 
 ### R 4.0 on Annotate
 
-There is only one R version on the browser RStudio interface, which (at present, March 2020) is R 3.5. If you need to run R 4.0, you can connect to the desktop RStudio version and run the following in Terminal (might also work from Terminal if you're just coding there, I haven't tried it):
+There is only one R version on the browser RStudio interface, which (at present, March 2020) is R 3.5. If you need to run R 4.0, you can connect to the desktop RStudio version and run the following in Terminal there (should also work from Terminal on your personal machine if you connected via SSH but I haven't tried it):
 
+```
 source ~robertm/.bashrc_conda2
 conda activate r4-base2
 source ~robertm/export_list
 /local/home/alexfh/rstudio-1.4.1106/bin/rstudio (will have to replace "alexfh" here with your own username, and might need to tweak the file path)
+```
 
 Or to launch R from Terminal:
 
+```
 source ~robertm/.bashrc_conda2
 conda activate r4-base2
 R
+```
 
 ### VAST on Annotate
 
