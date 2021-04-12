@@ -578,3 +578,39 @@ the bottom text box, enter “-e ‘tell application “TextMate” to activate�
 pasting the contents of the file RappStep2.txt note: I’m not making this
 change by default b/c the correction doesn’t seem to be necessary for
 all setups
+
+# Annotate 
+
+Annotate is a server at Rutgers maintained by Rob Muldowney. He can give you access to any of the following resources.
+
+## Annotate-Win
+
+This is a Windows server intended for running ArcGIS and other software, accessed with Microsoft Remote Desktop. Its use with R has been suspended.
+
+## Annotate
+
+This is a Linux server that you can access several ways. They all require you to connect to vpn.rutgers.edu with Cisco AnyConnect first.
+
+Then, you can: 
+1. For an RStudio interface, navigate to http://annotate.sebs.rutgers.edu:8787/ and log in with credentials Rob sent you
+2. For a Terminal interface, open a terminal window, type "ssh YOUR_ANNOTATE_USERNAME@annotate.sebs.rutgers.edu" and then enter the password Rob sent you when prompted 
+3. For access to a desktop running RStudio on Annotate, use Microsoft Remote Desktop and your same credentials. 
+
+### R 4.0 on Annotate
+
+There is only one R version on the browser RStudio interface, which (at present, March 2020) is R 3.5. If you need to run R 4.0, you can connect to the desktop RStudio version and run the following in Terminal (might also work from Terminal if you're just coding there, I haven't tried it):
+
+source ~robertm/.bashrc_conda2
+conda activate r4-base2
+source ~robertm/export_list
+/local/home/alexfh/rstudio-1.4.1106/bin/rstudio (will have to replace "alexfh" here with your own username, and might need to tweak the file path)
+
+Or to launch R from Terminal:
+
+source ~robertm/.bashrc_conda2
+conda activate r4-base2
+R
+
+### VAST on Annotate
+
+[VAST](https://github.com/James-Thorson-NOAA/VAST) is a highly complex package that we've struggled to get up and running on Annotate. However, it is running on the desktop version of Annotate, from either Terminal or RStudio. 
