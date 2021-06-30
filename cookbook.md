@@ -444,7 +444,6 @@ rclone ls amarel-box:
 rclone copy my-work-dir amarel-box:my-work-dir-backup
  
 ## There is a full list of rclone commands here: https://rclone.org/commands/
- 
 
 *The 15 GB file size limit imposed by Box can be accommodated by splitting large files. For example,*
  
@@ -466,8 +465,36 @@ cat xa* > file.txt
  
 ## Now check that the reassembled file matches the original:
 sha512sum --check file.txt.sha512
- 
+
 This approach requires some scripting to make it a tractable procedure for large collections of big files, but it gets the job done reliably.
+
+*Dan's alternative approach for splitting large files with rclone-chunker*
+------------------------------
+
+## rclone chunker is a function in beta which has worked well for splitting files and sending to Box
+
+## Run the set-up command:
+rclone config
+
+## If you have already set up your Box remote using the above instruction
+
+## Follow these [instructions](https://rclone.org/chunker/)
+For the below example code, we've named the remote "Box-chunker".
+
+## Make sure you selected the correct Box remote folder
+
+## Then in Amarel using ssh
+ssh \[username]@amarel.rutgers.edu
+
+## Navigate to the directory containing the directories or files you'd like to transfer
+use "cd \[directory]" to move down the file path and "cd ." or "cd .." to move up the file path (number of dots corresponds to number of directories up)
+
+## Run the following command to initialize a transfer
+nohup rclone copy \[local file or directory] Box-chunker:\[remote file or directory]
+
+## Check the Box folder to make sure the transfer is progressing
+
+**This may take several hours/days because the upload speeds are slow**
 
 # Ryan’s Advice
 
