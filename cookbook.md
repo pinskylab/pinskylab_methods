@@ -370,7 +370,7 @@ connections.”
 
 On chromebook: - Open Chrome Remote Desktop app.
 
-# Using Rutgers Box for storage to use on cluser computers
+# Using Rutgers Box for storage to use on cluster computers
 
 **Instructions for annotate [here](https://box.rutgers.edu/linux/)**
 
@@ -384,86 +384,86 @@ Galen
  
 *Setting-up rclone:*
 
-## First, connect to Amarel with X11 tunneling enabled (i.e., using the -X or -Y option). If you’re off-campus, you’ll need to connect to the campus VPN first (see https://soc.rutgers.edu/vpn for details):
+1. First, connect to Amarel with X11 tunneling enabled (i.e., using the -X or -Y option). If you’re off-campus, you’ll need to connect to the campus VPN first (see https://soc.rutgers.edu/vpn for details):
  
 ssh -Y [NetID]@amarel.rutgers.edu
  
-## Launch Firefox on Amarel. Doing this now ensures that this part works before you get too far along in these instructions. Be sure to include the “&” so you can continue using your terminal window.
+2. Launch Firefox on Amarel. Doing this now ensures that this part works before you get too far along in these instructions. Be sure to include the “&” so you can continue using your terminal window.
  
 firefox &
  
-## When the Firefox browser window appears on your local desktop, it may be unresponsive for a few moments (maybe minutes). Just let it sit there and finish loading. Go back to your terminal window.
+3. When the Firefox browser window appears on your local desktop, it may be unresponsive for a few moments (maybe minutes). Just let it sit there and finish loading. Go back to your terminal window.
  
-## Next, load the rclone module by running these commands in your terminal window,
+4. Next, load the rclone module by running these commands in your terminal window,
  
 module use /projects/community/modulefiles
 module load rclone/1.49.5-188-g8c1edf41-beta-gc56
  
-## Setup a new remote connection:
+5. Setup a new remote connection:
  
 rclone config
  
-# Enter the letter “n” for new and provide a name for your connection. For this example, I’ve named mine “amarel-box”
-# For the storage type, enter “6" for Box:
+6. Enter the letter “n” for new and provide a name for your connection. For this example, I’ve named mine “amarel-box”
+7. For the storage type, enter “6" for Box:
 Storage> 6
  
-# You’ll be asked for a Box client ID and secret word. Just press “Enter” to leave these fields blank:
+8. You’ll be asked for a Box client ID and secret word. Just press “Enter” to leave these fields blank:
 client_id>
 client_secret>
  
-# Edit advanced config? (y/n) Choose “No”
+9. Edit advanced config? (y/n) Choose “No”
 y) Yes
 n) No
 y/n> n
  
-# Use auto config? Choose “Yes”
+10. Use auto config? Choose “Yes”
 y) Yes
 n) No
 y/n> y
  
-## Now, rclone will be waiting for an access code. You’ll have to go to your Firefox browser window in your OnDemand Desktop session to retrieve it. The http://127.0.0.1:53682/auth page should load automatically (just wait for it).
+11. Now, rclone will be waiting for an access code. You’ll have to go to your Firefox browser window in your OnDemand Desktop session to retrieve it. The http://127.0.0.1:53682/auth page should load automatically (just wait for it).
  
-## Firefox will open a Box/rclone “Customer Login Page” (see attached). Displaying the Firefox window on your local machine may be slow. Be patient.
-## When it appears, choose “Use Single Sign On (SSO)” then enter you e-mail address. I used my galen.collier@rutgers.edu address. Then click “Authorize.” You’ll be redirected to the Rutgers Central Authentication Service page where you’ll enter your NetID and password.
+12. Firefox will open a Box/rclone “Customer Login Page” (see attached). Displaying the Firefox window on your local machine may be slow. Be patient.
+13. When it appears, choose “Use Single Sign On (SSO)” then enter you e-mail address. I used my galen.collier@rutgers.edu address. Then click “Authorize.” You’ll be redirected to the Rutgers Central Authentication Service page where you’ll enter your NetID and password.
  
-## If that process is successful, you’ll then see a button in that browser window for “Grant access to Box.” If you see the “Success!” message, you can close that browser window and return to the terminal.
+14. If that process is successful, you’ll then see a button in that browser window for “Grant access to Box.” If you see the “Success!” message, you can close that browser window and return to the terminal.
  
-## In the terminal, you’ll see that an access token has been provided. Enter “y” to accept that token.
+15. In the terminal, you’ll see that an access token has been provided. Enter “y” to accept that token.
  
-## At this point, you’re done and can enter “q” to quit the connection setup.
+16. At this point, you’re done and can enter “q” to quit the connection setup.
  
-## Now, you’re ready to use rclone for moving file to/from your box.rutgers.edu account. Note: data transfer performance when using rclone will likely be best on the Amarel login nodes. Here are some example commands where the name of my remote Box connection is “amarel-box”:
+17. Now, you’re ready to use rclone for moving file to/from your box.rutgers.edu account. Note: data transfer performance when using rclone will likely be best on the Amarel login nodes. Here are some example commands where the name of my remote Box connection is “amarel-box”:
  
-# List directories in top level of your Box (note the “:” at the end)
+18. List directories in top level of your Box (note the “:” at the end)
 rclone lsd amarel-box:
  
-# List all the files in your Box (note the “:” at the end)
+19. List all the files in your Box (note the “:” at the end)
 rclone ls amarel-box:
  
-# To copy a local (Amarel) directory to Box and name it “my-work-dir-backup”:
+20. To copy a local (Amarel) directory to Box and name it “my-work-dir-backup”:
 rclone copy my-work-dir amarel-box:my-work-dir-backup
  
-## There is a full list of rclone commands here: https://rclone.org/commands/
+21. There is a full list of rclone commands here: https://rclone.org/commands/
 
 *The 15 GB file size limit imposed by Box can be accommodated by splitting large files. For example,*
  
-## Here’s how I split-up a large file that’s too big for Box into ~10 GB chunks:
+22. Here’s how I split-up a large file that’s too big for Box into ~10 GB chunks:
 split -b 10GB --additional-suffix=-foo file.txt
  
-## Creates a series of smaller files named as follows:
-## xaa-foo xab-foo xac-foo xad-foo xae-foo xaf-foo ...
+23. Creates a series of smaller files named as follows:
+24. xaa-foo xab-foo xac-foo xad-foo xae-foo xaf-foo ...
  
-## Generate a SHA512 checksum for verifying file integrity later:
+25. Generate a SHA512 checksum for verifying file integrity later:
 sha512sum file.txt > file.txt.sha512
  
-## Move those files (the split files and the checksum file) to Box using rclone for long-term storage
-## Now, the original can be deleted
+26. Move those files (the split files and the checksum file) to Box using rclone for long-term storage
+27. Now, the original can be deleted
 rm file.txt
  
-## When ready to use that big file again, move the split files and the checksum back using rclone, then reassemble:
+28. When ready to use that big file again, move the split files and the checksum back using rclone, then reassemble:
 cat xa* > file.txt
  
-## Now check that the reassembled file matches the original:
+29. Now check that the reassembled file matches the original:
 sha512sum --check file.txt.sha512
 
 This approach requires some scripting to make it a tractable procedure for large collections of big files, but it gets the job done reliably.
@@ -471,28 +471,28 @@ This approach requires some scripting to make it a tractable procedure for large
 *Dan's alternative approach for splitting large files with rclone-chunker*
 ------------------------------
 
-## rclone chunker is a function in beta which has worked well for splitting files and sending to Box
+1. rclone chunker is a function in beta which has worked well for splitting files and sending to Box
 
-## Run the set-up command:
+2. Run the set-up command:
 rclone config
 
-## If you have already set up your Box remote using the above instruction
+3. If you have already set up your Box remote using the above instruction
 
-## Follow these [instructions](https://rclone.org/chunker/)
+4. Follow these [instructions](https://rclone.org/chunker/)
 For the below example code, we've named the remote "Box-chunker".
 
-## Make sure you selected the correct Box remote folder
+5. Make sure you selected the correct Box remote folder
 
-## Then in Amarel using ssh
+6. Then in Amarel using ssh
 ssh \[username]@amarel.rutgers.edu
 
-## Navigate to the directory containing the directories or files you'd like to transfer
+7. Navigate to the directory containing the directories or files you'd like to transfer
 use "cd \[directory]" to move down the file path and "cd ." or "cd .." to move up the file path (number of dots corresponds to number of directories up)
 
-## Run the following command to initialize a transfer
+8. Run the following command to initialize a transfer
 nohup rclone copy \[local file or directory] Box-chunker:\[remote file or directory]
 
-## Check the Box folder to make sure the transfer is progressing
+9. Check the Box folder to make sure the transfer is progressing
 
 **This may take several hours/days because the upload speeds are slow**
 
