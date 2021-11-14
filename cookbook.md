@@ -33,6 +33,12 @@ Some of our examples:
 1.  Create a repository on github, copy the URL.
 2.  Create a new project in RStudio and paste in the URL from github
 
+## Setting up SSH access from RStudio to Github
+see switch to ssh access: https://help.github.com/en/github/using-git/changing-a-remotes-url
+1. git remote set-url origin git@github.com:pinskylab/NAMEOFREPO.git
+1. git remote -v # to check
+1. You may also need to set up keys. See internet instructions for how to do this in RStudio and on your computer or on the server.
+
 ## How to move an existing project on github into RStudio
 
 1.  Copy the URL from github for your repository.
