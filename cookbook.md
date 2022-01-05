@@ -629,9 +629,9 @@ Then, you can:
 2. For a Terminal interface, open a terminal window, type "ssh YOUR_ANNOTATE_USERNAME@annotate.sebs.rutgers.edu" and then enter the password Rob sent you when prompted 
 3. For access to a desktop running RStudio on Annotate, use Microsoft Remote Desktop and your same credentials. 
 
-### R 4.0 on Annotate
+### Newer versions of R on Annotate
 
-There is only one R version on the browser RStudio interface, which (at present, March 2020) is R 3.5. If you need to run R 4.0, you can connect to the desktop RStudio version and run the following in Terminal there (should also work from Terminal on your personal machine if you connected via SSH but I haven't tried it):
+There is only one R version on the browser RStudio interface, which (at present, Jan 2022) is R 3.5.2. If you need to run newer versions of R, you can connect to the desktop RStudio version and run the following in Terminal there (should also work from Terminal on your personal machine if you connected via SSH but I haven't tried it):
 
 ```
 source ~robertm/.bashrc_conda2
@@ -648,6 +648,21 @@ conda activate r4-base2
 R
 ```
 
+Here are some directions provided by Rob Muldowney after doing a custom install of R 4.1.2 and R Studio in my workspace. You'll need to adjust the file paths according to your own workspace and install locations:
+```
+The latest version of R (4.1.2) has been installed here:
+/local/home/michaela/RSM/bin/bin/R
+
+To make that your default R you can type:
+'export PATH=/local/home/michaela/RSM/bin/bin:$PATH'
+To make that permanent add that command to the end of your .bashrc file
+
+Rstudio desktop has been installed here:
+/local/home/michaela/RSM/rstudio-2021.09.1+372/bin
+
+You activate it log in via Remote Desktop Protocol, open a terminal and enter:
+/local/home/michaela/RSM/rstudio-2021.09.1+372/bin/rstudio
+```
 ### VAST on Annotate
 
 [VAST](https://github.com/James-Thorson-NOAA/VAST) is a highly complex package that we've struggled to get up and running on Annotate. However, it is running on the desktop version of Annotate, from either Terminal or RStudio. 
