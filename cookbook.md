@@ -649,18 +649,23 @@ R
 ```
 
 Here are some directions provided by Rob Muldowney after doing a custom install of R 4.1.2 and R Studio in my workspace. You'll need to adjust the file paths according to your own workspace and install locations:
-```
-The latest version of R (4.1.2) has been installed here:
-/local/home/michaela/RSM/bin/bin/R
 
+"The latest version of R (4.1.2) has been installed here:
+```
+/local/home/michaela/RSM/bin/bin/R
+```
 To make that your default R you can type:
-'export PATH=/local/home/michaela/RSM/bin/bin:$PATH'
+```
+export PATH=/local/home/michaela/RSM/bin/bin:$PATH
+```
 To make that permanent add that command to the end of your .bashrc file
 
 Rstudio desktop has been installed here:
+```
 /local/home/michaela/RSM/rstudio-2021.09.1+372/bin
-
+```
 You activate it log in via Remote Desktop Protocol, open a terminal and enter:
+```
 /local/home/michaela/RSM/rstudio-2021.09.1+372/bin/rstudio
 ```
 ### VAST on Annotate
