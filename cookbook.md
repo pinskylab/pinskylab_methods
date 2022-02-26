@@ -666,3 +666,7 @@ You activate it log in via Remote Desktop Protocol, open a terminal and enter:
 ### VAST on Annotate
 
 [VAST](https://github.com/James-Thorson-NOAA/VAST) is a highly complex package that we've struggled to get up and running on Annotate. However, it is running on the desktop version of Annotate, from either Terminal or RStudio. 
+
+### Stan on Annotate
+
+If you are having trouble getting Stan to run on Annotate, it may be because it uses an older version of C++ compiler. The only way I've found to get Stan to work on Annotate is by 1) using newer R & RStudio versions (custom installed by Rob M and accessed via remote desktop); and 2) opening a terminal and running the following before each session to direct it to use a newer compiler: export PATH=/local/opt/bin/bin:$PATH
