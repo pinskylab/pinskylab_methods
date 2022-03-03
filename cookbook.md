@@ -670,3 +670,44 @@ You activate it log in via Remote Desktop Protocol, open a terminal and enter:
 ### Stan on Annotate
 
 If you are having trouble getting Stan to run on Annotate, it may be because it uses an older version of C++ compiler. The only way I've found to get Stan to work on Annotate is by 1) using newer R & RStudio versions (custom installed by Rob M and accessed via remote desktop); and 2) opening a terminal and running the following before each session to direct it to use a newer compiler: export PATH=/local/opt/bin/bin:$PATH
+
+### Installation management with Anaconda on Annotate or another Linux server
+
+Anaconda manages your software and package installations, and works out any conflicting dependencies for you! If you use Anaconda on a server, you will control all of your software versions yourself. They will be locally housed in your directory.
+
+1. Follow the OS specific installation instructions. Miniconda is usually all an ecologist needs: https://docs.anaconda.com/anaconda/install/linux/
+2. When installing a package, always use Conda! Simply search https://anaconda.org for whatever software or package you need, copy the command, and paste in your command line/prompt
+3. From this moment on, use conda for installations exclusively. You don't want to create convuluted library paths, keep it simple with conda. 
+
+### Conda environments
+
+Creating different conda environments for softwares/analyses helps you avoid conflicts, test development installs, and make your work super reproducible. Follow the documentation here: https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#
+
+Some handy commands include,
+```
+conda create --name myenv #create new environment
+conda activate myenv #activate and enter the environment
+conda deactivate 
+conde env list #print all the available environments
+conda env export > environment.yml
+conda env create -f environment.yml #create an environment from the output of the previous command- this will help others (and you on different machines) install all the necessary software/packages for an analysis
+```
+
+### Jupyter Notebooks
+
+Jupyter is as an interactive, browser based wrapper for your scripting language- built for Python mainly but supports 40 languages. Follow installation instructions here: https://jupyter-notebook.readthedocs.io/en/latest/notebook.html
+
+To launch a Jupyter notebook from a remote server, and connect from your computer,
+1. Launch the notebook- 
+```
+jupyter notebook --no-browser --port=#### #replace the hashes with FOUR digits of your choice, ex, 9999
+
+nohup jupyter notebook --no-browser --port=#### & #alternatively, launch the notebook with nohup so if you get disconnected the notebook continues to run
+```
+2. Connect via this code in YOUR computer's command line/prompt
+
+```
+ssh -N -f -L localhost:####:localhost:#### user@annotate.sebs.rutgers.edu #replace the hashes with the digits you used to start the notebook, and replace user with your username
+```
+
+To run R in Jupyter, install the IRKernel, instructions here: https://irkernel.github.io/installation/
