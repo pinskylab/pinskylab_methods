@@ -615,10 +615,16 @@ all setups
 # Annotate 
 
 Annotate is a server at Rutgers maintained by Rob Muldowney. He can give you access to any of the following resources.
+As of this moment (03/20/2023), the only successful way to run Stan on Annotate is through the Annotate-Win server. Rob tried recently to get Annotate working on the Linux server, but it just didn't work with R version 4.0.
 
 ## Annotate-Win
 
-This is a Windows server intended for running ArcGIS and other software, accessed with Microsoft Remote Desktop. Its use with R has been suspended.
+This is a Windows server intended for running ArcGIS and other software, accessed with Microsoft Remote Desktop. RStan works on this server. Please follow the steps below to access and run rstan code on Annotate-Win
+Ask Rob to create an Annotate-Win account. You need Microsoft Remote Desktop to access this server. File transfers between your local machine and the server can be done using FileZilla (or any SFTP file transfer client).
+
+1. Open RStudio on the Windows server
+2. Change the R version to 3.5.3 (This is the version that will run `rstan`
+3. Now the code will (hopefully!) run
 
 ## Annotate
 
